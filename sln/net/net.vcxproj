@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="dll_debug|Win32">
+      <Configuration>dll_debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll_release|Win32">
+      <Configuration>dll_release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_debug|Win32">
+      <Configuration>lib_debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_release|Win32">
+      <Configuration>lib_release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E30E09CC-3C76-409A-B315-05FCC059B944}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>net</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)/</IntDir>
+    <TargetName>stupid_net</TargetName>
+    <TargetExt>.lib</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)/</IntDir>
+    <TargetName>stupid_net</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)/</IntDir>
+    <TargetName>stupid_net</TargetName>
+    <TargetExt>.lib</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)/</IntDir>
+    <TargetName>stupid_net</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;ws2_32.lib;</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;ws2_32.lib;</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;ws2_32.lib;</AdditionalDependencies>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;ws2_32.lib;</AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;ws2_32.lib;</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;NET_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;ws2_32.lib;</AdditionalDependencies>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\net\common\common.h" />
+    <ClInclude Include="..\..\inc\net\common\consts.h" />
+    <ClInclude Include="..\..\inc\net\common\enums.h" />
+    <ClInclude Include="..\..\inc\net\common\error.h" />
+    <ClInclude Include="..\..\inc\net\common\macros.h" />
+    <ClInclude Include="..\..\inc\net\common\namespace.h" />
+    <ClInclude Include="..\..\inc\net\common\typedefs.h" />
+    <ClInclude Include="..\..\inc\net\utility\net_switch.h" />
+    <ClInclude Include="..\..\inc\net\utility\tcp.h" />
+    <ClInclude Include="..\..\inc\net\utility\udp.h" />
+    <ClInclude Include="..\..\inc\net\utility\utility.h" />
+    <ClInclude Include="..\..\inc\net\xactor\block.h" />
+    <ClInclude Include="..\..\inc\net\xactor\buffer.h" />
+    <ClInclude Include="..\..\inc\net\xactor\connection.h" />
+    <ClInclude Include="..\..\inc\net\xactor\connection_base.h" />
+    <ClInclude Include="..\..\inc\net\xactor\manager.h" />
+    <ClInclude Include="..\..\inc\net\xactor\proactor.h" />
+    <ClInclude Include="..\..\inc\net\xactor\reactor.h" />
+    <ClInclude Include="..\..\inc\net\xactor\service_base.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\net\utility\net_switch.cpp" />
+    <ClCompile Include="..\..\src\net\utility\tcp.cpp" />
+    <ClCompile Include="..\..\src\net\utility\udp.cpp" />
+    <ClCompile Include="..\..\src\net\utility\utility.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\block.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\buffer.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\connection.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\connection_base.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\manager.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\proactor.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\reactor.cpp" />
+    <ClCompile Include="..\..\src\net\xactor\service_base.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\base\base.vcxproj">
+      <Project>{f9e70d62-b8b2-426e-ba32-ecc6acccd5da}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

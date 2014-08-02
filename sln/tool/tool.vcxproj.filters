@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="inc\common">
+      <UniqueIdentifier>{53f80a55-8caa-4f7c-a698-251263f25874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\mail">
+      <UniqueIdentifier>{3e03423d-0ede-4816-a5b2-621ca6cecd71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mail">
+      <UniqueIdentifier>{08a2b01b-4dcf-4b15-9251-c9a36ecfa5c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\ftp">
+      <UniqueIdentifier>{0e3dc942-224d-4c09-a28f-6ff32b657418}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ftp">
+      <UniqueIdentifier>{4a3896d6-175a-461e-a929-7bad2ef91dd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\utility">
+      <UniqueIdentifier>{eb4ca336-c52d-46ae-bd39-e4629c5dd867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{36291c3c-a302-4f14-a246-eed5f0478188}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\tool\mail\mail.cpp">
+      <Filter>src\mail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tool\ftp\ftp.cpp">
+      <Filter>src\ftp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tool\utility\curl_switch.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\tool\mail\mail.h">
+      <Filter>inc\mail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\tool\common\common.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\tool\common\namespace.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\tool\ftp\ftp.h">
+      <Filter>inc\ftp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\tool\utility\curl_switch.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

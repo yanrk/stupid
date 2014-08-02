@@ -1,0 +1,117 @@
+project_home       = ../..
+build_dir          = $(project_home)/sln/stupid
+bin_dir            = $(project_home)/lib/linux
+object_dir         = $(project_home)/.objs
+stupid_home        = $(project_home)
+gnu_home           = $(project_home)/gnu
+
+
+
+# includes of open source headers
+zlib_inc_path      = $(gnu_home)/zlib/inc
+openssl_inc_path   = $(gnu_home)/openssl/inc
+curl_inc_path      = $(gnu_home)/curl/inc
+tinyxml_inc_path   = $(gnu_home)/tinyxml/inc
+gnu_includes       = -I$(zlib_inc_path)
+gnu_includes      += -I$(openssl_inc_path)
+gnu_includes      += -I$(curl_inc_path)
+gnu_includes      += -I$(tinyxml_inc_path)
+
+# includes of stupid headers
+stupid_inc_path    = $(stupid_home)/inc
+stupid_includes    = -I$(stupid_inc_path)
+
+
+
+# all includes that stupid solution needs
+includes           = $(gnu_includes)
+includes          += $(stupid_includes)
+
+
+
+# source files of stupid solution
+
+# source files of base project
+base_src_path      = $(stupid_home)/src/base
+base_source        = $(filter %.cpp, $(shell find $(base_src_path) -depth -name "*.cpp"))
+
+# source files of net project
+net_src_path       = $(stupid_home)/src/net
+net_source         = $(filter %.cpp, $(shell find $(net_src_path) -depth -name "*.cpp"))
+
+# source files of tool project
+tool_src_path      = $(stupid_home)/src/tool
+tool_source        = $(filter %.cpp, $(shell find $(tool_src_path) -depth -name "*.cpp"))
+
+
+
+# objects of stupid solution
+base_objects       = $(base_source:$(project_home)%.cpp=$(object_dir)%.o)
+net_objects        = $(net_source:$(project_home)%.cpp=$(object_dir)%.o)
+tool_objects       = $(tool_source:$(project_home)%.cpp=$(object_dir)%.o)
+
+
+
+# output librarys
+base_output_lib    = $(bin_dir)/libstupid_base.a
+net_output_lib     = $(bin_dir)/libstupid_net.a
+tool_output_lib    = $(bin_dir)/libstupid_tool.a
+
+
+
+# my g++ not support nullptr and 64bits
+# so no -m64, and add a macro -Dnullptr=0
+
+# build flags for objects
+build_obj_flags    = -std=c++0x -g -Wall -O1 -pipe -fPIC -Dnullptr=0
+
+# build flags for execution
+build_exec_flags   = $(build_obj_flags)
+
+# build flags for dynamic link librarys
+build_so_flags     = -std=c++0x -shared
+
+# build flags for static link librarys
+build_a_flags      = -rv
+
+
+
+# build targets
+targets            = base net tool
+
+# let 'build' be default target, build all targets
+build    : $(targets)
+
+base     : $(base_objects)
+	@echo
+	@echo "@@@@@  start making base  @@@@@"
+	ar $(build_a_flags) $(base_output_lib) $^
+	@echo "@@@@@  make base success  @@@@@"
+	@echo
+
+net      : $(net_objects)
+	@echo
+	@echo "@@@@@  start making net  @@@@@"
+	ar $(build_a_flags) $(net_output_lib) $^
+	@echo "@@@@@  make net success  @@@@@"
+	@echo
+
+tool     : $(tool_objects)
+	@echo
+	@echo "@@@@@  start making tool  @@@@@"
+	ar $(build_a_flags) $(tool_output_lib) $^
+	@echo "@@@@@  make tool success  @@@@@"
+	@echo
+
+# build all objects
+$(object_dir)/%.o:$(project_home)/%.cpp
+	@dir=`dirname $@`;      \
+    if [ ! -d $$dir ]; then \
+        mkdir -p $$dir;     \
+    fi
+	g++ -c $(build_obj_flags) $(includes) -o $@ $<
+
+clean    :
+	rm -rf $(object_dir) $(base_output_lib) $(net_output_lib) $(tool_output_lib)
+
+rebuild  : clean build

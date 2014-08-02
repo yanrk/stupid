@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{0fc080d8-4edc-4ffa-9b59-90eedfb11cf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{e164878a-a856-437c-b43f-364ec775a68e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="test_tool.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test_tool.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test_tool_mail.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test_tool_ftp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

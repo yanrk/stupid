@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="inc\common">
+      <UniqueIdentifier>{b3dcb389-a618-490e-b26c-e8043f41daaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\utility">
+      <UniqueIdentifier>{40521a2d-4798-4f97-998b-0eef1215ea84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{3a85ce3f-7f2e-4ac3-846a-2ea244e121b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\xactor">
+      <UniqueIdentifier>{b721ca39-6b5d-4288-8894-4aa1c2f8ed5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\xactor">
+      <UniqueIdentifier>{adc3f0e2-3342-4e13-9eb7-a599d3793ec3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\net\common\common.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\common\consts.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\common\enums.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\common\error.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\common\macros.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\common\namespace.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\common\typedefs.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\utility\utility.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\block.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\buffer.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\connection.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\proactor.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\reactor.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\manager.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\service_base.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\utility\net_switch.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\utility\tcp.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\utility\udp.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\net\xactor\connection_base.h">
+      <Filter>inc\xactor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\net\utility\utility.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\block.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\buffer.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\connection.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\proactor.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\reactor.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\manager.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\utility\net_switch.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\utility\tcp.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\utility\udp.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\connection_base.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\net\xactor\service_base.cpp">
+      <Filter>src\xactor</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="inc">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="cfg">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="inc\common">
+      <UniqueIdentifier>{cd8e7986-2e51-4979-883f-9801206d4c9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\config">
+      <UniqueIdentifier>{79fa99ba-2f6a-4264-b31d-b97151be5635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\exception">
+      <UniqueIdentifier>{dbcb4f1e-8385-4f83-b18f-f62ba1860357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\filesystem">
+      <UniqueIdentifier>{384e93cf-64fa-4d7b-bec8-22a46a99d9f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\locker">
+      <UniqueIdentifier>{b66f9fe8-b0d0-44a0-9b68-dbc4685d7a52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\log">
+      <UniqueIdentifier>{79d92fc8-60b8-490a-b7b9-81c952909c5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\pool">
+      <UniqueIdentifier>{fc2117b6-7220-415a-9142-1d92471a67a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\stream">
+      <UniqueIdentifier>{3e1606f1-1cc8-436a-9518-7b2cc880cfbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\string">
+      <UniqueIdentifier>{d2a9948c-af2f-429f-83d9-dcbd5236f8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\thread">
+      <UniqueIdentifier>{e566d78b-65f5-40f4-b6b3-3eaa9ec5c855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\time">
+      <UniqueIdentifier>{9dca5e91-6e70-48de-b08d-265103100bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\utility">
+      <UniqueIdentifier>{0688a4f3-e1df-4856-84f6-4ad8c7f6e2c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common">
+      <UniqueIdentifier>{85ff2b5e-cee6-4318-a734-f67cf07e9fd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\exception">
+      <UniqueIdentifier>{763bb944-2450-4bd8-a7dc-35f5eaa35c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\filesystem">
+      <UniqueIdentifier>{fa66f3e9-f77e-4e46-8bba-95b9f52eb569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\locker">
+      <UniqueIdentifier>{b2502e59-e38e-4a88-91a7-a4f49f91f886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\log">
+      <UniqueIdentifier>{d790f96d-a37c-4278-aa92-a0103b19b7bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\stream">
+      <UniqueIdentifier>{1327ca29-a90e-4f3b-8818-55f013185121}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\string">
+      <UniqueIdentifier>{c55f9dd4-edae-4ef0-b419-97b5a79555ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\thread">
+      <UniqueIdentifier>{897cb621-fa2a-4cb7-9fcb-cf7fdc64a549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\time">
+      <UniqueIdentifier>{15ca313c-4cbe-48ce-98f0-54bae35d1928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\utility">
+      <UniqueIdentifier>{c14a80bf-3b82-4674-973e-e72d26fd038e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\config">
+      <UniqueIdentifier>{c2655fcf-dff8-405d-ae9e-353184276684}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\cfg\log.ini">
+      <Filter>cfg</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\inc\base\common\common.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\common\consts.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\common\enums.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\common\macros.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\common\memory.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\common\namespace.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\common\typedefs.h">
+      <Filter>inc\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\config\ini.h">
+      <Filter>inc\config</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\exception\exception.h">
+      <Filter>inc\exception</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\filesystem\directory.h">
+      <Filter>inc\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\filesystem\sys_io.h">
+      <Filter>inc\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\locker\linux_locker.h">
+      <Filter>inc\locker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\locker\locker.h">
+      <Filter>inc\locker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\locker\null_locker.h">
+      <Filter>inc\locker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\locker\windows_locker.h">
+      <Filter>inc\locker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\log\asyn_log.h">
+      <Filter>inc\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\log\lazy_log.h">
+      <Filter>inc\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\log\log.h">
+      <Filter>inc\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\log\log_base.h">
+      <Filter>inc\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\log\log_types.h">
+      <Filter>inc\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\log\sync_log.h">
+      <Filter>inc\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\pool\memory_pool.h">
+      <Filter>inc\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\pool\object_pool.h">
+      <Filter>inc\pool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\stream\bytestream.h">
+      <Filter>inc\stream</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\string\base64.h">
+      <Filter>inc\string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\string\bcd.h">
+      <Filter>inc\string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\string\hex.h">
+      <Filter>inc\string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\string\splitter.h">
+      <Filter>inc\string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\string\string.h">
+      <Filter>inc\string</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\linux_thread.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\thread.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\windows_thread.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\time\multi_timer.h">
+      <Filter>inc\time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\time\single_timer.h">
+      <Filter>inc\time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\time\time.h">
+      <Filter>inc\time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\guard.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\id_manager.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\singleton.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\uncopy.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\log_switch.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\config\xml.h">
+      <Filter>inc\config</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\base\common\consts.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\config\ini.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\exception\exception.cpp">
+      <Filter>src\exception</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\filesystem\directory.cpp">
+      <Filter>src\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\locker\null_locker.cpp">
+      <Filter>src\locker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\locker\windows_locker.cpp">
+      <Filter>src\locker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\log\asyn_log.cpp">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\log\lazy_log.cpp">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\log\log.cpp">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\log\log_base.cpp">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\log\sync_log.cpp">
+      <Filter>src\log</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\stream\bytestream.cpp">
+      <Filter>src\stream</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\string\base64.cpp">
+      <Filter>src\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\string\bcd.cpp">
+      <Filter>src\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\string\hex.cpp">
+      <Filter>src\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\string\splitter.cpp">
+      <Filter>src\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\string\string.cpp">
+      <Filter>src\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\linux_thread.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\windows_thread.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\time\multi_timer.cpp">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\time\single_timer.cpp">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\time\time.cpp">
+      <Filter>src\time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\utility\uncopy.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\utility\log_switch.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\config\xml.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

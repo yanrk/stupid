@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="dll_debug|Win32">
+      <Configuration>dll_debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll_release|Win32">
+      <Configuration>dll_release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_debug|Win32">
+      <Configuration>lib_debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_release|Win32">
+      <Configuration>lib_release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="test_tool.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="test_tool.cpp" />
+    <ClCompile Include="test_tool_ftp.cpp" />
+    <ClCompile Include="test_tool_mail.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B5E8A1BB-8E9A-4681-B36D-397AAC6EEC07}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>tool_test</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.;../../inc;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;USE_STUPID_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.;../../inc;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.;../../inc;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_STUPID_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>.;../../inc;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

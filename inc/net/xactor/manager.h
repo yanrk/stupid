@@ -39,11 +39,11 @@ public:
     bool set_service(TcpServiceBase * service);
 
 public:
-    bool init(size_t handle_thread_count = 5, unsigned short service_port = 0);
+    bool init(size_t handle_thread_count = 5, unsigned short * service_port = nullptr, size_t service_port_count = 0);
     void exit();
 
 public:
-    bool create_connection(const sockaddr_in_t & server_address, size_t identity);
+    bool create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port = 0);
 
 private:
 #ifdef _MSC_VER
@@ -54,7 +54,7 @@ private:
 
 private:
     bool handle_connect(TcpConnectionBase * connection, size_t identity);
-    bool handle_accept(TcpConnectionBase * connection);
+    bool handle_accept(TcpConnectionBase * connection, unsigned short listener_port);
     bool handle_recv(TcpConnectionBase * connection);
     bool handle_send(TcpConnectionBase * connection);
     bool handle_close(TcpConnectionBase * connection);

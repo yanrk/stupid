@@ -30,6 +30,7 @@ bool TestService::on_connect(Stupid::Net::TcpConnectionBase * connection, size_t
 
     if (m_requester)
     {
+        RUN_LOG_DBG("connect client: %u", identity);
         return(insert_connection(connection));
     }
     else
@@ -40,12 +41,13 @@ bool TestService::on_connect(Stupid::Net::TcpConnectionBase * connection, size_t
     }
 }
 
-bool TestService::on_accept(Stupid::Net::TcpConnectionBase * connection)
+bool TestService::on_accept(Stupid::Net::TcpConnectionBase * connection, unsigned short listener_port)
 {
     assert(!m_requester);
 
     if (!m_requester)
     {
+        RUN_LOG_DBG("accept from port: %d", listener_port);
         return(insert_connection(connection));
     }
     else

@@ -118,7 +118,7 @@ void test_tcp_xactor(void)
     }
     else
     {
-        if (!manager.init(s_thread_count, s_host_port))
+        if (!manager.init(s_thread_count, &s_host_port, 1))
         {
             printf("tcp server tester init failed\n");
             return;
@@ -132,7 +132,7 @@ void test_tcp_xactor(void)
         printf("\n");
         for (size_t index = 0; index < s_connection_count; ++index)
         {
-            if (manager.create_connection(s_address, 0))
+            if (manager.create_connection(s_address, index))
             {
                 printf("create connection %d success...\n", index + 1);
             }

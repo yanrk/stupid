@@ -27,7 +27,7 @@ public:
 
 public:
     virtual bool on_connect(TcpConnectionBase * connection, size_t identity) = 0;
-    virtual bool on_accept(TcpConnectionBase * connection) = 0;
+    virtual bool on_accept(TcpConnectionBase * connection, unsigned short listener_port) = 0;
     virtual bool on_recv(TcpConnectionBase * connection) = 0;
     virtual bool on_send(TcpConnectionBase * connection) = 0;
     virtual bool on_close(TcpConnectionBase * connection) = 0;

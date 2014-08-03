@@ -14,7 +14,7 @@ public:
 
 private:
     virtual bool on_connect(Stupid::Net::TcpConnectionBase * connection, size_t identity);
-    virtual bool on_accept(Stupid::Net::TcpConnectionBase * connection);
+    virtual bool on_accept(Stupid::Net::TcpConnectionBase * connection, unsigned short listener_port);
     virtual bool on_recv(Stupid::Net::TcpConnectionBase * connection);
     virtual bool on_send(Stupid::Net::TcpConnectionBase * connection);
     virtual bool on_close(Stupid::Net::TcpConnectionBase * connection);

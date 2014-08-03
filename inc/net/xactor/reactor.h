@@ -56,13 +56,14 @@ private:
     typedef std::vector<BusinessEventList>                                BusinessEventListVector;
     typedef std::set<TcpConnection *>                                     ConnectionSet;
     typedef Stupid::Base::IDManager<size_t, Stupid::Base::NullLocker>     UNIQUE_CREATOR;
+    typedef std::vector<TcpConnection *>                                  ConnectionVector;
 
 public:
     TcpReactor();
     ~TcpReactor();
 
 public:
-    bool init(TcpManager * manager, size_t handle_thread_count, unsigned short service_port);
+    bool init(TcpManager * manager, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count);
     void exit();
 
 public:
@@ -71,7 +72,7 @@ public:
     void reactor_business_process(size_t thread_index);
 
 public:
-    bool create_connection(const sockaddr_in_t & server_address, size_t identity);
+    bool create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port);
     void connection_send(TcpConnection * connection);
     void close_connection(TcpConnection * connection);
 
@@ -79,7 +80,7 @@ private:
     bool running() const;
 
 private:
-    bool create_listener(unsigned short port);
+    bool create_listener(unsigned short * service_port, size_t service_port_count);
     void destroy_listener();
 
 private:
@@ -90,15 +91,15 @@ private:
     bool modify_connection_of_epoll(TcpConnection * connection, bool send, bool recv);
 
 private:
-    bool do_connect(const sockaddr_in_t & server_address, size_t identity);
-    bool do_accept();
+    bool do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port);
+    bool do_accept(TcpConnection * listener_connection);
     bool do_recv(TcpConnection * connection);
     bool do_send(TcpConnection * connection);
     void do_close(TcpConnection * connection);
 
 private:
     bool handle_connect(TcpConnection * connection, size_t identity);
-    bool handle_accept(TcpConnection * connection);
+    bool handle_accept(TcpConnection * connection, unsigned short listener_port);
     bool handle_recv(TcpConnection * connection);
     bool handle_send(TcpConnection * connection);
     bool handle_close(TcpConnection * connection);
@@ -134,7 +135,7 @@ private:
     bool                                           m_running;
     TcpManager                                   * m_manager;
     int                                            m_epoll;
-    TcpConnection                                * m_listener;
+    ConnectionVector                               m_listeners;
     Stupid::Base::Thread                         * m_thread;
     size_t                                         m_thread_count;
     BlockPool                                      m_block_pool;

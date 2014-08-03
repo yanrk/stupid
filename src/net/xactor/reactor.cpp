@@ -86,7 +86,7 @@ TcpReactor::TcpReactor()
     : m_running(false)
     , m_manager(nullptr)
     , m_epoll(-1)
-    , m_listener(nullptr)
+    , m_listeners()
     , m_thread(nullptr)
     , m_thread_count(0)
     , m_block_pool()
@@ -109,7 +109,7 @@ TcpReactor::~TcpReactor()
     exit();
 }
 
-bool TcpReactor::init(TcpManager * manager, size_t handle_thread_count, unsigned short service_port)
+bool TcpReactor::init(TcpManager * manager, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == manager)
     {
@@ -132,7 +132,7 @@ bool TcpReactor::init(TcpManager * manager, size_t handle_thread_count, unsigned
         RUN_LOG_DBG("create epoll success");
     }
 
-    if (!create_listener(service_port))
+    if (!create_listener(service_port, service_port_count))
     {
         return(false);
     }
@@ -179,9 +179,9 @@ void TcpReactor::exit()
     RUN_LOG_DBG("exit tcp reactor success");
 }
 
-bool TcpReactor::create_connection(const sockaddr_in_t & server_address, size_t identity)
+bool TcpReactor::create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
 {
-    return(do_connect(server_address, identity));
+    return(do_connect(server_address, identity, bind_port));
 }
 
 void TcpReactor::connection_send(TcpConnection * connection)
@@ -209,51 +209,65 @@ bool TcpReactor::running() const
     return(m_running);
 }
 
-bool TcpReactor::create_listener(unsigned short port)
+bool TcpReactor::create_listener(unsigned short * service_port, size_t service_port_count)
 {
-    if (0 == port)
+    if (nullptr == service_port || 0 == service_port_count)
     {
         return(true);
     }
 
-    TcpConnection * connection = acquire_connection();
-    if (nullptr == connection)
+    for (size_t service_port_index = 0; service_port_index < service_port_count; ++service_port_index)
     {
-        RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
-        return(false);
+        unsigned short port = service_port[service_port_index];
+        if (0 == port)
+        {
+            continue;
+        }
+
+        TcpConnection * connection = acquire_connection();
+        if (nullptr == connection)
+        {
+            RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
+            return(false);
+        }
+
+        socket_t listener = BAD_SOCKET;
+        if (!tcp_listen(port, listener, 1024))
+        {
+            release_connection(connection);
+            return(false);
+        }
+
+        tcp_set_block_switch(listener, false);
+
+        connection->set_socket(listener);
+
+        insert_connection(connection);
+
+        if (!append_connection_to_epoll(connection))
+        {
+            remove_connection(connection);
+            return(false);
+        }
+
+        connection->set_listener(listener);
+        connection->set_listener_port(port);
+
+        m_listeners.push_back(connection);
     }
-
-    socket_t listener = BAD_SOCKET;
-    if (!tcp_listen(port, listener, 1024))
-    {
-        release_connection(connection);
-        return(false);
-    }
-
-    tcp_set_block_switch(listener, false);
-
-    connection->set_socket(listener);
-
-    insert_connection(connection);
-
-    if (!append_connection_to_epoll(connection))
-    {
-        remove_connection(connection);
-        return(false);
-    }
-
-    m_listener = connection;
 
     return(true);
 }
 
 void TcpReactor::destroy_listener()
 {
-    if (nullptr != m_listener)
+    ConnectionVector::iterator iter = m_listeners.begin();
+    while (m_listeners.end() != iter)
     {
-        delete_connection_from_epoll(m_listener);
-        m_listener = nullptr;
+        delete_connection_from_epoll(*iter);
+        ++iter;
     }
+    m_listeners.clear();
 }
 
 bool TcpReactor::create_epoll()
@@ -348,10 +362,10 @@ bool TcpReactor::modify_connection_of_epoll(TcpConnection * connection, bool sen
     return(true);
 }
 
-bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identity)
+bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
 {
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(server_address, connecter))
+    if (!tcp_connect(server_address, connecter, bind_port))
     {
         return(false);
     }
@@ -394,16 +408,19 @@ bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identit
     return(true);
 }
 
-bool TcpReactor::do_accept()
+bool TcpReactor::do_accept(TcpConnection * listener_connection)
 {
     size_t accept_count = 0;
+
+    socket_t listener = listener_connection->get_listener();
+    unsigned short listener_port = listener_connection->get_listener_port();
 
     while (true)
     {
         socket_t accepter = BAD_SOCKET;
         sockaddr_in_t client_address;
         sock_len_t address_len = sizeof(client_address);
-        if (!tcp_accept(m_listener->get_socket(), accepter, &client_address, &address_len))
+        if (!tcp_accept(listener, accepter, &client_address, &address_len))
         {
             break;
         }
@@ -419,6 +436,8 @@ bool TcpReactor::do_accept()
         }
 
         connection->set_socket(accepter);
+        connection->set_listener(listener);
+        connection->set_listener_port(listener_port);
         connection->set_connected(true);
         connection->set_requester(false);
         connection->set_address(client_address);
@@ -545,9 +564,9 @@ bool TcpReactor::handle_connect(TcpConnection * connection, size_t identity)
     return(m_manager->handle_connect(connection, identity));
 }
 
-bool TcpReactor::handle_accept(TcpConnection * connection)
+bool TcpReactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
 {
-    return(m_manager->handle_accept(connection));
+    return(m_manager->handle_accept(connection, listener_port));
 }
 
 bool TcpReactor::handle_recv(TcpConnection * connection)
@@ -830,15 +849,15 @@ void TcpReactor::reactor_connection_process()
             continue;
         }
 
-        bool has_new_connection = false;
+        ConnectionVector listener_connections;
 
         for (int index = 0; index < event_count; ++index)
         {
             struct epoll_event & connection_event = connection_events[index];
             TcpConnection * connection = reinterpret_cast<TcpConnection *>(connection_event.data.ptr);
-            if (connection == m_listener)
+            if (m_listeners.end() != std::find(m_listeners.begin(), m_listeners.end(), connection))
             {
-                has_new_connection = true;
+                listener_connections.push_back(connection);
             }
             else
             {
@@ -858,10 +877,13 @@ void TcpReactor::reactor_connection_process()
 
         append_data_events(data_events_list_vector);
 
-        if (has_new_connection)
+        ConnectionVector::iterator listener_iter = listener_connections.begin();
+        while (listener_connections.end() != listener_iter)
         {
-            do_accept();
+            do_accept(*listener_iter);
+            ++listener_iter;
         }
+        listener_connections.clear();
     }
 
     RUN_LOG_DBG("reactor connection thread end");
@@ -991,7 +1013,7 @@ void TcpReactor::reactor_business_process(size_t thread_index)
                 }
                 case accept_notify:
                 {
-                    good = handle_accept(connection);
+                    good = handle_accept(connection, connection->get_listener_port());
                     break;
                 }
                 case recv_notify:

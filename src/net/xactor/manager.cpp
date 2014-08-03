@@ -50,7 +50,7 @@ bool TcpManager::set_service(TcpServiceBase * service)
     }
 }
 
-bool TcpManager::init(size_t handle_thread_count, unsigned short service_port)
+bool TcpManager::init(size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (m_running)
     {
@@ -70,7 +70,7 @@ bool TcpManager::init(size_t handle_thread_count, unsigned short service_port)
         return(false);
     }
 
-    if (!m_xactor->init(this, handle_thread_count, service_port))
+    if (!m_xactor->init(this, handle_thread_count, service_port, service_port_count))
     {
         RUN_LOG_CRI("init tcp xactor failed");
         return(false);
@@ -97,13 +97,13 @@ void TcpManager::exit()
     RUN_LOG_DBG("exit tcp manager success");
 }
 
-bool TcpManager::create_connection(const sockaddr_in_t & server_address, size_t identity)
+bool TcpManager::create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
 {
     if (!m_running)
     {
         return(false);
     }
-    return(m_xactor->create_connection(server_address, identity));
+    return(m_xactor->create_connection(server_address, identity, bind_port));
 }
 
 bool TcpManager::handle_connect(TcpConnectionBase * connection, size_t identity)
@@ -111,9 +111,9 @@ bool TcpManager::handle_connect(TcpConnectionBase * connection, size_t identity)
     return(m_service->on_connect(connection, identity));
 }
 
-bool TcpManager::handle_accept(TcpConnectionBase * connection)
+bool TcpManager::handle_accept(TcpConnectionBase * connection, unsigned short listener_port)
 {
-    return(m_service->on_accept(connection));
+    return(m_service->on_accept(connection, listener_port));
 }
 
 bool TcpManager::handle_recv(TcpConnectionBase * connection)

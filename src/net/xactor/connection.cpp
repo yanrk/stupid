@@ -27,13 +27,15 @@ TcpConnection::TcpConnection(TcpXactor & xactor, BlockPool & block_pool)
     : TcpConnectionBase()
     , m_xactor(xactor)
     , m_sockfd(BAD_SOCKET)
+    , m_listener(BAD_SOCKET)
+    , m_listener_port(0)
     , m_unique(0)
     , m_connected(false)
     , m_requester(false)
     , m_eof(false)
     , m_error(false)
     , m_address()
-    , m_identity(0)
+    , m_identity(static_cast<size_t>(~0))
     , m_references(0)
     , m_recv_water_mark(1)
     , m_recv_buffer(block_pool)
@@ -70,6 +72,26 @@ void TcpConnection::set_socket(socket_t sockfd)
 socket_t TcpConnection::get_socket()
 {
     return(m_sockfd);
+}
+
+void TcpConnection::set_listener(socket_t listener)
+{
+    m_listener = listener;
+}
+
+socket_t TcpConnection::get_listener()
+{
+    return(m_listener);
+}
+
+void TcpConnection::set_listener_port(unsigned short listener_port)
+{
+    m_listener_port = listener_port;
+}
+
+unsigned short TcpConnection::get_listener_port()
+{
+    return(m_listener_port);
 }
 
 void TcpConnection::set_unique(size_t unique)

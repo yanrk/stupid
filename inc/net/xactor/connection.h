@@ -67,6 +67,14 @@ private:
     socket_t get_socket();
 
 private:
+    void set_listener(socket_t listener);
+    socket_t get_listener();
+
+private:
+    void set_listener_port(unsigned short listener_port);
+    unsigned short get_listener_port();
+
+private:
     void set_unique(size_t unique);
     size_t get_unique();
 
@@ -129,6 +137,8 @@ private:
 
     TcpXactor                  & m_xactor;
     socket_t                     m_sockfd;
+    socket_t                     m_listener;
+    unsigned short               m_listener_port;
     size_t                       m_unique;
     bool                         m_connected;
     bool                         m_requester;

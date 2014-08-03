@@ -163,7 +163,7 @@ TcpProactor::TcpProactor()
     : m_running(false)
     , m_manager(nullptr)
     , m_iocp(nullptr)
-    , m_listener(nullptr)
+    , m_listeners()
     , m_thread(nullptr)
     , m_thread_count(0)
     , m_connection_thread_count(0)
@@ -185,7 +185,7 @@ TcpProactor::~TcpProactor()
     exit();
 }
 
-bool TcpProactor::init(TcpManager * manager, size_t handle_thread_count, unsigned short service_port)
+bool TcpProactor::init(TcpManager * manager, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == manager)
     {
@@ -210,7 +210,7 @@ bool TcpProactor::init(TcpManager * manager, size_t handle_thread_count, unsigne
         RUN_LOG_DBG("create iocp success");
     }
 
-    if (!create_listener(service_port))
+    if (!create_listener(service_port, service_port_count))
     {
         return(false);
     }
@@ -256,9 +256,9 @@ void TcpProactor::exit()
     RUN_LOG_DBG("exit tcp proactor success");
 }
 
-bool TcpProactor::create_connection(const sockaddr_in_t & server_address, size_t identity)
+bool TcpProactor::create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
 {
-    return(do_connect(server_address, identity));
+    return(do_connect(server_address, identity, bind_port));
 }
 
 void TcpProactor::connection_send(TcpConnection * connection)
@@ -327,64 +327,76 @@ void TcpProactor::calc_connection_thread_count()
     m_connection_thread_count = system_info.dwNumberOfProcessors * 2;
 }
 
-bool TcpProactor::create_listener(unsigned short port)
+bool TcpProactor::create_listener(unsigned short * service_port, size_t service_port_count)
 {
-    if (0 == port)
+    if (nullptr == service_port || 0 == service_port_count)
     {
         return(true);
     }
 
-    TcpConnection * connection = acquire_connection();
-    if (nullptr == connection)
+    for (size_t service_port_index = 0; service_port_index < service_port_count; ++service_port_index)
     {
-        RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
-        return(false);
-    }
+        unsigned short port = service_port[service_port_index];
+        if (0 == port)
+        {
+            continue;
+        }
 
-    socket_t listener = BAD_SOCKET;
-    if (!tcp_async_listen(port, listener, SOMAXCONN))
-    {
-        release_connection(connection);
-        return(false);
-    }
-
-    tcp_set_block_switch(listener, false);
-
-    connection->set_socket(listener);
-
-    insert_connection(connection);
-
-    if (!append_connection_to_iocp(connection))
-    {
-        remove_connection(connection);
-        return(false);
-    }
-
-    if (!get_extern_wsa_functions(listener))
-    {
-        remove_connection(connection);
-        return(false);
-    }
-
-    m_listener = connection;
-
-    for (size_t thread_index = 0; thread_index < m_connection_thread_count; ++thread_index)
-    {
-        connection = acquire_connection();
+        TcpConnection * connection = acquire_connection();
         if (nullptr == connection)
         {
             RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
             return(false);
         }
 
-        if (!post_accept(&connection->m_async_recv))
+        socket_t listener = BAD_SOCKET;
+        if (!tcp_async_listen(port, listener, SOMAXCONN))
         {
-            RUN_LOG_ERR("post_accept failed");
             release_connection(connection);
             return(false);
         }
 
+        tcp_set_block_switch(listener, false);
+
+        connection->set_socket(listener);
+
         insert_connection(connection);
+
+        if (!append_connection_to_iocp(connection))
+        {
+            remove_connection(connection);
+            return(false);
+        }
+
+        if (!get_extern_wsa_functions(listener))
+        {
+            remove_connection(connection);
+            return(false);
+        }
+
+        m_listeners.push_back(connection);
+
+        for (size_t thread_index = 0; thread_index < m_connection_thread_count; ++thread_index)
+        {
+            connection = acquire_connection();
+            if (nullptr == connection)
+            {
+                RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
+                return(false);
+            }
+
+            connection->set_listener(listener);
+            connection->set_listener_port(port);
+
+            if (!post_accept(&connection->m_async_recv))
+            {
+                RUN_LOG_ERR("post_accept failed");
+                release_connection(connection);
+                return(false);
+            }
+
+            insert_connection(connection);
+        }
     }
 
     return(true);
@@ -392,11 +404,13 @@ bool TcpProactor::create_listener(unsigned short port)
 
 void TcpProactor::destroy_listener()
 {
-    if (nullptr != m_listener)
+    ConnectionVector::iterator iter = m_listeners.begin();
+    while (m_listeners.end() != iter)
     {
-        delete_connection_from_iocp(m_listener);
-        m_listener = nullptr;
+        delete_connection_from_iocp(*iter);
+        ++iter;
     }
+    m_listeners.clear();
 }
 
 bool TcpProactor::create_iocp()
@@ -472,7 +486,7 @@ bool TcpProactor::post_accept(iocp_event * post_event)
     post_event->connection->set_socket(accepter);
     post_event->post_type = accept_iocp;
 
-    socket_t listener = m_listener->get_socket();
+    socket_t listener = post_event->connection->get_listener();
     DWORD  addr_reserve_len = sizeof(sockaddr_in_t) + 16;
     char * buffer = post_event->buffer;
     DWORD  buffer_size = 0; /* static_cast<DWORD>(post_event->buffer_size - 2 * addr_reserve_len); */
@@ -538,10 +552,10 @@ void TcpProactor::post_exit()
     }
 }
 
-bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identity)
+bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
 {
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(server_address, connecter))
+    if (!tcp_connect(server_address, connecter, bind_port))
     {
         return(false);
     }
@@ -588,6 +602,9 @@ bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identi
 
 bool TcpProactor::do_accept(iocp_event * post_event, size_t data_len)
 {
+    socket_t listener = post_event->connection->get_listener();
+    unsigned short listener_port = post_event->connection->get_listener_port();
+
     do
     {
         sockaddr_in_t * server_address = nullptr;
@@ -617,6 +634,8 @@ bool TcpProactor::do_accept(iocp_event * post_event, size_t data_len)
         }
 
         connection->set_socket(accepter);
+        connection->set_listener(listener);
+        connection->set_listener_port(listener_port);
         connection->set_connected(true);
         connection->set_requester(false);
         connection->set_address(*client_address);
@@ -741,9 +760,9 @@ bool TcpProactor::handle_connect(TcpConnection * connection, size_t identity)
     return(m_manager->handle_connect(connection, identity));
 }
 
-bool TcpProactor::handle_accept(TcpConnection * connection)
+bool TcpProactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
 {
-    return(m_manager->handle_accept(connection));
+    return(m_manager->handle_accept(connection, listener_port));
 }
 
 bool TcpProactor::handle_recv(TcpConnection * connection)
@@ -1021,7 +1040,7 @@ void TcpProactor::proactor_connection_process(size_t thread_index)
 
         /*
          * when accept_iocp == post_event->post_type
-         * connection == m_listener
+         * m_listeners.end() != std::find(m_listeners.begin(), m_listeners.end(), connection)
          * otherwise, connection == post_event->connection
          * and we just operate the connection which handle message
          * and we do "connection = post_event->connection" here
@@ -1117,7 +1136,7 @@ void TcpProactor::proactor_business_process(size_t thread_index)
                 }
                 case accept_notify:
                 {
-                    good = handle_accept(connection);
+                    good = handle_accept(connection, connection->get_listener_port());
                     break;
                 }
                 case recv_notify:

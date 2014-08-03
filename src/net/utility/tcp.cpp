@@ -149,7 +149,7 @@ bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
     return(false);
 }
 
-bool tcp_connect(const char * host, const char * service, socket_t & connecter)
+bool tcp_connect(const char * host, const char * service, socket_t & connecter, unsigned short bind_port)
 {
     connecter = BAD_SOCKET;
 
@@ -157,6 +157,16 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter)
     {
         DBG_LOG("tcp_connect failed: nullptr");
         return(false);
+    }
+
+    sockaddr_in_t bind_address;
+    if (0 != bind_port)
+    {
+        if (!transform_address("127.0.0.1", bind_port, bind_address))
+        {
+            DBG_LOG("transform_address failed");
+            return(false);
+        }
     }
 
     struct addrinfo addr_temp;
@@ -183,6 +193,16 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter)
             continue;
         }
 
+        if (0 != bind_port)
+        {
+            if (bind(connectfd, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
+            {
+                RUN_LOG_ERR("bind failed: %d, try again", stupid_net_error());
+                stupid_close_socket(connectfd);
+                continue;
+            }
+        }
+
         if (connect(connectfd, addr_info->ai_addr, addr_info->ai_addrlen) < 0)
         {
             RUN_LOG_ERR("connect failed: %d", stupid_net_error());
@@ -201,7 +221,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter)
     return(ret);
 }
 
-bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter)
+bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, unsigned short bind_port)
 {
     sockaddr_in_t address;
     if (!transform_address(ip, port, address))
@@ -209,16 +229,34 @@ bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter)
         DBG_LOG("transform_address failed");
         return(false);
     }
-    return(tcp_connect(address, connecter));
+    return(tcp_connect(address, connecter, bind_port));
 }
 
-bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter)
+bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, unsigned short bind_port)
 {
     connecter = socket(AF_INET, SOCK_STREAM, 0);
     if (BAD_SOCKET == connecter)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
         return(false);
+    }
+
+    if (0 != bind_port)
+    {
+        sockaddr_in_t bind_address;
+        if (!transform_address("127.0.0.1", bind_port, bind_address))
+        {
+            DBG_LOG("transform_address failed");
+            tcp_close(connecter);
+            return(false);
+        }
+
+        if (bind(connecter, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
+        {
+            RUN_LOG_ERR("bind failed: %d", stupid_net_error());
+            tcp_close(connecter);
+            return(false);
+        }
     }
 
     if (connect(connecter, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)

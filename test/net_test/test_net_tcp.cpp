@@ -17,7 +17,8 @@ static Thread         s_client_thread;
 static ThreadLocker   s_stdout_locker;
 
 static std::string    s_host_name("127.0.0.1");
-static std::string    s_service("3344");
+static std::string    s_server_listen_port("3344");
+static unsigned short s_client_bind_port = 4455;
 
 static const char     s_test_data[] = "12345678901234567890123456789012";
 static const size_t   s_test_data_size = sizeof(s_test_data) - 1;
@@ -39,7 +40,7 @@ static thread_return_t STUPID_STDCALL server_thread_run_1(thread_argument_t)
     s_stdout_locker.release();
 
     socket_t listener = BAD_SOCKET;
-    if (!tcp_listen(s_host_name.c_str(), s_service.c_str(), listener))
+    if (!tcp_listen(s_host_name.c_str(), s_server_listen_port.c_str(), listener))
     {
         assert(false);
     }
@@ -91,7 +92,7 @@ static thread_return_t STUPID_STDCALL client_thread_run_1(thread_argument_t)
     s_stdout_locker.release();
 
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(s_host_name.c_str(), s_service.c_str(), connecter))
+    if (!tcp_connect(s_host_name.c_str(), s_server_listen_port.c_str(), connecter, s_client_bind_port))
     {
         assert(false);
     }
@@ -150,7 +151,7 @@ static thread_return_t STUPID_STDCALL server_thread_run_2(thread_argument_t)
     s_stdout_locker.release();
 
     socket_t listener = BAD_SOCKET;
-    if (!tcp_listen(s_host_name.c_str(), s_service.c_str(), listener))
+    if (!tcp_listen(s_host_name.c_str(), s_server_listen_port.c_str(), listener))
     {
         assert(false);
     }
@@ -215,7 +216,7 @@ static thread_return_t STUPID_STDCALL client_thread_run_2(thread_argument_t)
     s_stdout_locker.release();
 
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(s_host_name.c_str(), s_service.c_str(), connecter))
+    if (!tcp_connect(s_host_name.c_str(), s_server_listen_port.c_str(), connecter))
     {
         assert(false);
     };

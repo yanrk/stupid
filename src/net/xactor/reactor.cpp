@@ -109,7 +109,7 @@ TcpReactor::~TcpReactor()
     exit();
 }
 
-bool TcpReactor::init(TcpManager * manager, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
+bool TcpReactor::init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == manager)
     {
@@ -141,7 +141,7 @@ bool TcpReactor::init(TcpManager * manager, size_t handle_thread_count, unsigned
         RUN_LOG_DBG("create listener success");
     }
 
-    if (!acquire_reactor_threads(handle_thread_count))
+    if (!acquire_reactor_threads(event_thread_count, handle_thread_count))
     {
         return(false);
     }
@@ -584,10 +584,10 @@ bool TcpReactor::handle_close(TcpConnection * connection)
     return(m_manager->handle_close(connection));
 }
 
-bool TcpReactor::acquire_reactor_threads(size_t handle_thread_count)
+bool TcpReactor::acquire_reactor_threads(size_t event_thread_count, size_t handle_thread_count)
 {
     const size_t connection_thread_count = 1;
-    const size_t data_thread_count = 10;
+    const size_t data_thread_count = (0 != event_thread_count ? event_thread_count : 10);
     const size_t business_thread_count = handle_thread_count;
     const size_t thread_count = connection_thread_count + data_thread_count + business_thread_count;
 

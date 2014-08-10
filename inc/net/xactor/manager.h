@@ -39,7 +39,7 @@ public:
     bool set_service(TcpServiceBase * service);
 
 public:
-    bool init(size_t handle_thread_count = 5, unsigned short * service_port = nullptr, size_t service_port_count = 0);
+    bool init(size_t event_thread_count = 0, size_t handle_thread_count = 5, unsigned short * service_port = nullptr, size_t service_port_count = 0);
     void exit();
 
 public:

@@ -14,6 +14,7 @@
 NAMESPACE_STUPID_NET_BEGIN
 
 TcpConnectionBase::TcpConnectionBase()
+    : m_user_data(nullptr)
 {
 
 }
@@ -21,6 +22,16 @@ TcpConnectionBase::TcpConnectionBase()
 TcpConnectionBase::~TcpConnectionBase()
 {
 
+}
+
+void TcpConnectionBase::set_user_data(void * user_data)
+{
+    m_user_data = user_data;
+}
+
+void * TcpConnectionBase::get_user_data()
+{
+    return(m_user_data);
 }
 
 NAMESPACE_STUPID_NET_END

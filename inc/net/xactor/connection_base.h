@@ -24,6 +24,10 @@ public:
     virtual ~TcpConnectionBase();
 
 public:
+    void set_user_data(void * user_data);
+    void * get_user_data();
+
+public:
     virtual size_t recv_buffer_size() = 0;
     virtual bool recv_buffer_copy_len(char * buffer, size_t length) = 0;
     virtual bool recv_buffer_move_len(char * buffer, size_t length) = 0;
@@ -31,6 +35,9 @@ public:
     virtual void recv_buffer_water_mark(size_t length) = 0;
     virtual bool send_buffer_fill_len(const char * data, size_t length) = 0;
     virtual void close() = 0;
+
+private:
+    void                      * m_user_data;
 };
 
 NAMESPACE_STUPID_NET_END

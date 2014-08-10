@@ -185,7 +185,7 @@ TcpProactor::~TcpProactor()
     exit();
 }
 
-bool TcpProactor::init(TcpManager * manager, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
+bool TcpProactor::init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == manager)
     {
@@ -199,7 +199,11 @@ bool TcpProactor::init(TcpManager * manager, size_t handle_thread_count, unsigne
 
     m_manager = manager;
 
-    calc_connection_thread_count();
+    if (0 == event_thread_count)
+    {
+        calc_event_thread_count(event_thread_count);
+    }
+    m_connection_thread_count = event_thread_count;
 
     if (!create_iocp())
     {
@@ -320,11 +324,11 @@ bool TcpProactor::running() const
     return(m_running);
 }
 
-void TcpProactor::calc_connection_thread_count()
+void TcpProactor::calc_event_thread_count(size_t & event_thread_count)
 {
     SYSTEM_INFO system_info;
     GetSystemInfo(&system_info);
-    m_connection_thread_count = system_info.dwNumberOfProcessors * 2;
+    event_thread_count = system_info.dwNumberOfProcessors * 2;
 }
 
 bool TcpProactor::create_listener(unsigned short * service_port, size_t service_port_count)

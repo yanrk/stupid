@@ -63,7 +63,7 @@ public:
     ~TcpReactor();
 
 public:
-    bool init(TcpManager * manager, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count);
+    bool init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count);
     void exit();
 
 public:
@@ -105,7 +105,7 @@ private:
     bool handle_close(TcpConnection * connection);
 
 private:
-    bool acquire_reactor_threads(size_t handle_thread_count);
+    bool acquire_reactor_threads(size_t event_thread_count, size_t handle_thread_count);
     void release_reactor_threads();
 
 private:

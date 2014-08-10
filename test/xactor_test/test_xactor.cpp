@@ -110,7 +110,7 @@ void test_tcp_xactor(void)
 
     if (s_requester)
     {
-        if (!manager.init(s_thread_count, 0))
+        if (!manager.init(0, s_thread_count, 0))
         {
             printf("tcp client tester init failed\n");
             return;
@@ -118,7 +118,7 @@ void test_tcp_xactor(void)
     }
     else
     {
-        if (!manager.init(s_thread_count, &s_host_port, 1))
+        if (!manager.init(0, s_thread_count, &s_host_port, 1))
         {
             printf("tcp server tester init failed\n");
             return;

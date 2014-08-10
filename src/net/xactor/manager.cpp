@@ -50,7 +50,7 @@ bool TcpManager::set_service(TcpServiceBase * service)
     }
 }
 
-bool TcpManager::init(size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
+bool TcpManager::init(size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (m_running)
     {
@@ -70,7 +70,7 @@ bool TcpManager::init(size_t handle_thread_count, unsigned short * service_port,
         return(false);
     }
 
-    if (!m_xactor->init(this, handle_thread_count, service_port, service_port_count))
+    if (!m_xactor->init(this, event_thread_count, handle_thread_count, service_port, service_port_count))
     {
         RUN_LOG_CRI("init tcp xactor failed");
         return(false);

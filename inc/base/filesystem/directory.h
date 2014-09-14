@@ -61,6 +61,13 @@ private:
 STUPID_CXX_API(void) stupid_create_directory_recursive(const std::string & dirname);
 STUPID_CXX_API(void) stupid_remove_directory_recursive(const std::string & dirname);
 
+STUPID_CXX_API(void) stupid_directory_format_to_windows(std::string & dirname);
+STUPID_CXX_API(void) stupid_directory_format_to_unix(std::string & dirname);
+STUPID_CXX_API(void) stupid_directory_format_to_platform(std::string & dirname);
+
+STUPID_CXX_API(bool) stupid_get_current_work_directory(std::string & dirname);
+STUPID_CXX_API(bool) stupid_set_current_work_directory(const std::string & dirname);
+
 NAMESPACE_STUPID_BASE_END
 
 

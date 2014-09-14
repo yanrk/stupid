@@ -226,4 +226,46 @@ void stupid_remove_directory_recursive(const std::string & dirname)
     stupid_rmdir(dir_name.c_str());
 }
 
+void stupid_directory_format_to_windows(std::string & dirname)
+{
+    std::replace(dirname.begin(), dirname.end(), '/', '\\');
+}
+
+void stupid_directory_format_to_unix(std::string & dirname)
+{
+    std::replace(dirname.begin(), dirname.end(), '\\', '/');
+}
+
+void stupid_directory_format_to_platform(std::string & dirname)
+{
+#ifdef _MSC_VER
+    stupid_directory_format_to_windows(dirname);
+#else
+    stupid_directory_format_to_unix(dirname);
+#endif // _MSC_VER
+}
+
+bool stupid_get_current_work_directory(std::string & dirname)
+{
+    char temp[512] = { 0 };
+    if (nullptr == stupid_getcwd(temp, sizeof(temp) / sizeof(temp[0])))
+    {
+        dirname.clear();
+        return(false);
+    }
+    else
+    {
+        dirname = std::string(temp) + std::string("/");
+        stupid_directory_format_to_platform(dirname);
+        return(true);
+    }
+}
+
+bool stupid_set_current_work_directory(const std::string & dirname)
+{
+    std::string platform_dirname(dirname);
+    stupid_directory_format_to_platform(platform_dirname);
+    return(0 == stupid_setcwd(platform_dirname.c_str()));
+}
+
 NAMESPACE_STUPID_BASE_END

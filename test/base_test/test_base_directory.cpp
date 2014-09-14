@@ -3,7 +3,7 @@
 
 USING_NAMESPACE_STUPID_BASE
 
-void test_base_directory_1(void)
+static void test_base_directory_1(void)
 {
     Directory dir;
 
@@ -20,7 +20,7 @@ void test_base_directory_1(void)
     dir.close();
 }
 
-void test_base_directory_2(void)
+static void test_base_directory_2(void)
 {
     std::string dir_name("a/b/c/d");
 
@@ -72,8 +72,38 @@ void test_base_directory_2(void)
     ofs.close();
 }
 
+static void test_base_directory_3(void)
+{
+    std::string dirname;
+
+    if (!stupid_get_current_work_directory(dirname))
+    {
+        std::cout << "get work directory failed" << std::endl;
+        return;
+    }
+
+    std::cout << "current work directory: " << dirname << std::endl;
+
+    if (!stupid_set_current_work_directory(".."))
+    {
+        std::cout << "set work directory to \"..\" failed" << std::endl;
+        return;
+    }
+
+    std::cout << "set work directory to \"..\" success" << std::endl;
+
+    if (!stupid_get_current_work_directory(dirname))
+    {
+        std::cout << "get work directory failed" << std::endl;
+        return;
+    }
+
+    std::cout << "current work directory: " << dirname << std::endl;
+}
+
 void test_base_directory(void)
 {
     test_base_directory_1();
     test_base_directory_2();
+    test_base_directory_3();
 }

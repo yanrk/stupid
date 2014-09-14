@@ -36,6 +36,8 @@
     #define stupid_access             ::_access
     #define stupid_mkdir(dir)         ::_mkdir(dir)
     #define stupid_rmdir(dir)         ::_rmdir(dir)
+    #define stupid_getcwd(dir, len)   ::_getcwd(dir, len)
+    #define stupid_setcwd(dir)        ::_chdir(dir)
     #define stupid_rename             ::rename
     #define stupid_unlink             ::_unlink
     #define stupid_sync               ::_commit
@@ -51,6 +53,8 @@
     #define stupid_access             ::access
     #define stupid_mkdir(dir)         ::mkdir(dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
     #define stupid_rmdir(dir)         ::rmdir(dir)
+    #define stupid_getcwd(dir, len)   ::getcwd(dir, len)
+    #define stupid_setcwd(dir)        ::chdir(dir)
     #define stupid_rename             ::rename
     #define stupid_unlink             ::unlink
     #define stupid_sync               ::fsync

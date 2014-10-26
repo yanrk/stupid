@@ -155,7 +155,7 @@ public:
     void thread_run();
 
 private:
-    bool running() const;
+    bool running();
     size_t acquire_timer_id();
     void add_pending_timer(ITimer * timer);
     void add_running_timer(ITimer * timer);
@@ -163,7 +163,7 @@ private:
     ITimer * del_pending_timer(size_t id);
     ITimer * del_running_timer(size_t id);
 
-    bool                       m_running;
+    volatile bool              m_running;
     size_t                     m_timer_id;
     uint64_t                   m_current_time;
     std::list<ITimer *>        m_pending_timer;

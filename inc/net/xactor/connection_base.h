@@ -13,6 +13,7 @@
 #define STUPID_NET_CONNECTION_BASE_H
 
 
+#include <string>
 #include "net/common/common.h"
 
 NAMESPACE_STUPID_NET_BEGIN
@@ -26,6 +27,9 @@ public:
 public:
     void set_user_data(void * user_data);
     void * get_user_data();
+
+public:
+    virtual void get_peer_address(std::string & ip, unsigned short & port) = 0;
 
 public:
     virtual size_t recv_buffer_size() = 0;

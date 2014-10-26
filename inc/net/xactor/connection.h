@@ -48,6 +48,9 @@ public:
     ~TcpConnection();
 
 public:
+    virtual void get_peer_address(std::string & ip, unsigned short & port);
+
+public:
     void recv_buffer_water_mark(size_t length);
 
 public:

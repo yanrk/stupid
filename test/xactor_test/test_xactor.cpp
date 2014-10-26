@@ -5,6 +5,7 @@
 #include "service.h"
 #include "net/xactor/manager.h"
 #include "net/utility/utility.h"
+#include "net/utility/net_switch.h"
 #include "base/log/log.h"
 #include "base/time/time.h"
 #include "base/config/ini.h"
@@ -97,6 +98,14 @@ void test_tcp_xactor(void)
 
     printf("log service init...\n");
 
+    if (!Stupid::Base::Singleton<Stupid::Net::NetSwitch>::instance().init())
+    {
+        printf("net switch init failed\n");
+        return;
+    }
+
+    printf("new switch init...\n");
+
     if (!get_config())
     {
         return;
@@ -165,6 +174,8 @@ void test_tcp_xactor(void)
     manager.exit();
 
     printf("tcp %s tester exit...\n", (s_requester ? "client" : "server"));
+
+    Stupid::Base::Singleton<Stupid::Net::NetSwitch>::instance().exit();
 
     Stupid::Base::Singleton<Stupid::Base::LogSwitch>::instance().exit();
 

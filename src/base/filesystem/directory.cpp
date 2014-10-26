@@ -19,6 +19,7 @@ NAMESPACE_STUPID_BASE_BEGIN
 Directory::Directory()
     : m_dir_name()
     , m_current_sub_file_name()
+    , m_current_sub_file_short_name()
     , m_current_sub_file_is_dir(false)
 #ifdef _MSC_VER
     , m_dir(INVALID_HANDLE_VALUE)
@@ -96,7 +97,8 @@ bool Directory::read()
 
         if (0 != strcmp(file.cFileName, ".") && 0 != strcmp(file.cFileName, ".."))
         {
-            m_current_sub_file_name = m_dir_name + file.cFileName;
+            m_current_sub_file_short_name = file.cFileName;
+            m_current_sub_file_name = m_dir_name + m_current_sub_file_short_name;
             m_current_sub_file_is_dir = false;
 
             if (0 != (file.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
@@ -116,7 +118,8 @@ bool Directory::read()
 
         if (0 != strcmp(file->d_name, ".") && 0 != strcmp(file->d_name, ".."))
         {
-            m_current_sub_file_name = m_dir_name + file->d_name;
+            m_current_sub_file_short_name = file->d_name;
+            m_current_sub_file_name = m_dir_name + m_current_sub_file_short_name;
             m_current_sub_file_is_dir = false;
 
             struct stat stat_buf;
@@ -131,6 +134,7 @@ bool Directory::read()
     }
 #endif // _MSC_VER
 
+    m_current_sub_file_short_name.clear();
     m_current_sub_file_name.clear();
     m_current_sub_file_is_dir = false;
 
@@ -144,6 +148,7 @@ void Directory::close()
         return;
     }
 
+    m_current_sub_file_short_name.clear();
     m_current_sub_file_name.clear();
     m_current_sub_file_is_dir = false;
 
@@ -156,20 +161,19 @@ void Directory::close()
 #endif // _MSC_VER
 }
 
-const std::string & Directory::sub_file() const
+const std::string & Directory::sub_file_name() const
 {
     return(m_current_sub_file_name);
+}
+
+const std::string & Directory::sub_file_short_name() const
+{
+    return(m_current_sub_file_short_name);
 }
 
 bool Directory::sub_file_is_dir() const
 {
     return(m_current_sub_file_is_dir);
-}
-
-void Directory::sub_file(std::string & name, bool & is_dir) const
-{
-    name = m_current_sub_file_name;
-    is_dir = m_current_sub_file_is_dir;
 }
 
 void stupid_create_directory_recursive(const std::string & dirname)
@@ -211,7 +215,7 @@ void stupid_remove_directory_recursive(const std::string & dirname)
 
     while (dir.read())
     {
-        std::string sub_file(dir.sub_file());
+        std::string sub_file(dir.sub_file_name());
         if (dir.sub_file_is_dir())
         {
             stupid_remove_directory_recursive(sub_file);
@@ -266,6 +270,37 @@ bool stupid_set_current_work_directory(const std::string & dirname)
     std::string platform_dirname(dirname);
     stupid_directory_format_to_platform(platform_dirname);
     return(0 == stupid_setcwd(platform_dirname.c_str()));
+}
+
+bool stupid_extract_directory(const char * filename, std::string & dirname, bool format)
+{
+    if (nullptr == filename || '\0' == filename[0])
+    {
+        dirname.clear();
+        return(false);
+    }
+
+    const char * directory_s = filename;
+    const char * lslash = strrchr(directory_s, '/');
+    const char * rslash = strrchr(directory_s, '\\');
+    const char * directory_e = std::max<const char *>(lslash, rslash);
+
+    if (nullptr == directory_e)
+    {
+        std::string(directory_s).swap(dirname);
+    }
+    else
+    {
+        std::string(directory_s, directory_e).swap(dirname);
+    }
+
+    if (format)
+    {
+        dirname += "/";
+        stupid_directory_format_to_platform(dirname);
+    }
+
+    return(true);
 }
 
 NAMESPACE_STUPID_BASE_END

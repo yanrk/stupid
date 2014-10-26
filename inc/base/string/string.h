@@ -13,10 +13,13 @@
 #define STUPID_BASE_STRING_H
 
 
+#include <cstdarg>
+#include <cstring>
 #include <string>
 #include <sstream>
-#include <cstdarg>
+#include <algorithm>
 #include "base/common/common.h"
+#include "base/string/splitter.h"
 
 NAMESPACE_STUPID_BASE_BEGIN
 
@@ -40,13 +43,125 @@ bool stupid_type_to_string(T val, std::string & str)
     return(true);
 }
 
-STUPID_CXX_API(size_t) stupid_vsnprintf(char * buffer, size_t bufsiz, const char * fmt, va_list args);
-STUPID_CXX_API(size_t) stupid_snprintf(char * buffer, size_t bufsiz, const char * fmt, ...);
+template <typename IteratorAll, typename IteratorPart>
+bool stupid_includes(IteratorAll first1, IteratorAll last1, IteratorPart first2, IteratorPart last2)
+{
+    while (first2 != last2)
+    {
+        if (last1 == std::find(first1, last1, *first2))
+        {
+            return(false);
+        }
+        ++first2;
+    }
+    return(true);
+}
+
+template <typename StringIterator>
+void stupid_piece_together(StringIterator first, StringIterator last, const std::string & delimiter, std::string & result)
+{
+    for (StringIterator iter = first; iter != last; ++iter)
+    {
+        if (iter != first)
+        {
+            result += delimiter;
+        }
+        result += *iter;
+    }
+}
+
+template <typename StringSequence>
+void stupid_split_piece(const std::string & values, const std::string & delimiter, bool trim_space, StringSequence & result)
+{
+    std::string filter(trim_space ? g_blank_character_set : "");
+    StringSplitter splitter(values, filter, delimiter);
+    while (!splitter.eof())
+    {
+        std::string element;
+        splitter >> element;
+        if (!element.empty())
+        {
+            result.push_back(element);
+        }
+    }
+}
 
 STUPID_CXX_API(void) stupid_string_trim_head(std::string & str, const char * trim = g_blank_character_set);
 STUPID_CXX_API(void) stupid_string_trim_tail(std::string & str, const char * trim = g_blank_character_set);
 STUPID_CXX_API(void) stupid_string_trim(std::string & str, const char * trim = g_blank_character_set);
 STUPID_CXX_API(void) stupid_string_simplify(std::string & str, const char * trim = g_blank_character_set, char simplify = ' ');
+
+template <typename StringSequence>
+bool stupid_split_command_line(const char * command_line, StringSequence & result, const char * delimiter_set = " \"", bool trim_delimiter = true)
+{
+    if (nullptr == command_line)
+    {
+        return(false);
+    }
+
+    if (nullptr == delimiter_set || '\0' == delimiter_set[0])
+    {
+        delimiter_set = " ";
+    }
+
+    const char * first = command_line;
+    const char * last = nullptr;
+
+    while ('\0' != *first)
+    {
+        while (' ' == *first)
+        {
+            ++first;
+        }
+
+        if ('\0' == *first)
+        {
+            break;
+        }
+
+        char delimiter = ' ';
+        if (nullptr != strchr(delimiter_set, *first))
+        {
+            delimiter = *first;
+        }
+
+        last = first + 1;
+
+        while (delimiter != *last && '\0' != *last)
+        {
+            ++last;
+        }
+
+        if ('\0' == *last && ' ' != delimiter)
+        {
+            return(false);
+        }
+
+        if ('\0' != *last)
+        {
+            ++last;
+        }
+
+        std::string param(first, last);
+        stupid_string_trim(param);
+        if (trim_delimiter)
+        {
+            const char trim_set[2] = { delimiter, 0x00 };
+            stupid_string_trim(param, trim_set);
+        }
+        if (!param.empty())
+        {
+            result.push_back(param);
+        }
+
+        first = last;
+    }
+
+    return(true);
+}
+
+STUPID_CXX_API(size_t) stupid_vsnprintf(char * buffer, size_t bufsiz, const char * fmt, va_list args);
+STUPID_CXX_API(size_t) stupid_snprintf(char * buffer, size_t bufsiz, const char * fmt, ...);
 
 STUPID_CXX_API(int) stupid_strcmp_ignore_case(const char * str1, const char * str2);
 STUPID_CXX_API(int) stupid_strncmp_ignore_case(const char * str1, const char * str2, int count);

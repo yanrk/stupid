@@ -64,6 +64,12 @@ TcpConnection::~TcpConnection()
     tcp_close(m_sockfd);
 }
 
+void TcpConnection::get_peer_address(std::string & ip, unsigned short & port)
+{
+    ip = inet_ntoa(m_address.sin_addr);
+    port = ntohs(m_address.sin_port);
+}
+
 void TcpConnection::set_socket(socket_t sockfd)
 {
     m_sockfd = sockfd;

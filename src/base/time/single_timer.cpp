@@ -77,7 +77,7 @@ void SingleTimer::exit()
     }
 }
 
-bool SingleTimer::running() const
+bool SingleTimer::running()
 {
     return(m_running);
 }

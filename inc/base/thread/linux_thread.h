@@ -39,7 +39,7 @@ public:
     void set_thread_args(thread_func_ptr_t func, void * argument = nullptr, const char * name = nullptr);
 
 public:
-    bool running() const;
+    bool running();
     std::string thread_name();
     size_t thread_id() const;
 
@@ -48,7 +48,7 @@ private:
     void              * m_argu;
     std::string         m_name;
     pthread_t           m_thread;
-    bool                m_running;
+    volatile bool       m_running;
     ThreadLocker        m_locker;
 };
 

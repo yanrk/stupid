@@ -109,7 +109,7 @@ void LinuxJoinThread::set_thread_args(thread_func_ptr_t func, void * argument, c
     }
 }
 
-bool LinuxJoinThread::running() const
+bool LinuxJoinThread::running()
 {
     return(m_running);
 }

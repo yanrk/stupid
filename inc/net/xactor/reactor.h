@@ -16,6 +16,7 @@
 #ifndef _MSC_VER
 
 
+#include <arpa/inet.h>
 #include <sys/epoll.h>
 #include <set>
 #include <list>
@@ -77,7 +78,7 @@ public:
     void close_connection(TcpConnection * connection);
 
 private:
-    bool running() const;
+    bool running();
 
 private:
     bool create_listener(unsigned short * service_port, size_t service_port_count);
@@ -132,7 +133,7 @@ private:
     void clear_business_event();
 
 private:
-    bool                                           m_running;
+    volatile bool                                  m_running;
     TcpManager                                   * m_manager;
     int                                            m_epoll;
     ConnectionVector                               m_listeners;

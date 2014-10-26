@@ -56,43 +56,62 @@ static sig_func * safe_signal(int signo, sig_func * func)
 NAMESPACE_STUPID_NET_BEGIN
 
 NetSwitch::NetSwitch()
+    : m_init(false)
 {
+
+}
+
+NetSwitch::~NetSwitch()
+{
+    exit();
+}
+
+bool NetSwitch::init()
+{
+    if (m_init)
+    {
+        return(true);
+    }
+
 #ifdef _MSC_VER
     WSADATA wsa_data;
     if (0 != WSAStartup(MAKEWORD(2, 2), &wsa_data))
     {
         RUN_LOG_CRI("WSAStartup failed: %d", stupid_net_error());
-        exit(1);
+        return(false);
     }
 #else
     if (SIG_ERR == safe_signal(SIGPIPE, SIG_IGN))
     {
         RUN_LOG_CRI("safe_signal failed: %d", stupid_net_error());
-        exit(1);
+        return(false);
     }
 #endif // _MSC_VER
+
+    m_init = true;
+    return(true);
 }
 
-NetSwitch::~NetSwitch()
+void NetSwitch::exit()
 {
+    if (!m_init)
+    {
+        return;
+    }
+
 #ifdef _MSC_VER
     if (0 != WSACleanup())
     {
         RUN_LOG_CRI("WSACleanup failed: %d", stupid_net_error());
-        exit(1);
     }
 #else
     if (SIG_ERR == safe_signal(SIGPIPE, SIG_DFL))
     {
         RUN_LOG_CRI("safe_signal failed: %d", stupid_net_error());
-        exit(1);
     }
 #endif // _MSC_VER
-}
 
-void NetSwitch::work()
-{
-
+    m_init = false;
 }
 
 NAMESPACE_STUPID_NET_END

@@ -16,12 +16,12 @@
 
 NAMESPACE_STUPID_BASE_BEGIN
 
-int64_t stupid_time()
+uint64_t stupid_time()
 {
-    return(static_cast<int64_t>(time(nullptr)));
+    return(static_cast<uint64_t>(time(nullptr)));
 }
 
-struct tm stupid_make_localtime(int64_t time_second)
+struct tm stupid_make_localtime(uint64_t time_second)
 {
     time_t time_value = static_cast<time_t>(time_second);
     struct tm tm_value;
@@ -35,7 +35,7 @@ struct tm stupid_make_localtime(int64_t time_second)
     return(tm_value);
 }
 
-struct tm stupid_make_gmtime(int64_t time_second)
+struct tm stupid_make_gmtime(uint64_t time_second)
 {
     time_t time_value = static_cast<time_t>(time_second);
     struct tm tm_value;
@@ -49,9 +49,9 @@ struct tm stupid_make_gmtime(int64_t time_second)
     return(tm_value);
 }
 
-int64_t stupid_make_time(struct tm tm_value)
+uint64_t stupid_make_time(struct tm tm_value)
 {
-    return(static_cast<int64_t>(mktime(&tm_value)));
+    return(static_cast<uint64_t>(mktime(&tm_value)));
 }
 
 struct tm stupid_localtime()
@@ -164,25 +164,30 @@ std::string stupid_get_time(const char * time_delimiter)
     return(stupid_get_time(stupid_localtime(), time_delimiter));
 }
 
-std::string stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter, const char * time_delimiter)
+std::string stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter, const char * time_delimiter, const char * date_time_delimiter)
 {
-    return(stupid_get_date(tm_value, date_delimiter) + " " + stupid_get_time(tm_value, time_delimiter));
+    if (nullptr == date_time_delimiter)
+    {
+        date_time_delimiter = " ";
+    }
+    return(stupid_get_date(tm_value, date_delimiter) + date_time_delimiter + stupid_get_time(tm_value, time_delimiter));
 }
 
-std::string stupid_get_datetime(const char * date_delimiter, const char * time_delimiter)
+std::string stupid_get_datetime(const char * date_delimiter, const char * time_delimiter, const char * date_time_delimiter)
 {
-    return(stupid_get_datetime(stupid_localtime(), date_delimiter, time_delimiter));
+    return(stupid_get_datetime(stupid_localtime(), date_delimiter, time_delimiter, date_time_delimiter));
 }
 
 std::string stupid_get_comprehensive_datetime(
                 const char * date_delimiter, 
                 const char * time_delimiter, 
+                const char * date_time_delimiter, 
                 bool week_abbreviation
             )
 {
     struct timeval tv_now = stupid_gettimeofday();
     size_t time_ms = static_cast<size_t>(tv_now.tv_usec / 1000);
-    int64_t time_now = static_cast<int64_t>(tv_now.tv_sec);
+    uint64_t time_now = static_cast<uint64_t>(tv_now.tv_sec);
     struct tm tm_now = stupid_make_localtime(time_now);
 
     char buff[32] = { 0 };
@@ -192,16 +197,16 @@ std::string stupid_get_comprehensive_datetime(
         time_ms, stupid_get_timezone()
     );
 
-    return(stupid_get_datetime(tm_now) + buff + stupid_get_week(tm_now));
+    return(stupid_get_datetime(tm_now, date_delimiter, time_delimiter, date_time_delimiter) + buff + stupid_get_week(tm_now));
 }
 
 void stupid_ms_sleep(size_t milliseconds)
 {
-    int64_t nanoseconds = STUPID_I64_VAL(1000000) * milliseconds;
+    uint64_t nanoseconds = STUPID_U64_VAL(1000000) * milliseconds;
     stupid_ns_sleep(nanoseconds);
 }
 
-void stupid_ns_sleep(int64_t nanoseconds)
+void stupid_ns_sleep(uint64_t nanoseconds)
 {
 #ifdef _MSC_VER
     Sleep(static_cast<DWORD>(nanoseconds / 1000000));

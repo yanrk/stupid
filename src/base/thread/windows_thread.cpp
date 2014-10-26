@@ -95,7 +95,7 @@ void WindowsJoinThread::set_thread_args(thread_func_ptr_t func, void * argument,
     }
 }
 
-bool WindowsJoinThread::running() const
+bool WindowsJoinThread::running()
 {
     return(m_running);
 }

@@ -28,12 +28,12 @@
 
 NAMESPACE_STUPID_BASE_BEGIN
 
-STUPID_CXX_API(int64_t) stupid_time();
+STUPID_CXX_API(uint64_t) stupid_time();
 STUPID_CXX_API(struct tm) stupid_localtime();
 STUPID_CXX_API(struct tm) stupid_gmtime();
-STUPID_CXX_API(struct tm) stupid_make_localtime(int64_t time_second);
-STUPID_CXX_API(struct tm) stupid_make_gmtime(int64_t time_second);
-STUPID_CXX_API(int64_t) stupid_make_time(struct tm tm_value);
+STUPID_CXX_API(struct tm) stupid_make_localtime(uint64_t time_second);
+STUPID_CXX_API(struct tm) stupid_make_gmtime(uint64_t time_second);
+STUPID_CXX_API(uint64_t) stupid_make_time(struct tm tm_value);
 STUPID_CXX_API(struct timeval) stupid_gettimeofday();
 STUPID_CXX_API(int) stupid_get_timezone();
 STUPID_CXX_API(int) stupid_get_day_of_week();
@@ -44,11 +44,11 @@ STUPID_CXX_API(std::string) stupid_get_date(const char * date_delimiter = "-");
 STUPID_CXX_API(std::string) stupid_get_date(const struct tm & tm_value, const char * date_delimiter = "-");
 STUPID_CXX_API(std::string) stupid_get_time(const char * time_delimiter = ":");
 STUPID_CXX_API(std::string) stupid_get_time(const struct tm & tm_value, const char * time_delimiter = ":");
-STUPID_CXX_API(std::string) stupid_get_datetime(const char * date_delimiter = "-", const char * time_delimiter = ":");
-STUPID_CXX_API(std::string) stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter = "-", const char * time_delimiter = ":");
-STUPID_CXX_API(std::string) stupid_get_comprehensive_datetime(const char * date_delimiter = "-", const char * time_delimiter = ":", bool week_abbreviation = true);
+STUPID_CXX_API(std::string) stupid_get_datetime(const char * date_delimiter = "-", const char * time_delimiter = ":", const char * date_time_delimiter = " ");
+STUPID_CXX_API(std::string) stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter = "-", const char * time_delimiter = ":", const char * date_time_delimiter = " ");
+STUPID_CXX_API(std::string) stupid_get_comprehensive_datetime(const char * date_delimiter = "-", const char * time_delimiter = ":", const char * date_time_delimiter = " ", bool week_abbreviation = true);
 STUPID_CXX_API(void) stupid_ms_sleep(size_t milliseconds);
-STUPID_CXX_API(void) stupid_ns_sleep(int64_t nanoseconds);
+STUPID_CXX_API(void) stupid_ns_sleep(uint64_t nanoseconds);
 
 NAMESPACE_STUPID_BASE_END
 

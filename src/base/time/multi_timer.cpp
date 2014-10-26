@@ -194,7 +194,7 @@ void MultiTimer::destroy_timer(size_t id)
     STUPID_DEL(pending_timer);
 }
 
-bool MultiTimer::running() const
+bool MultiTimer::running()
 {
     return(m_running);
 }

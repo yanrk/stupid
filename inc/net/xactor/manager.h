@@ -60,7 +60,7 @@ private:
     bool handle_close(TcpConnectionBase * connection);
 
 private:
-    bool                  m_running;
+    volatile bool         m_running;
     TcpXactor           * m_xactor;
     TcpServiceBase      * m_service;
 };

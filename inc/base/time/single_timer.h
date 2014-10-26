@@ -44,14 +44,14 @@ public:
     static void run(SingleTimer * timer);
 
 private:
-    bool running() const;
+    bool running();
 
 private:
     ISingleTimerSink   * m_sink;
     size_t               m_period;
     size_t               m_index;
     bool                 m_first_time;
-    bool                 m_running;
+    volatile bool        m_running;
     Thread               m_thread;
 };
 

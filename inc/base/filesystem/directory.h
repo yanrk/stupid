@@ -39,13 +39,14 @@ public:
     void close();
 
 public:
-    const std::string & sub_file() const;
+    const std::string & sub_file_name() const;
+    const std::string & sub_file_short_name() const;
     bool sub_file_is_dir() const;
-    void sub_file(std::string & name, bool & is_dir) const;
 
 private:
     std::string          m_dir_name;
     std::string          m_current_sub_file_name;
+    std::string          m_current_sub_file_short_name;
     bool                 m_current_sub_file_is_dir;
 
 #ifdef _MSC_VER
@@ -67,6 +68,8 @@ STUPID_CXX_API(void) stupid_directory_format_to_platform(std::string & dirname);
 
 STUPID_CXX_API(bool) stupid_get_current_work_directory(std::string & dirname);
 STUPID_CXX_API(bool) stupid_set_current_work_directory(const std::string & dirname);
+
+STUPID_CXX_API(bool) stupid_extract_directory(const char * filename, std::string & dirname, bool format = false);
 
 NAMESPACE_STUPID_BASE_END
 

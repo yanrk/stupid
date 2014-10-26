@@ -22,13 +22,18 @@ NAMESPACE_STUPID_NET_BEGIN
 class STUPID_API NetSwitch : private Stupid::Base::Uncopy
 {
 public:
-    void work();
+    bool init();
+    void exit();
 
 private:
     NetSwitch();
     ~NetSwitch();
 
+private:
     friend class Stupid::Base::Singleton<NetSwitch>;
+
+private:
+    bool                   m_init;
 };
 
 NAMESPACE_STUPID_NET_END

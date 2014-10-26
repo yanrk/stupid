@@ -14,7 +14,7 @@ static void test_base_directory_1(void)
 
     while (dir.read())
     {
-        printf("%s%s\n", dir.sub_file().c_str(), (dir.sub_file_is_dir() ? " <dir>" : ""));
+        printf("%s%s\n", dir.sub_file_name().c_str(), (dir.sub_file_is_dir() ? " <dir>" : ""));
     }
 
     dir.close();

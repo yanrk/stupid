@@ -15,7 +15,6 @@
 #include <algorithm>
 #include "net/xactor/proactor.h"
 #include "net/xactor/manager.h"
-#include "net/utility/net_switch.h"
 #include "net/utility/tcp.h"
 #include "net/utility/utility.h"
 #include "base/log/log.h"
@@ -177,7 +176,7 @@ TcpProactor::TcpProactor()
     , m_binded_connection_set()
     , m_binded_connection_set_locker()
 {
-    Stupid::Base::Singleton<NetSwitch>::instance().work();
+
 }
 
 TcpProactor::~TcpProactor()
@@ -319,7 +318,7 @@ void TcpProactor::close_connection(TcpConnection * connection)
     }
 }
 
-bool TcpProactor::running() const
+bool TcpProactor::running()
 {
     return(m_running);
 }

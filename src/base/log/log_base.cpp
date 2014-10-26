@@ -194,7 +194,7 @@ void LogBase::push_record(LOG_LEVEL level, const char * file, const char * func,
     record_size += stupid_snprintf
     (
         record + record_size, LOG_RECORD_SIZE - record_size, 
-        "%s", stupid_get_comprehensive_datetime("-", ":", true).c_str()
+        "%s", stupid_get_comprehensive_datetime("-", ":", " ", true).c_str()
     );
 
     record_size += stupid_snprintf

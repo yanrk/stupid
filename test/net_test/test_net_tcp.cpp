@@ -271,7 +271,7 @@ static thread_return_t STUPID_STDCALL client_thread_run_2(thread_argument_t)
 static void test_net_tcp_1(void)
 {
     Singleton<LogSwitch>::instance().init("./log.ini");
-    Singleton<NetSwitch>::instance().work();
+    Singleton<NetSwitch>::instance().init();
 
     s_server_thread.set_thread_args(server_thread_run_1, nullptr, "");
     s_server_thread.acquire();
@@ -288,12 +288,14 @@ static void test_net_tcp_1(void)
     stupid_ms_sleep(1000);
 
     s_client_thread.release();
+
+    Singleton<NetSwitch>::instance().exit();
 }
 
 static void test_net_tcp_2(void)
 {
     Singleton<LogSwitch>::instance().init("./log.ini");
-    Singleton<NetSwitch>::instance().work();
+    Singleton<NetSwitch>::instance().init();
 
     s_server_thread.set_thread_args(server_thread_run_2, nullptr, "");
     s_server_thread.acquire();
@@ -307,6 +309,8 @@ static void test_net_tcp_2(void)
 
     s_server_thread.release();
     s_client_thread.release();
+
+    Singleton<NetSwitch>::instance().exit();
 }
 
 void test_net_tcp(void)

@@ -1,3 +1,5 @@
+#include <list>
+#include <vector>
 #include "test_base.h"
 #include "base/string/string.h"
 
@@ -456,6 +458,106 @@ static void test_base_string_5(void)
         std::cout << "\" \\r\\n\\v\\t\\f123 \\r\\n456\\t\\v\\f 789\\t\\v\\r\\n\\f \", after simplify with ',' is:" << std::endl;
         stupid_string_simplify(str, g_blank_character_set, ',');
         std::cout << "\t\"" << str << "\"" << std::endl;
+    }
+
+    {
+        std::cout << std::endl;
+
+        std::list<std::string> all_set;
+        all_set.push_back("A");
+        all_set.push_back("B");
+        all_set.push_back("C");
+        all_set.push_back("D");
+        all_set.push_back("E");
+        std::vector<std::string> part_set;
+        part_set.push_back("C");
+        part_set.push_back("A");
+        part_set.push_back("E");
+        part_set.push_back("A");
+        part_set.push_back("C");
+
+        if (Stupid::Base::stupid_includes(all_set.begin(), all_set.end(), part_set.begin(), part_set.end()))
+        {
+            std::cout << "stupid_includes work ok" << std::endl;
+        }
+        else
+        {
+            std::cout << "stupid_includes do not work" << std::endl;
+        }
+
+        if (!Stupid::Base::stupid_includes(part_set.begin(), part_set.end(), all_set.begin(), all_set.end()))
+        {
+            std::cout << "stupid_includes work ok" << std::endl;
+        }
+        else
+        {
+            std::cout << "stupid_includes do not work" << std::endl;
+        }
+
+        std::cout << std::endl;
+    }
+
+    {
+        std::list<std::string> src_element_set;
+        src_element_set.push_back("A");
+        src_element_set.push_back("B");
+        src_element_set.push_back("C");
+        src_element_set.push_back("D");
+        src_element_set.push_back("E");
+        std::cout << "source element set:" << std::endl;
+        for (std::list<std::string>::const_iterator iter = src_element_set.begin(); src_element_set.end() != iter; ++iter)
+        {
+            std::cout << "\t" << *iter << std::endl;
+        }
+        std::cout << std::endl;
+
+        std::string elements;
+        Stupid::Base::stupid_piece_together(src_element_set.begin(), src_element_set.end(), ",", elements);
+        std::cout << "piece_together result: " << elements << std::endl;
+
+        std::list<std::string> dst_element_set;
+        Stupid::Base::stupid_split_piece(elements, ",", true, dst_element_set);
+        std::cout << "split_piece result:" << std::endl;
+        for (std::list<std::string>::const_iterator iter = dst_element_set.begin(); dst_element_set.end() != iter; ++iter)
+        {
+            std::cout << "\t" << *iter << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+    {
+        const char * command_line = " 1st \" 2nd 2nd \" \'3rd\' 4th 5th ";
+        std::cout << "command line: {" << command_line << "}" << std::endl << std::endl;
+
+        std::list<std::string> result1;
+        if (Stupid::Base::stupid_split_command_line(command_line, result1, " \'\"", false))
+        {
+            std::cout << "split_command_line result:(not trim delimiter)" << std::endl;
+            for (std::list<std::string>::const_iterator iter = result1.begin(); result1.end() != iter; ++iter)
+            {
+                std::cout << "\t{" << *iter << "}" << std::endl;
+            }
+            std::cout << std::endl;
+        }
+        else
+        {
+            std::cout << "stupid_split_command_line failed" << std::endl;
+        }
+
+        std::list<std::string> result2;
+        if (Stupid::Base::stupid_split_command_line(command_line, result2, " \'\"", true))
+        {
+            std::cout << "split_command_line result:(trim delimiter)" << std::endl;
+            for (std::list<std::string>::const_iterator iter = result2.begin(); result2.end() != iter; ++iter)
+            {
+                std::cout << "\t{" << *iter << "}" << std::endl;
+            }
+            std::cout << std::endl;
+        }
+        else
+        {
+            std::cout << "stupid_split_command_line failed" << std::endl;
+        }
     }
 
     std::cout << std::endl;

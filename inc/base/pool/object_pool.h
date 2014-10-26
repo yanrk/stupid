@@ -119,7 +119,7 @@ size_t ObjectPool<ObjectType, LockerType>::size()
 template <typename ObjectType, typename LockerType>
 void ObjectPool<ObjectType, LockerType>::operator << (std::list<ObjectType *> & obj_list)
 {
-    if (obj_list != m_objs)
+    if (&obj_list != &m_objs)
     {
         Guard<LockerType> pool_guard(m_locker);
         m_objs.splice(m_objs.end(), obj_list);
@@ -129,7 +129,7 @@ void ObjectPool<ObjectType, LockerType>::operator << (std::list<ObjectType *> & 
 template <typename ObjectType, typename LockerType>
 void ObjectPool<ObjectType, LockerType>::operator >> (std::list<ObjectType *> & obj_list)
 {
-    if (obj_list != m_objs)
+    if (&obj_list != &m_objs)
     {
         Guard<LockerType> pool_guard(m_locker);
         obj_list.splice(obj_list.end(), m_objs);

@@ -18,7 +18,6 @@
 #include <algorithm>
 #include "net/xactor/reactor.h"
 #include "net/xactor/manager.h"
-#include "net/utility/net_switch.h"
 #include "net/utility/tcp.h"
 #include "net/utility/utility.h"
 #include "base/log/log.h"
@@ -101,7 +100,7 @@ TcpReactor::TcpReactor()
     , m_binded_connection_set()
     , m_binded_connection_set_locker()
 {
-    Stupid::Base::Singleton<NetSwitch>::instance().work();
+
 }
 
 TcpReactor::~TcpReactor()
@@ -204,7 +203,7 @@ void TcpReactor::close_connection(TcpConnection * connection)
     }
 }
 
-bool TcpReactor::running() const
+bool TcpReactor::running()
 {
     return(m_running);
 }

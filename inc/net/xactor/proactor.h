@@ -70,7 +70,7 @@ public:
     void close_connection(TcpConnection * connection);
 
 private:
-    bool running() const;
+    bool running();
     void calc_event_thread_count(size_t & event_thread_count);
 
 private:
@@ -129,7 +129,7 @@ private:
     void clear_business_event();
 
 private:
-    bool                                           m_running;
+    volatile bool                                  m_running;
     TcpManager                                   * m_manager;
     HANDLE                                         m_iocp;
     ConnectionVector                               m_listeners;

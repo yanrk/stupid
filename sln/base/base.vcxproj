@@ -214,6 +214,7 @@
     <None Include="..\..\cfg\log.ini" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\inc\base\charset\charset.h" />
     <ClInclude Include="..\..\inc\base\common\common.h" />
     <ClInclude Include="..\..\inc\base\common\consts.h" />
     <ClInclude Include="..\..\inc\base\common\enums.h" />
@@ -257,6 +258,7 @@
     <ClInclude Include="..\..\inc\base\utility\uncopy.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\base\charset\charset.cpp" />
     <ClCompile Include="..\..\src\base\common\consts.cpp" />
     <ClCompile Include="..\..\src\base\config\ini.cpp" />
     <ClCompile Include="..\..\src\base\config\xml.cpp" />

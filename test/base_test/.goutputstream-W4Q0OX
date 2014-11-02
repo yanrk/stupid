@@ -1,0 +1,12 @@
+#include "test_base.h"
+#include "base/charset/charset.h"
+
+USING_NAMESPACE_STUPID_BASE
+
+static void test_base_charset_1(void)
+{
+    do
+    {
+        /* test 1 */
+
+        std::string ansi_str1 = "

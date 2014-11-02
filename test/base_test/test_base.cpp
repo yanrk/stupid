@@ -23,5 +23,6 @@ int main(int argc, char * argv[])
     test_base_splitter();
     test_base_bcd();
     test_base_xml();
+    test_base_charset();
     return(0);
 }

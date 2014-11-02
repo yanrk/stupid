@@ -41,6 +41,7 @@ extern void test_base_singleton(void);
 extern void test_base_splitter(void);
 extern void test_base_bcd(void);
 extern void test_base_xml(void);
+extern void test_base_charset(void);
 
 
 #endif // STUPID_BASE_TEST_H

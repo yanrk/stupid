@@ -103,24 +103,27 @@ void LogBase::rename()
     }
     ifs.seekg(offset, std::ios::beg);
 
-    std::string date;
+    std::string datetime;
     char line[LINE_MAX_SIZE];
     while(!ifs.eof())
     {
         ifs.getline(line, LINE_MAX_SIZE);
         size_t size = static_cast<size_t>(ifs.gcount());
         line[size] = '\0';
-        parse_date(line, size + 1, date);
+        parse_datetime(line, size + 1, datetime);
     }
 
     ifs.close();
 
-    if (date.empty())
+    if (datetime.empty())
     {
-        date = stupid_get_datetime("-", ":");
+        datetime = stupid_get_datetime("", "", "");
     }
 
-    std::string new_name(m_path + m_log_type + "_" + date + ".log");
+    std::string new_dir(m_path + datetime.substr(0, 8) + "/");
+    stupid_mkdir(new_dir.c_str());
+
+    std::string new_name(new_dir + m_log_type + "_" + datetime + ".log");
     if (0 != stupid_rename(m_fullname.c_str(), new_name.c_str()))
     {
         std::ofstream(new_name) << ifs.rdbuf();
@@ -140,7 +143,7 @@ void LogBase::update_file_size()
     ifs.close();
 }
 
-void LogBase::parse_date(const char * record, size_t size, std::string & date)
+void LogBase::parse_datetime(const char * record, size_t size, std::string & datetime)
 {
     if (nullptr == record || 20 > size)
     {
@@ -163,17 +166,17 @@ void LogBase::parse_date(const char * record, size_t size, std::string & date)
         return;
     }
 
-    char date_temp[19] = { 0 };
+    char date_time[19] = { 0 };
     size_t temp_size = 0;
     for (size_t index = 0; index < 19; ++index)
     {
         if ('0' <= record[index] && '9' >= record[index])
         {
-            date_temp[temp_size] = record[index];
+            date_time[temp_size] = record[index];
             ++temp_size;
         }
     }
-    std::string(date_temp, date_temp + temp_size).swap(date);
+    std::string(date_time, date_time + temp_size).swap(datetime);
 }
 
 void LogBase::push_record(LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, va_list args)
@@ -214,6 +217,11 @@ void LogBase::push_record(LOG_LEVEL level, const char * file, const char * func,
     {
         record_size = LOG_RECORD_SIZE;
     }
+
+#ifdef _MSC_VER
+    record[record_size - 1] = '\0';
+    OutputDebugStringA(record);
+#endif // _MSC_VER
 
     if (m_output_to_console)
     {

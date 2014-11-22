@@ -48,7 +48,7 @@ private:
     void update_file_size();
 
 private:
-    void parse_date(const char *, size_t, std::string &);
+    void parse_datetime(const char *, size_t, std::string &);
 
 private:
     std::string    m_path;

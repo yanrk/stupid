@@ -327,7 +327,7 @@ void TcpProactor::calc_event_thread_count(size_t & event_thread_count)
 {
     SYSTEM_INFO system_info;
     GetSystemInfo(&system_info);
-    event_thread_count = system_info.dwNumberOfProcessors * 2;
+    event_thread_count = system_info.dwNumberOfProcessors;
 }
 
 bool TcpProactor::create_listener(unsigned short * service_port, size_t service_port_count)

@@ -2,7 +2,7 @@
  * Description : ftp helper
  * Data        : 2014-05-18 14:21:52
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -195,8 +195,7 @@ static bool ftp_download_remote_directory(
         ret = false;
         const char * curl_error = curl_easy_strerror(curl_code);
         std::string remote_path = ftp_info.m_ftp_url + "/" + ftp_recv_info.remot_dir_name;
-        RUN_LOG_ERR("curl_easy_perform() failed: %s, when download from %s", 
-                    (nullptr == curl_error ? "unknown" : curl_error), remote_path.c_str());
+        RUN_LOG_ERR("curl_easy_perform() failed: %s, when download from %s", (nullptr == curl_error ? "unknown" : curl_error), remote_path.c_str());
     }
     curl_easy_cleanup(curl);
 
@@ -243,8 +242,7 @@ static bool ftp_download_remote_file(
         ftp_recv_info.local_current_ofs.close();
         stupid_unlink(file_name.c_str());
         const char * curl_error = curl_easy_strerror(curl_code);
-        RUN_LOG_ERR("curl_easy_perform() failed: %s, when download from %s", 
-                    (nullptr == curl_error ? "unknown" : curl_error), download_url.c_str());
+        RUN_LOG_ERR("curl_easy_perform() failed: %s, when download from %s", (nullptr == curl_error ? "unknown" : curl_error), download_url.c_str());
     }
     curl_easy_cleanup(curl);
 

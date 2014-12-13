@@ -2,7 +2,7 @@
  * Description : object pool class template
  * Data        : 2013-05-23 18:27:48
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="dll_debug|Win32">
       <Configuration>dll_debug</Configuration>
@@ -35,26 +35,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -113,10 +109,12 @@
       <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+      <Command>
+        copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
@@ -137,10 +135,12 @@ copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Com
       <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+      <Command>
+        copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
@@ -166,10 +166,12 @@ copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Com
       <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+      <Command>
+        copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
@@ -194,10 +196,12 @@ copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Com
       <AdditionalDependencies>stupid_base.lib;stupid_tool.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
-copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;</Command>
+      <Command>
+        copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

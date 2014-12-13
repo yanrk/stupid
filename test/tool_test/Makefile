@@ -91,13 +91,13 @@ rmln     :
 	chmod +x ./rmln.sh
 	-./rmln.sh
 
-cpfile  :
+cpfile   :
 	@cp $(stupid_lib_inc)/* $(bin_dir)/
 	@cp $(zlib_lib_inc)/* $(bin_dir)/
 	@cp $(openssl_lib_inc)/* $(bin_dir)/
 	@cp $(curl_lib_inc)/* $(bin_dir)/
 
-run     : cpfile
+run      : cpfile
 	@export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(bin_dir) && $(output_exec)
 # it same as: @env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(bin_dir) $(output_exec)
 

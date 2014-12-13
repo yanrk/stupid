@@ -2,7 +2,7 @@
  * Description : mail helper
  * Data        : 2014-04-20 22:56:11
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -238,8 +238,7 @@ bool MailHelper::send_mail(const MailInfo & mail_info)
         if (CURLE_OK != curl_code)
         {
             const char * curl_error = curl_easy_strerror(curl_code);
-            RUN_LOG_ERR("curl_easy_perform failed(%d): %s", 
-                        curl_code, (nullptr == curl_error ? "unknown" : curl_error));
+            RUN_LOG_ERR("curl_easy_perform failed(%d): %s", curl_code, (nullptr == curl_error ? "unknown" : curl_error));
             break;
         }
 

@@ -2,7 +2,7 @@
  * Description : network switch (assistant of net module)
  * Data        : 2013-11-02 02:01:52
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

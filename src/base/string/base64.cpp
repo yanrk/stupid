@@ -2,7 +2,7 @@
  * Description : encode and decode of base64
  * Data        : 2013-05-19 10:20:25
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

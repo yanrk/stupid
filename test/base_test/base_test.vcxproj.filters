@@ -82,10 +82,10 @@
     <ClCompile Include="test_base_time.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="test_base_xml.cpp">
+    <ClCompile Include="test_base_charset.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="test_base_charset.cpp">
+    <ClCompile Include="test_base_counter.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

@@ -2,7 +2,7 @@
  * Description : net connection data block
  * Data        : 2014-06-29 13:09:15
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

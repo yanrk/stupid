@@ -11,15 +11,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_net.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="test_net_tcp.cpp">
+    <ClCompile Include="service.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test_xactor.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test_net.h">
+    <ClInclude Include="service.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="test_xactor.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>

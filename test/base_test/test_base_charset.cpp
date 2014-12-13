@@ -9,7 +9,7 @@ static void test_base_charset_1(void)
     {
         /* test 1 */
 
-        std::string ansi_str1 = "中国china";
+        std::string ansi_str1 = "中国rayvision";
         std::string utf8_str1 = CharacterSet(ansi_str1).utfx(UTFX::UTF8);
         std::string utf16_str1 = CharacterSet(ansi_str1).utfx(UTFX::UTF16);
         std::string utf32_str1 = CharacterSet(ansi_str1).utfx(UTFX::UTF32);
@@ -186,7 +186,7 @@ static void test_base_charset_2(void)
     {
         const char * filename = "utf8_store_ansi.txt";
 
-        const std::string src_ansi_data("中国china");
+        const std::string src_ansi_data("中国rayvision");
         const std::string src_utf8_data = CharacterSet(src_ansi_data).utfx(UTFX::UTF8);
         std::string dst_utf8_data;
         std::string dst_ansi_data;
@@ -235,7 +235,7 @@ static void test_base_charset_3(void)
     {
         const char * filename = "utf8_store_unicode.txt";
 
-        const std::wstring src_unicode_data(L"中国china");
+        const std::wstring src_unicode_data(L"中国rayvision");
         const std::string src_utf8_data = CharacterSet(src_unicode_data).utfx(UTFX::UTF8);
         std::string dst_utf8_data;
         std::wstring dst_unicode_data;

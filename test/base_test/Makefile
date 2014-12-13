@@ -3,7 +3,6 @@ build_dir          = $(project_home)
 bin_dir            = $(project_home)/bin/linux
 object_dir         = $(project_home)/.objs
 stupid_home        = $(project_home)/../..
-gnu_home           = $(stupid_home)/gnu
 
 
 
@@ -35,17 +34,12 @@ local_objects      = $(local_source:$(project_home)%.cpp=$(object_dir)%.o)
 # system librarys
 system_libs        = -lpthread
 
-# open source librarys
-tinyxml_lib_inc    = $(gnu_home)/tinyxml/lib/linux
-gnu_libs           = -L$(tinyxml_lib_inc) -ltinyxml
-
 # stupid librarys
 stupid_lib_inc     = $(stupid_home)/lib/linux
 stupid_libs        = -L$(stupid_lib_inc) -lstupid_base
 
 # local depends librarys
 depend_libs        = $(stupid_libs)
-depend_libs       += $(gnu_libs)
 depend_libs       += $(system_libs)
 
 
@@ -69,17 +63,17 @@ build_exec_flags   = $(build_obj_flags)
 # build targets
 
 # let 'build' be default target, build all targets
-build   : $(local_objects)
+build    : $(local_objects)
 	@echo
 	@echo "@@@@@  start making base_test  @@@@@"
 	g++ $(build_exec_flags) -o $(output_exec) $^ $(depend_libs)
 	@echo "@@@@@  make base_test success  @@@@@"
 	@echo
 
-cpfile  :
+cpfile   :
 	@cp $(stupid_lib_inc)/* $(bin_dir)/
 
-run     : cpfile
+run      : cpfile
 	@export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(bin_dir) && $(output_exec)
 # it same as: @env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(bin_dir) $(output_exec)
 

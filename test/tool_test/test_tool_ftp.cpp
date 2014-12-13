@@ -1,3 +1,4 @@
+#include "test_tool.h"
 #include "tool/ftp/ftp.h"
 
 USING_NAMESPACE_STUPID_TOOL

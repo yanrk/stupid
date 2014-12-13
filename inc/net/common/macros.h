@@ -2,7 +2,7 @@
  * Description : macros of stupid net
  * Data        : 2013-10-30 00:01:10
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

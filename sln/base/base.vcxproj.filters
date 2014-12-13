@@ -215,11 +215,11 @@
     <ClInclude Include="..\..\inc\base\utility\log_switch.h">
       <Filter>inc\utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\base\config\xml.h">
-      <Filter>inc\config</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\base\charset\charset.h">
       <Filter>inc\charset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\counter.h">
+      <Filter>inc\utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -295,11 +295,11 @@
     <ClCompile Include="..\..\src\base\utility\log_switch.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\base\config\xml.cpp">
-      <Filter>src\config</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\base\charset\charset.cpp">
       <Filter>src\charset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\utility\counter.cpp">
+      <Filter>src\utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

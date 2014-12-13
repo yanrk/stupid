@@ -1,3 +1,4 @@
+#include "test_tool.h"
 #include "tool/mail/mail.h"
 
 USING_NAMESPACE_STUPID_TOOL

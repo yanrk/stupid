@@ -2,7 +2,7 @@
  * Description : thread class in windows
  * Data        : 2013-05-23 15:30:53
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

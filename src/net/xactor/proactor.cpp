@@ -2,7 +2,7 @@
  * Description : windows tcp connection proactor class
  * Data        : 2014-07-03 10:49:42
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -271,7 +271,7 @@ void TcpProactor::connection_send(TcpConnection * connection)
     {
         if (0 == connection->send_buffer_size())
         {
-            RUN_LOG_ERR("connection_send failed: no data");
+            RUN_LOG_TRK("connection_send failed: no data"); /* RUN_LOG_ERR */
             break;
         }
 
@@ -288,13 +288,13 @@ void TcpProactor::connection_send(TcpConnection * connection)
         post_event->data.len = send_len;
         if (!connection->send_buffer_copy_len(post_event->buffer, send_len))
         {
-            RUN_LOG_ERR("connection_send failed: send_buffer_copy_len error");
+            RUN_LOG_TRK("connection_send failed: send_buffer_copy_len error"); /* RUN_LOG_ERR */
             break;
         }
 
         if (!post_send(post_event))
         {
-            RUN_LOG_ERR("connection_send failed: post_send error");
+            RUN_LOG_TRK("connection_send failed: post_send error"); /* RUN_LOG_ERR */
             break;
         }
 
@@ -327,7 +327,7 @@ void TcpProactor::calc_event_thread_count(size_t & event_thread_count)
 {
     SYSTEM_INFO system_info;
     GetSystemInfo(&system_info);
-    event_thread_count = system_info.dwNumberOfProcessors;
+    event_thread_count = system_info.dwNumberOfProcessors * 2;
 }
 
 bool TcpProactor::create_listener(unsigned short * service_port, size_t service_port_count)
@@ -595,11 +595,11 @@ bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identi
     business_event.event = connect_notify;
     append_business_event(business_event);
     connection->increase_reference();
-
+    /*
     business_event.event = send_notify;
     append_business_event(business_event);
     connection->increase_reference();
-
+    */
     return(post_recv(&connection->m_async_recv));
 }
 
@@ -659,11 +659,11 @@ bool TcpProactor::do_accept(iocp_event * post_event, size_t data_len)
         business_event.event = accept_notify;
         append_business_event(business_event);
         connection->increase_reference();
-
+        /*
         business_event.event = send_notify;
         append_business_event(business_event);
         connection->increase_reference();
-
+        */
         if (data_len > 0)
         {
             memcpy(connection->m_async_recv.buffer, buffer, data_len);
@@ -690,7 +690,7 @@ bool TcpProactor::do_recv(iocp_event * post_event, size_t data_len)
 
     if (!connection->recv_buffer_fill_len(post_event->buffer, data_len))
     {
-        RUN_LOG_ERR("do_recv failed: recv_buffer_fill_len error");
+        RUN_LOG_TRK("do_recv failed: recv_buffer_fill_len error"); /* RUN_LOG_ERR */
         return(false);
     }
 
@@ -712,7 +712,7 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
 
     if (!connection->send_buffer_drop_len(data_len))
     {
-        RUN_LOG_ERR("do_send failed: send_buffer_drop_len error");
+        RUN_LOG_TRK("do_send failed: send_buffer_drop_len error"); /* RUN_LOG_ERR */
         return(false);
     }
 
@@ -725,7 +725,7 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
         {
             if (!connection->send_buffer_copy_len(post_event->buffer, send_len))
             {
-                RUN_LOG_ERR("do_send failed: send_buffer_copy_len error");
+                RUN_LOG_TRK("do_send failed: send_buffer_copy_len error"); /* RUN_LOG_ERR */
                 return(false);
             }
         }
@@ -746,7 +746,7 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
     }
     else
     {
-        RUN_LOG_ERR("do_send failed");
+        RUN_LOG_TRK("do_send failed"); /* RUN_LOG_ERR */
         return(false);
     }
 
@@ -791,7 +791,7 @@ void TcpProactor::handle_error(iocp_event * post_event)
     }
     else
     {
-        if (ERROR_NETNAME_DELETED != stupid_net_error())
+        if (ERROR_NETNAME_DELETED != stupid_net_error() && ERROR_CONNECTION_ABORTED != stupid_net_error())
         {
             RUN_LOG_ERR("handle error: %d", stupid_net_error());
         }
@@ -885,11 +885,11 @@ void TcpProactor::insert_connection(TcpConnection * connection)
         sockaddr_in_t remote_address = connection->get_address();
         if (connection->get_requester())
         {
-            RUN_LOG_DBG("connect to server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("connect to server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
         else
         {
-            RUN_LOG_DBG("client %s:%d connect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("client %s:%d connect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
     }
 }
@@ -909,11 +909,11 @@ void TcpProactor::remove_connection(TcpConnection *& connection)
         sockaddr_in_t remote_address = connection->get_address();
         if (connection->get_requester())
         {
-            RUN_LOG_DBG("disconnect from server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("disconnect from server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
         else
         {
-            RUN_LOG_DBG("client %s:%d disconnect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("client %s:%d disconnect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
     }
 }
@@ -932,7 +932,7 @@ void TcpProactor::destroy_invalid_connections()
         }
         else
         {
-            STUPID_DEL(connection);
+            release_connection(connection);
         }
         ++iter;
     }
@@ -946,7 +946,7 @@ void TcpProactor::destroy_normal_connections()
     while (m_normal_connection_set.end() != iter)
     {
         TcpConnection * connection = *iter;
-        STUPID_DEL(connection);
+        release_connection(connection);
         ++iter;
     }
     m_normal_connection_set.clear();
@@ -959,7 +959,7 @@ void TcpProactor::destroy_closed_connections()
     while (m_closed_connection_set.end() != iter)
     {
         TcpConnection * connection = *iter;
-        STUPID_DEL(connection);
+        release_connection(connection);
         ++iter;
     }
     m_closed_connection_set.clear();
@@ -1040,6 +1040,16 @@ void TcpProactor::proactor_connection_process(size_t thread_index)
         }
 
         iocp_event * post_event = CONTAINING_RECORD(overlapped, iocp_event, overlapped);
+        if (nullptr == post_event)
+        {
+            RUN_LOG_CRI("post_event is nullptr");
+            continue;
+        }
+        else if (nullptr == post_event->connection)
+        {
+            RUN_LOG_CRI("post_event->connection is nullptr");
+            continue;
+        }
 
         /*
          * when accept_iocp == post_event->post_type

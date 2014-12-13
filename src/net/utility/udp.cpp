@@ -2,7 +2,7 @@
  * Description : simple encapsulations of udp socket
  * Data        : 2013-11-10 21:36:20
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -12,6 +12,7 @@
 #ifdef _MSC_VER
     #include <ws2tcpip.h>
 #else
+    #include <unistd.h>
     #include <netdb.h>
     #include <fcntl.h>
     #include <sys/types.h>

@@ -2,7 +2,7 @@
  * Description : linux tcp connection reactor class
  * Data        : 2014-07-01 18:07:20
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -399,11 +399,11 @@ bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identit
     business_event.event = connect_notify;
     append_business_event(business_event);
     connection->increase_reference();
-
+    /*
     business_event.event = send_notify;
     append_business_event(business_event);
     connection->increase_reference();
-
+    */
     return(true);
 }
 
@@ -455,11 +455,11 @@ bool TcpReactor::do_accept(TcpConnection * listener_connection)
         business_event.event = accept_notify;
         append_business_event(business_event);
         connection->increase_reference();
-
+        /*
         business_event.event = send_notify;
         append_business_event(business_event);
         connection->increase_reference();
-
+        */
         accept_count += 1;
     }
 
@@ -482,20 +482,20 @@ bool TcpReactor::do_recv(TcpConnection * connection)
             }
             else
             {
-                RUN_LOG_ERR("do_recv failed: %d", stupid_net_error());
+                RUN_LOG_TRK("do_recv failed: %d", stupid_net_error()); /* RUN_LOG_ERR */
                 return(false);
             }
         }
         else if (0 == recv_len)
         {
-            DBG_LOG("do_recv failed: remote close");
+            RUN_LOG_TRK("do_recv failed: remote close"); /* DBG_LOG */
             return(false);
         }
         else
         {
             if (!connection->recv_buffer_fill_len(buffer, recv_len))
             {
-                RUN_LOG_ERR("do_recv failed: recv_buffer_fill_len error");
+                RUN_LOG_TRK("do_recv failed: recv_buffer_fill_len error"); /* RUN_LOG_ERR */
                 return(false);
             }
         }
@@ -514,12 +514,12 @@ bool TcpReactor::do_send(TcpConnection * connection)
         const int data_len = static_cast<int>(std::min<size_t>(buff_siz, connection->send_buffer_size()));
         if (0 == data_len)
         {
-            DBG_LOG("do_send failed: no data");
+            RUN_LOG_TRK("do_send failed: no data"); /* DBG_LOG */
             break;
         }
         if (!connection->send_buffer_copy_len(buffer, data_len))
         {
-            RUN_LOG_ERR("do_send failed: send_buffer_copy_len error");
+            RUN_LOG_TRK("do_send failed: send_buffer_copy_len error"); /* RUN_LOG_ERR */
             return(false);
         }
 
@@ -532,7 +532,7 @@ bool TcpReactor::do_send(TcpConnection * connection)
             }
             else
             {
-                DBG_LOG("do_send failed: %d", stupid_net_error());
+                RUN_LOG_TRK("do_send failed: %d", stupid_net_error()); /* DBG_LOG */
                 return(false);
             }
         }
@@ -540,7 +540,7 @@ bool TcpReactor::do_send(TcpConnection * connection)
         {
             if (!connection->send_buffer_drop_len(send_len))
             {
-                RUN_LOG_ERR("do_send failed: send_buffer_drop_len error");
+                RUN_LOG_TRK("do_send failed: send_buffer_drop_len error"); /* RUN_LOG_ERR */
                 return(false);
             }
             if (data_len != send_len)
@@ -673,11 +673,11 @@ void TcpReactor::insert_connection(TcpConnection * connection)
         sockaddr_in_t remote_address = connection->get_address();
         if (connection->get_requester())
         {
-            RUN_LOG_DBG("connect to server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("connect to server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
         else
         {
-            RUN_LOG_DBG("client %s:%d connect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("client %s:%d connect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
     }
 }
@@ -697,11 +697,11 @@ void TcpReactor::remove_connection(TcpConnection *& connection)
         sockaddr_in_t remote_address = connection->get_address();
         if (connection->get_requester())
         {
-            RUN_LOG_DBG("disconnect from server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("disconnect from server %s:%d, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
         else
         {
-            RUN_LOG_DBG("client %s:%d disconnect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
+            RUN_LOG_TRK("client %s:%d disconnect, connection: %x", inet_ntoa(remote_address.sin_addr), ntohs(remote_address.sin_port), connection);
         }
     }
 }
@@ -720,7 +720,7 @@ void TcpReactor::destroy_invalid_connections()
         }
         else
         {
-            STUPID_DEL(connection);
+            release_connection(connection);
         }
         ++iter;
     }
@@ -734,7 +734,7 @@ void TcpReactor::destroy_normal_connections()
     while (m_normal_connection_set.end() != iter)
     {
         TcpConnection * connection = *iter;
-        STUPID_DEL(connection);
+        release_connection(connection);
         ++iter;
     }
     m_normal_connection_set.clear();
@@ -747,7 +747,7 @@ void TcpReactor::destroy_closed_connections()
     while (m_closed_connection_set.end() != iter)
     {
         TcpConnection * connection = *iter;
-        STUPID_DEL(connection);
+        release_connection(connection);
         ++iter;
     }
     m_closed_connection_set.clear();

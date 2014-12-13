@@ -2,7 +2,7 @@
  * Description : macros of system standard I/O
  * Data        : 2013-05-23 11:46:45
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -23,6 +23,18 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
+#ifdef _MSC_VER
+    #define STUPID_R_OK     4
+    #define STUPID_W_OK     2
+    #define STUPID_X_OK     1
+    #define STUPID_F_OK     0
+#else
+    #define STUPID_R_OK     R_OK
+    #define STUPID_W_OK     W_OK
+    #define STUPID_X_OK     X_OK
+    #define STUPID_F_OK     F_OK
+#endif // _MSC_VER
 
 #ifdef _MSC_VER
     #define stupid_umask()            (0)

@@ -2,7 +2,7 @@
  * Description : simple encapsulations of tcp socket
  * Data        : 2013-11-10 16:25:42
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
@@ -12,6 +12,7 @@
 #ifdef _MSC_VER
     #include <ws2tcpip.h>
 #else
+    #include <unistd.h>
     #include <netdb.h>
     #include <fcntl.h>
     #include <sys/types.h>
@@ -416,7 +417,7 @@ bool tcp_send_complete(socket_t sock, const char * data, size_t data_len)
             }
             else
             {
-                DBG_LOG("send_complete failed: %d", stupid_net_error());
+                RUN_LOG_TRK("send_complete failed: %d", stupid_net_error()); /* DBG_LOG */
                 return(false);
             }
         }
@@ -448,13 +449,13 @@ bool tcp_recv_complete(socket_t sock, char * buff, size_t need_len)
             }
             else
             {
-                DBG_LOG("recv_complete failed: %d", stupid_net_error());
+                RUN_LOG_TRK("recv_complete failed: %d", stupid_net_error()); /* DBG_LOG */
                 return(false);
             }
         }
         else if (0 == recv_len)
         {
-            DBG_LOG("recv_complete failed: remote close");
+            RUN_LOG_TRK("recv_complete failed: remote close"); /* DBG_LOG */
             return(false);
         }
         else

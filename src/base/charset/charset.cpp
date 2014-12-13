@@ -6,7 +6,7 @@
  * Email       : cnjinhao@hotmail.com
  * WebSide     : www.nanapro.org/zh-cn/
  * Modified By : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * Data        : 2014-10-31 09:51:45

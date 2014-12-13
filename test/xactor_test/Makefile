@@ -63,17 +63,17 @@ build_exec_flags   = $(build_obj_flags)
 # build targets
 
 # let 'build' be default target, build all targets
-build   : $(local_objects)
+build    : $(local_objects)
 	@echo
 	@echo "@@@@@  start making xactor_test  @@@@@"
 	g++ $(build_exec_flags) -o $(output_exec) $^ $(depend_libs)
 	@echo "@@@@@  make xactor_test success  @@@@@"
 	@echo
 
-cpfile  :
+cpfile   :
 	@cp $(stupid_lib_inc)/* $(bin_dir)/
 
-run     : cpfile
+run      : cpfile
 	@export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(bin_dir) && $(output_exec)
 # it same as: @env LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(bin_dir) $(output_exec)
 

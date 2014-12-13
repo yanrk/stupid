@@ -2,7 +2,7 @@
  * Description : ini parse class
  * Data        : 2013-07-27 16:11:54
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

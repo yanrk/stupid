@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="dll_debug|Win32">
       <Configuration>dll_debug</Configuration>
@@ -30,7 +30,6 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -38,7 +37,6 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -47,7 +45,6 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -56,7 +53,6 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -123,7 +119,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/tinyxml/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -133,8 +129,10 @@
       <AdditionalDependencies />
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../../gnu/tinyxml/lib/windows/debug/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tinyxml.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
@@ -144,15 +142,17 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/tinyxml/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tinyxml.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../gnu/tinyxml/lib/windows/debug/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;</IgnoreSpecificDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -168,7 +168,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/tinyxml/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -180,8 +180,10 @@
       <AdditionalDependencies />
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../../gnu/tinyxml/lib/windows/release/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>tinyxml.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
@@ -193,7 +195,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/tinyxml/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -202,8 +204,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>tinyxml.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../gnu/tinyxml/lib/windows/release/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;</IgnoreSpecificDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -223,7 +227,6 @@
     <ClInclude Include="..\..\inc\base\common\namespace.h" />
     <ClInclude Include="..\..\inc\base\common\typedefs.h" />
     <ClInclude Include="..\..\inc\base\config\ini.h" />
-    <ClInclude Include="..\..\inc\base\config\xml.h" />
     <ClInclude Include="..\..\inc\base\exception\exception.h" />
     <ClInclude Include="..\..\inc\base\filesystem\directory.h" />
     <ClInclude Include="..\..\inc\base\filesystem\sys_io.h" />
@@ -251,6 +254,7 @@
     <ClInclude Include="..\..\inc\base\time\multi_timer.h" />
     <ClInclude Include="..\..\inc\base\time\single_timer.h" />
     <ClInclude Include="..\..\inc\base\time\time.h" />
+    <ClInclude Include="..\..\inc\base\utility\counter.h" />
     <ClInclude Include="..\..\inc\base\utility\guard.h" />
     <ClInclude Include="..\..\inc\base\utility\id_manager.h" />
     <ClInclude Include="..\..\inc\base\utility\log_switch.h" />
@@ -261,7 +265,6 @@
     <ClCompile Include="..\..\src\base\charset\charset.cpp" />
     <ClCompile Include="..\..\src\base\common\consts.cpp" />
     <ClCompile Include="..\..\src\base\config\ini.cpp" />
-    <ClCompile Include="..\..\src\base\config\xml.cpp" />
     <ClCompile Include="..\..\src\base\exception\exception.cpp" />
     <ClCompile Include="..\..\src\base\filesystem\directory.cpp" />
     <ClCompile Include="..\..\src\base\locker\null_locker.cpp" />
@@ -282,6 +285,7 @@
     <ClCompile Include="..\..\src\base\time\multi_timer.cpp" />
     <ClCompile Include="..\..\src\base\time\single_timer.cpp" />
     <ClCompile Include="..\..\src\base\time\time.cpp" />
+    <ClCompile Include="..\..\src\base\utility\counter.cpp" />
     <ClCompile Include="..\..\src\base\utility\log_switch.cpp" />
     <ClCompile Include="..\..\src\base\utility\uncopy.cpp" />
   </ItemGroup>

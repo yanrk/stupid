@@ -2,7 +2,7 @@
  * Description : test stupid base solution
  * Data        : 2013-11-04 20:56:27
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

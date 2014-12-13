@@ -2,7 +2,7 @@
  * Description : test stupid tool solution
  * Data        : 2014-04-27 03:04:54
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

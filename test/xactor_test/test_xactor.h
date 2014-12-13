@@ -1,8 +1,8 @@
 /********************************************************
- * Description : test stupid tcp xactor solution
+ * Description : test stupid net-xactor solution
  * Data        : 2014-07-09 14:29:25
  * Author      : yanrk
- * Email       : feeling_dxl@yeah.net & ken_scott@163.com
+ * Email       : yanrkchina@hotmail.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :

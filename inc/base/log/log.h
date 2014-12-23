@@ -21,6 +21,10 @@
 STUPID_CXX_API(bool) log_load_config(const std::string & file, LOG_CONFIG & log_config);
 STUPID_CXX_API(bool) log_init(const LOG_CONFIG & log_config);
 STUPID_CXX_API(void) log_exit();
+STUPID_CXX_API(void) log_enable(LOG_TYPE log_type);
+STUPID_CXX_API(void) log_disable(LOG_TYPE log_type);
+STUPID_CXX_API(void) log_enable_all();
+STUPID_CXX_API(void) log_disable_all();
 STUPID_CXX_API(void) log_set_level(LOG_TYPE log_type, LOG_LEVEL log_level);
 STUPID_CXX_API(void) log_set_console(LOG_TYPE log_type, bool output_to_console);
 STUPID_CXX_API(void) run_log(LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, ...);

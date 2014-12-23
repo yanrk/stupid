@@ -23,6 +23,9 @@ public:
     ~CounterImpl();
 
 public:
+    void reset(size_t count);
+
+public:
     void increase();
     void decrease();
 
@@ -44,6 +47,12 @@ CounterImpl::CounterImpl(size_t count)
 CounterImpl::~CounterImpl()
 {
 
+}
+
+void CounterImpl::reset(size_t count)
+{
+    Guard<ThreadLocker> guard(m_locker);
+    m_count = count;
 }
 
 void CounterImpl::increase()
@@ -72,6 +81,14 @@ Counter::Counter(size_t count)
 Counter::~Counter()
 {
     delete m_counter;
+}
+
+void Counter::reset(size_t count)
+{
+    if (nullptr != m_counter)
+    {
+        m_counter->reset(count);
+    }
 }
 
 void Counter::increase()

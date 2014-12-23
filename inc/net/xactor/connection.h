@@ -45,7 +45,7 @@ private:
 
 public:
     TcpConnection(TcpXactor & xactor, BlockPool & block_pool);
-    ~TcpConnection();
+    virtual ~TcpConnection();
 
 public:
     virtual void get_peer_address(std::string & ip, unsigned short & port);

@@ -27,6 +27,9 @@ public:
     ~Counter();
 
 public:
+    void reset(size_t count = 0);
+
+public:
     void increase();
     void decrease();
 

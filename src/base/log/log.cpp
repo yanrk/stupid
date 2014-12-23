@@ -10,6 +10,7 @@
  ********************************************************/
 
 #include <cassert>
+#include <cstring>
 #include <string>
 #include "base/config/ini.h"
 #include "base/log/log_types.h"
@@ -131,7 +132,8 @@ bool log_load_config(const std::string & file, LOG_CONFIG & log_config)
 }
 
 static LogBase * s_log[LOG_TYPE_MAX] = { nullptr };
-static bool      s_need_aysn_write_thread = false;
+static unsigned char s_log_type_open[LOG_TYPE_MAX] = { 0x00 };
+static bool s_need_aysn_write_thread = false;
 
 bool log_init(const LOG_CONFIG & log_config)
 {
@@ -203,6 +205,8 @@ bool log_init(const LOG_CONFIG & log_config)
         }
     }
 
+    log_enable_all();
+
     if (s_need_aysn_write_thread)
     {
         return(AsynLog::acquire_write_thread());
@@ -213,6 +217,8 @@ bool log_init(const LOG_CONFIG & log_config)
 
 void log_exit()
 {
+    log_disable_all();
+
     if (s_need_aysn_write_thread)
     {
         AsynLog::release_write_thread();
@@ -223,6 +229,26 @@ void log_exit()
     {
         STUPID_DEL(s_log[type]);
     }
+}
+
+void log_enable(LOG_TYPE log_type)
+{
+    s_log_type_open[log_type] = 0x01;
+}
+
+void log_disable(LOG_TYPE log_type)
+{
+    s_log_type_open[log_type] = 0x00;
+}
+
+void log_enable_all()
+{
+    memset(s_log_type_open, 0x01, sizeof(s_log_type_open));
+}
+
+void log_disable_all()
+{
+    memset(s_log_type_open, 0x00, sizeof(s_log_type_open));
 }
 
 void log_set_level(LOG_TYPE log_type, LOG_LEVEL log_level)
@@ -257,11 +283,11 @@ void run_log(LOG_LEVEL level, const char * file, const char * func, size_t line,
 
     va_start(args, format);
 
-    if (nullptr != s_log[LOG_TYPE_RUN])
+    if (0x00 != s_log_type_open[LOG_TYPE_RUN] && nullptr != s_log[LOG_TYPE_RUN])
     {
         s_log[LOG_TYPE_RUN]->push_record(level, file, func, line, format, args);
     }
-    if (nullptr != s_log[LOG_TYPE_DBG])
+    if (0x00 != s_log_type_open[LOG_TYPE_DBG] && nullptr != s_log[LOG_TYPE_DBG])
     {
         s_log[LOG_TYPE_DBG]->push_record(level, file, func, line, format, args);
     }
@@ -271,7 +297,7 @@ void run_log(LOG_LEVEL level, const char * file, const char * func, size_t line,
 
 void debug_log(LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, ...)
 {
-    if (nullptr == s_log[LOG_TYPE_DBG])
+    if (0x00 == s_log_type_open[LOG_TYPE_DBG] || nullptr == s_log[LOG_TYPE_DBG])
     {
         return;
     }

@@ -31,13 +31,13 @@ public:
     ~WindowsThreadLocker();
 
 public:
-    bool acquire();
-    void release();
-    bool try_acquire(); /* not support, alway be false */
+    bool acquire() const;
+    void release() const;
+    bool try_acquire() const; /* not support, alway be false */
 
 private:
-    std::string        m_name;
-    CRITICAL_SECTION   m_locker;
+    std::string                m_name;
+    mutable CRITICAL_SECTION   m_locker;
 };
 
 
@@ -48,13 +48,13 @@ public:
     ~WindowsProcessLocker();
 
 public:
-    bool acquire();
-    void release();
-    bool try_acquire();
+    bool acquire() const;
+    void release() const;
+    bool try_acquire() const;
 
 private:
-    std::string   m_name;
-    HANDLE        m_locker;
+    std::string      m_name;
+    mutable HANDLE   m_locker;
 };
 
 NAMESPACE_STUPID_BASE_END

@@ -75,6 +75,26 @@ void LogSwitch::exit()
     m_init = false;
 }
 
+void LogSwitch::enable(LOG_TYPE log_type)
+{
+    log_enable(log_type);
+}
+
+void LogSwitch::disable(LOG_TYPE log_type)
+{
+    log_disable(log_type);
+}
+
+void LogSwitch::enable_all()
+{
+    log_enable_all();
+}
+
+void LogSwitch::disable_all()
+{
+    log_disable_all();
+}
+
 void LogSwitch::set_min_level(LOG_TYPE log_type, LOG_LEVEL log_level)
 {
     log_set_level(log_type, log_level);

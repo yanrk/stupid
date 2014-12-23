@@ -28,6 +28,10 @@ public:
     void exit();
 
 public:
+    void enable(LOG_TYPE log_type);
+    void disable(LOG_TYPE log_type);
+    void enable_all();
+    void disable_all();
     void set_min_level(LOG_TYPE log_type, LOG_LEVEL log_level);
     void set_console_output_switch(LOG_TYPE log_type, bool output_to_console);
 

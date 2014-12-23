@@ -23,17 +23,17 @@ NullLocker::~NullLocker()
 
 }
 
-bool NullLocker::acquire()
+bool NullLocker::acquire() const
 {
     return(true);
 }
 
-void NullLocker::release()
+void NullLocker::release() const
 {
 
 }
 
-bool NullLocker::try_acquire()
+bool NullLocker::try_acquire() const
 {
     return(true);
 }

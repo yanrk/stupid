@@ -33,13 +33,13 @@ public:
     ~LinuxMutexLocker();
 
 public:
-    bool acquire();
-    void release();
-    bool try_acquire();
+    bool acquire() const;
+    void release() const;
+    bool try_acquire() const;
 
 private:
-    std::string       m_name;
-    pthread_mutex_t   m_locker;
+    std::string               m_name;
+    mutable pthread_mutex_t   m_locker;
 };
 
 template <bool b_thread_lock>
@@ -78,19 +78,19 @@ LinuxMutexLocker<b_thread_lock>::~LinuxMutexLocker()
 }
 
 template <bool b_thread_lock>
-bool LinuxMutexLocker<b_thread_lock>::acquire()
+bool LinuxMutexLocker<b_thread_lock>::acquire() const
 {
     return(0 == pthread_mutex_lock(&m_locker));
 }
 
 template <bool b_thread_lock>
-void LinuxMutexLocker<b_thread_lock>::release()
+void LinuxMutexLocker<b_thread_lock>::release() const
 {
     pthread_mutex_unlock(&m_locker);
 }
 
 template <bool b_thread_lock>
-bool LinuxMutexLocker<b_thread_lock>::try_acquire()
+bool LinuxMutexLocker<b_thread_lock>::try_acquire() const
 {
     return(0 == pthread_mutex_trylock(&m_locker));
 }

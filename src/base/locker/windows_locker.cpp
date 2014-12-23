@@ -29,18 +29,18 @@ WindowsThreadLocker::~WindowsThreadLocker()
     DeleteCriticalSection(&m_locker);
 }
 
-bool WindowsThreadLocker::acquire()
+bool WindowsThreadLocker::acquire() const
 {
     EnterCriticalSection(&m_locker);
     return(true);
 }
 
-void WindowsThreadLocker::release()
+void WindowsThreadLocker::release() const
 {
     LeaveCriticalSection(&m_locker);
 }
 
-bool WindowsThreadLocker::try_acquire()
+bool WindowsThreadLocker::try_acquire() const
 {
     return(false);
 }
@@ -58,17 +58,17 @@ WindowsProcessLocker::~WindowsProcessLocker()
     CloseHandle(m_locker);
 }
 
-bool WindowsProcessLocker::acquire()
+bool WindowsProcessLocker::acquire() const
 {
     return(WAIT_OBJECT_0 == WaitForSingleObject(m_locker, INFINITE));
 }
 
-void WindowsProcessLocker::release()
+void WindowsProcessLocker::release() const
 {
     ReleaseMutex(m_locker);
 }
 
-bool WindowsProcessLocker::try_acquire()
+bool WindowsProcessLocker::try_acquire() const
 {
     return(WAIT_OBJECT_0 == WaitForSingleObject(m_locker, 0));
 }

@@ -96,7 +96,7 @@ TcpReactor::TcpReactor()
     , m_normal_connection_set()
     , m_closed_connection_set()
     , m_connection_set_locker()
-    , m_unique_creator(0, static_cast<size_t>(~0))
+    , m_unique_creator(0, ~static_cast<size_t>(0))
     , m_binded_connection_set()
     , m_binded_connection_set_locker()
 {

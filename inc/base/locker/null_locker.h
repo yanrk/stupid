@@ -25,9 +25,9 @@ public:
     ~NullLocker();
 
 public:
-    bool acquire();
-    void release();
-    bool try_acquire();
+    bool acquire() const;
+    void release() const;
+    bool try_acquire() const;
 };
 
 NAMESPACE_STUPID_BASE_END

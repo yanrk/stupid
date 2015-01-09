@@ -43,7 +43,7 @@ public:
     void exit();
 
 public:
-    bool create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port = 0);
+    bool create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
 
 private:
 #ifdef _MSC_VER

@@ -97,13 +97,13 @@ void TcpManager::exit()
     RUN_LOG_DBG("exit tcp manager success");
 }
 
-bool TcpManager::create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
+bool TcpManager::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     if (!m_running)
     {
         return(false);
     }
-    return(m_xactor->create_connection(server_address, identity, bind_port));
+    return(m_xactor->create_connection(server_address, identity, bind_ip, bind_port));
 }
 
 bool TcpManager::handle_connect(TcpConnectionBase * connection, size_t identity)

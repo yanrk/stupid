@@ -65,7 +65,7 @@ public:
     void proactor_business_process(size_t thread_index);
 
 public:
-    bool create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port);
+    bool create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port);
     void connection_send(TcpConnection * connection);
     void close_connection(TcpConnection * connection);
 
@@ -90,7 +90,7 @@ private:
     void post_exit();
 
 private:
-    bool do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port);
+    bool do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port);
     bool do_accept(iocp_event * post_event, size_t data_len);
     bool do_recv(iocp_event * post_event, size_t data_len);
     bool do_send(iocp_event * post_event, size_t data_len);

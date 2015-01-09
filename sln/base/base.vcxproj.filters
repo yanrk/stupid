@@ -221,6 +221,9 @@
     <ClInclude Include="..\..\inc\base\utility\counter.h">
       <Filter>inc\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\bitmap.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\base\common\consts.cpp">

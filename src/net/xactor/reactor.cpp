@@ -178,9 +178,9 @@ void TcpReactor::exit()
     RUN_LOG_DBG("exit tcp reactor success");
 }
 
-bool TcpReactor::create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
+bool TcpReactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
-    return(do_connect(server_address, identity, bind_port));
+    return(do_connect(server_address, identity, bind_ip, bind_port));
 }
 
 void TcpReactor::connection_send(TcpConnection * connection)
@@ -361,10 +361,10 @@ bool TcpReactor::modify_connection_of_epoll(TcpConnection * connection, bool sen
     return(true);
 }
 
-bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
+bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(server_address, connecter, bind_port))
+    if (!tcp_connect(server_address, connecter, bind_ip, bind_port))
     {
         return(false);
     }

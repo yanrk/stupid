@@ -24,5 +24,6 @@ int main(int argc, char * argv[])
     test_base_bcd();
     test_base_charset();
     test_base_counter();
+    test_base_bitmap();
     return(0);
 }

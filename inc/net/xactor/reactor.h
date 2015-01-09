@@ -73,7 +73,7 @@ public:
     void reactor_business_process(size_t thread_index);
 
 public:
-    bool create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port);
+    bool create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port);
     void connection_send(TcpConnection * connection);
     void close_connection(TcpConnection * connection);
 
@@ -92,7 +92,7 @@ private:
     bool modify_connection_of_epoll(TcpConnection * connection, bool send, bool recv);
 
 private:
-    bool do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port);
+    bool do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port);
     bool do_accept(TcpConnection * listener_connection);
     bool do_recv(TcpConnection * connection);
     bool do_send(TcpConnection * connection);

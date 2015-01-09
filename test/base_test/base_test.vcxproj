@@ -199,6 +199,7 @@
     <ClCompile Include="test_base.cpp" />
     <ClCompile Include="test_base_base64.cpp" />
     <ClCompile Include="test_base_bcd.cpp" />
+    <ClCompile Include="test_base_bitmap.cpp" />
     <ClCompile Include="test_base_bytestream.cpp" />
     <ClCompile Include="test_base_charset.cpp" />
     <ClCompile Include="test_base_counter.cpp" />

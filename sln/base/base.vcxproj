@@ -254,6 +254,7 @@
     <ClInclude Include="..\..\inc\base\time\multi_timer.h" />
     <ClInclude Include="..\..\inc\base\time\single_timer.h" />
     <ClInclude Include="..\..\inc\base\time\time.h" />
+    <ClInclude Include="..\..\inc\base\utility\bitmap.h" />
     <ClInclude Include="..\..\inc\base\utility\counter.h" />
     <ClInclude Include="..\..\inc\base\utility\guard.h" />
     <ClInclude Include="..\..\inc\base\utility\id_manager.h" />

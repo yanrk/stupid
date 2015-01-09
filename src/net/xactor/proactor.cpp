@@ -27,7 +27,7 @@ NAMESPACE_STUPID_NET_BEGIN
 struct PROACTOR_THREAD_PARAM
 {
     TcpProactor & tcp_proactor;
-    size_t       thread_index;
+    size_t        thread_index;
 
     PROACTOR_THREAD_PARAM(TcpProactor & proactor, size_t index)
         : tcp_proactor(proactor), thread_index(index)
@@ -259,9 +259,9 @@ void TcpProactor::exit()
     RUN_LOG_DBG("exit tcp proactor success");
 }
 
-bool TcpProactor::create_connection(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
+bool TcpProactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
-    return(do_connect(server_address, identity, bind_port));
+    return(do_connect(server_address, identity, bind_ip, bind_port));
 }
 
 void TcpProactor::connection_send(TcpConnection * connection)
@@ -555,10 +555,10 @@ void TcpProactor::post_exit()
     }
 }
 
-bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identity, unsigned short bind_port)
+bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(server_address, connecter, bind_port))
+    if (!tcp_connect(server_address, connecter, bind_ip, bind_port))
     {
         return(false);
     }

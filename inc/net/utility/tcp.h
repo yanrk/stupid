@@ -20,9 +20,9 @@ NAMESPACE_STUPID_NET_BEGIN
 STUPID_CXX_API(bool) tcp_listen(const char * host, const char * service, socket_t & listener, int backlog = 5);
 STUPID_CXX_API(bool) tcp_listen(unsigned short port, socket_t & listener, int backlog = 5);
 STUPID_CXX_API(bool) tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog = 5);
-STUPID_CXX_API(bool) tcp_connect(const char * host, const char * service, socket_t & connecter, unsigned short bind_port = 0);
-STUPID_CXX_API(bool) tcp_connect(const char * ip, unsigned short port, socket_t & connecter, unsigned short bind_port = 0);
-STUPID_CXX_API(bool) tcp_connect(const sockaddr_in_t & address, socket_t & connecter, unsigned short bind_port = 0);
+STUPID_CXX_API(bool) tcp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
+STUPID_CXX_API(bool) tcp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
+STUPID_CXX_API(bool) tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
 STUPID_CXX_API(bool) tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address = nullptr, sock_len_t * addr_len = nullptr);
 STUPID_CXX_API(void) tcp_close(socket_t & sock);
 STUPID_CXX_API(bool) tcp_set_block_switch(socket_t sock, bool blocking);

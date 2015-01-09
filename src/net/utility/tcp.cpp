@@ -150,7 +150,7 @@ bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
     return(false);
 }
 
-bool tcp_connect(const char * host, const char * service, socket_t & connecter, unsigned short bind_port)
+bool tcp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
 {
     connecter = BAD_SOCKET;
 
@@ -163,7 +163,11 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
     sockaddr_in_t bind_address;
     if (0 != bind_port)
     {
-        if (!transform_address("127.0.0.1", bind_port, bind_address))
+        if (nullptr == bind_ip || 0 == strcmp(bind_ip, "127.0.0.1"))
+        {
+            bind_ip = "0.0.0.0";
+        }
+        if (!transform_address(bind_ip, bind_port, bind_address))
         {
             DBG_LOG("transform_address failed");
             return(false);
@@ -222,7 +226,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
     return(ret);
 }
 
-bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, unsigned short bind_port)
+bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
 {
     sockaddr_in_t address;
     if (!transform_address(ip, port, address))
@@ -230,10 +234,10 @@ bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, uns
         DBG_LOG("transform_address failed");
         return(false);
     }
-    return(tcp_connect(address, connecter, bind_port));
+    return(tcp_connect(address, connecter, bind_ip, bind_port));
 }
 
-bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, unsigned short bind_port)
+bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
 {
     connecter = socket(AF_INET, SOCK_STREAM, 0);
     if (BAD_SOCKET == connecter)
@@ -245,7 +249,11 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, unsigned s
     if (0 != bind_port)
     {
         sockaddr_in_t bind_address;
-        if (!transform_address("127.0.0.1", bind_port, bind_address))
+        if (nullptr == bind_ip || 0 == strcmp(bind_ip, "127.0.0.1"))
+        {
+            bind_ip = "0.0.0.0";
+        }
+        if (!transform_address(bind_ip, bind_port, bind_address))
         {
             DBG_LOG("transform_address failed");
             tcp_close(connecter);

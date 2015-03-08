@@ -224,6 +224,18 @@
     <ClInclude Include="..\..\inc\base\utility\bitmap.h">
       <Filter>inc\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\linux_thread_local_storage.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\thread_local_storage.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\windows_thread_local_storage.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\utility.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\base\common\consts.cpp">
@@ -302,6 +314,15 @@
       <Filter>src\charset</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\base\utility\counter.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\linux_thread_local_storage.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\windows_thread_local_storage.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\utility\utility.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
   </ItemGroup>

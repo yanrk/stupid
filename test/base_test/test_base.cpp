@@ -25,5 +25,7 @@ int main(int argc, char * argv[])
     test_base_charset();
     test_base_counter();
     test_base_bitmap();
+    test_base_thread_local_storage();
+    test_base_utility();
     return(0);
 }

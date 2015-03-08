@@ -91,6 +91,12 @@
     <ClCompile Include="test_base_bitmap.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="test_base_thread_local_storage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="test_base_utility.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="log.ini">

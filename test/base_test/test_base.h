@@ -43,6 +43,8 @@ extern void test_base_bcd(void);
 extern void test_base_charset(void);
 extern void test_base_counter(void);
 extern void test_base_bitmap(void);
+extern void test_base_thread_local_storage(void);
+extern void test_base_utility(void);
 
 
 #endif // STUPID_BASE_TEST_H

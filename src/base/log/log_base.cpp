@@ -17,19 +17,11 @@
 
 #include <fstream>
 #include "base/utility/guard.h"
+#include "base/utility/utility.h"
 #include "base/filesystem/sys_io.h"
 #include "base/time/time.h"
 #include "base/string/string.h"
 #include "base/log/log_base.h"
-
-static size_t current_thread_id()
-{
-#ifdef _MSC_VER
-    return(static_cast<size_t>(GetCurrentThreadId()));
-#else
-    return(static_cast<size_t>(pthread_self()));
-#endif // _MSC_VER
-}
 
 NAMESPACE_STUPID_BASE_BEGIN
 
@@ -204,7 +196,7 @@ void LogBase::push_record(LOG_LEVEL level, const char * file, const char * func,
     (
         record + record_size, LOG_RECORD_SIZE - record_size, 
         " | %s | T%010u | %s:%s:%05d | ", 
-        LOG_LEVEL_INFO[level], current_thread_id(), file, func, line
+        LOG_LEVEL_INFO[level], get_tid(), file, func, line
     );
 
     record_size += stupid_vsnprintf

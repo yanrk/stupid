@@ -219,7 +219,9 @@
     <ClCompile Include="test_base_splitter.cpp" />
     <ClCompile Include="test_base_string.cpp" />
     <ClCompile Include="test_base_thread.cpp" />
+    <ClCompile Include="test_base_thread_local_storage.cpp" />
     <ClCompile Include="test_base_time.cpp" />
+    <ClCompile Include="test_base_utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log.ini" />

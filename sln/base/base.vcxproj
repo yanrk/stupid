@@ -249,8 +249,11 @@
     <ClInclude Include="..\..\inc\base\string\splitter.h" />
     <ClInclude Include="..\..\inc\base\string\string.h" />
     <ClInclude Include="..\..\inc\base\thread\linux_thread.h" />
+    <ClInclude Include="..\..\inc\base\thread\linux_thread_local_storage.h" />
     <ClInclude Include="..\..\inc\base\thread\thread.h" />
+    <ClInclude Include="..\..\inc\base\thread\thread_local_storage.h" />
     <ClInclude Include="..\..\inc\base\thread\windows_thread.h" />
+    <ClInclude Include="..\..\inc\base\thread\windows_thread_local_storage.h" />
     <ClInclude Include="..\..\inc\base\time\multi_timer.h" />
     <ClInclude Include="..\..\inc\base\time\single_timer.h" />
     <ClInclude Include="..\..\inc\base\time\time.h" />
@@ -261,6 +264,7 @@
     <ClInclude Include="..\..\inc\base\utility\log_switch.h" />
     <ClInclude Include="..\..\inc\base\utility\singleton.h" />
     <ClInclude Include="..\..\inc\base\utility\uncopy.h" />
+    <ClInclude Include="..\..\inc\base\utility\utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\base\charset\charset.cpp" />
@@ -282,13 +286,16 @@
     <ClCompile Include="..\..\src\base\string\splitter.cpp" />
     <ClCompile Include="..\..\src\base\string\string.cpp" />
     <ClCompile Include="..\..\src\base\thread\linux_thread.cpp" />
+    <ClCompile Include="..\..\src\base\thread\linux_thread_local_storage.cpp" />
     <ClCompile Include="..\..\src\base\thread\windows_thread.cpp" />
+    <ClCompile Include="..\..\src\base\thread\windows_thread_local_storage.cpp" />
     <ClCompile Include="..\..\src\base\time\multi_timer.cpp" />
     <ClCompile Include="..\..\src\base\time\single_timer.cpp" />
     <ClCompile Include="..\..\src\base\time\time.cpp" />
     <ClCompile Include="..\..\src\base\utility\counter.cpp" />
     <ClCompile Include="..\..\src\base\utility\log_switch.cpp" />
     <ClCompile Include="..\..\src\base\utility\uncopy.cpp" />
+    <ClCompile Include="..\..\src\base\utility\utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -30,6 +30,7 @@ static thread_return_t STUPID_STDCALL thread_run(thread_argument_t argument)
 
     while (test->thread->running())
     {
+        stupid_ms_sleep(1);
         Guard<ThreadLocker> stdout_guard(s_stdout_locker);
         printf("[%s] %d\n", test->thread->thread_name().c_str(), test->value);
     }
@@ -75,7 +76,7 @@ void test_base_thread(void)
     s_thread_1.acquire();
     s_thread_2.acquire();
 
-    stupid_ns_sleep(50000000);
+    stupid_ms_sleep(100);
 
     s_thread_1.release();
     s_thread_2.release();

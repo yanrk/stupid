@@ -139,6 +139,7 @@
         copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
         copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
         copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\*  .\bin\windows\$(Configuration)\;
         copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;
       </Command>
     </PostBuildEvent>
@@ -200,6 +201,7 @@
         copy ..\..\gnu\curl\lib\windows\*  .\bin\windows\$(configuration)\;
         copy ..\..\gnu\zlib\lib\windows\*  .\bin\windows\$(configuration)\;
         copy ..\..\gnu\openssl\lib\windows\*  .\bin\windows\$(configuration)\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\*  .\bin\windows\$(Configuration)\;
         copy ..\..\lib\windows\$(configuration)\*  .\bin\windows\$(configuration)\;
       </Command>
     </PostBuildEvent>

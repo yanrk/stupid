@@ -3,6 +3,7 @@ build_dir          = $(project_home)
 bin_dir            = $(project_home)/bin/linux
 object_dir         = $(project_home)/.objs
 stupid_home        = $(project_home)/../..
+gnu_home           = $(stupid_home)/gnu
 
 
 
@@ -34,12 +35,17 @@ local_objects      = $(local_source:$(project_home)%.cpp=$(object_dir)%.o)
 # system librarys
 system_libs        = -lpthread
 
+# open source librarys
+cmarkup_lib_inc    = $(gnu_home)/cmarkup/lib/linux
+gnu_libs           = -L$(cmarkup_lib_inc) -lcmarkup
+
 # stupid librarys
 stupid_lib_inc     = $(stupid_home)/lib/linux
 stupid_libs        = -L$(stupid_lib_inc) -lstupid_base
 
 # local depends librarys
 depend_libs        = $(stupid_libs)
+depend_libs       += $(gnu_libs)
 depend_libs       += $(system_libs)
 
 
@@ -72,6 +78,7 @@ build    : $(local_objects)
 
 cpfile   :
 	@cp $(stupid_lib_inc)/* $(bin_dir)/
+	@cp $(cmarkup_lib_inc)/* $(bin_dir)/
 
 run      : cpfile
 	@export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(bin_dir) && $(output_exec)

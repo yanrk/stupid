@@ -127,7 +127,10 @@
       <AdditionalDependencies>ws2_32.lib;stupid_base.lib;stupid_net.lib;</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
-      <Command>copy ..\..\lib\windows\$(Configuration)\stupid_*  .\bin\windows\$(Configuration)\;</Command>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_*  .\bin\windows\$(Configuration)\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\cmarkup*  .\bin\windows\$(Configuration)\;
+      </Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
@@ -176,7 +179,10 @@
       <AdditionalDependencies>ws2_32.lib;stupid_base.lib;stupid_net.lib;</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
-      <Command>copy ..\..\lib\windows\$(Configuration)\stupid_*  .\bin\windows\$(Configuration)\;</Command>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_*  .\bin\windows\$(Configuration)\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\cmarkup*  .\bin\windows\$(Configuration)\;
+      </Command>
     </PreLinkEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

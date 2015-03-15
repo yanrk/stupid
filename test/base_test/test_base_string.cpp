@@ -563,6 +563,33 @@ static void test_base_string_5(void)
     std::cout << std::endl;
 }
 
+static void test_base_string_6(void)
+{
+    std::cout << "test string to type and type to string" << std::endl;
+
+    std::list<std::string> src_list;
+    src_list.push_back("123");
+    src_list.push_back("456");
+    src_list.push_back("789");
+
+    std::list<int> int_list;
+    stupid_string_to_type(src_list, int_list);
+
+    std::list<std::string> dst_list;
+    stupid_type_to_string(int_list, dst_list);
+
+    if (stupid_includes(src_list.begin(), src_list.end(), dst_list.begin(), dst_list.end()) && 
+        stupid_includes(dst_list.begin(), dst_list.end(), src_list.begin(), src_list.end()))
+    {
+        std::cout << "success" << std::endl;
+    }
+    else
+    {
+        std::cout << "failure" << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 void test_base_string(void)
 {
     test_base_string_1();
@@ -570,4 +597,5 @@ void test_base_string(void)
     test_base_string_3();
     test_base_string_4();
     test_base_string_5();
+    test_base_string_6();
 }

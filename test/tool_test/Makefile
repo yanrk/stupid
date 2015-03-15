@@ -39,9 +39,11 @@ system_libs        = -lpthread
 zlib_lib_inc       = $(gnu_home)/zlib/lib/linux
 openssl_lib_inc    = $(gnu_home)/openssl/lib/linux
 curl_lib_inc       = $(gnu_home)/curl/lib/linux
+cmarkup_lib_inc    = $(gnu_home)/cmarkup/lib/linux
 gnu_libs           = -L$(zlib_lib_inc) -lz
 gnu_libs          += -L$(openssl_lib_inc) -lcrypto -lssl
 gnu_libs          += -L$(curl_lib_inc) -lcurl
+gnu_libs          += -L$(cmarkup_lib_inc) -lcmarkup
 
 # stupid librarys
 stupid_lib_inc     = $(stupid_home)/lib/linux
@@ -96,6 +98,7 @@ cpfile   :
 	@cp $(zlib_lib_inc)/* $(bin_dir)/
 	@cp $(openssl_lib_inc)/* $(bin_dir)/
 	@cp $(curl_lib_inc)/* $(bin_dir)/
+	@cp $(cmarkup_lib_inc)/* $(bin_dir)/
 
 run      : cpfile
 	@export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(bin_dir) && $(output_exec)

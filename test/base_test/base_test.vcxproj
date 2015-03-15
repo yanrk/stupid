@@ -102,7 +102,9 @@
       </IgnoreSpecificDefaultLibraries>
     </Link>
     <PreLinkEvent>
-      <Command>copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;</Command>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
+      </Command>
     </PreLinkEvent>
     <PostBuildEvent>
       <Command>
@@ -128,7 +130,10 @@
       </IgnoreSpecificDefaultLibraries>
     </Link>
     <PreLinkEvent>
-      <Command>copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;</Command>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\cmarkup.*  .\bin\windows\$(Configuration)\;
+      </Command>
     </PreLinkEvent>
     <PostBuildEvent>
       <Command>
@@ -157,7 +162,9 @@
       <AdditionalLibraryDirectories>../../lib/windows/$(Configuration);</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
-      <Command>copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;</Command>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
+      </Command>
     </PreLinkEvent>
     <PostBuildEvent>
       <Command>
@@ -185,7 +192,10 @@
       <AdditionalLibraryDirectories>../../lib/windows/$(Configuration);</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
-      <Command>copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;</Command>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\cmarkup.*  .\bin\windows\$(Configuration)\;
+      </Command>
     </PreLinkEvent>
     <PostBuildEvent>
       <Command>
@@ -222,6 +232,7 @@
     <ClCompile Include="test_base_thread_local_storage.cpp" />
     <ClCompile Include="test_base_time.cpp" />
     <ClCompile Include="test_base_utility.cpp" />
+    <ClCompile Include="test_base_xml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log.ini" />

@@ -119,7 +119,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -129,10 +129,8 @@
       <AdditionalDependencies />
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
@@ -142,17 +140,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;</IgnoreSpecificDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -168,7 +164,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -180,10 +176,8 @@
       <AdditionalDependencies />
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
@@ -195,7 +189,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -204,10 +198,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;</IgnoreSpecificDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -227,6 +219,7 @@
     <ClInclude Include="..\..\inc\base\common\namespace.h" />
     <ClInclude Include="..\..\inc\base\common\typedefs.h" />
     <ClInclude Include="..\..\inc\base\config\ini.h" />
+    <ClInclude Include="..\..\inc\base\config\xml.h" />
     <ClInclude Include="..\..\inc\base\exception\exception.h" />
     <ClInclude Include="..\..\inc\base\filesystem\directory.h" />
     <ClInclude Include="..\..\inc\base\filesystem\sys_io.h" />
@@ -270,6 +263,7 @@
     <ClCompile Include="..\..\src\base\charset\charset.cpp" />
     <ClCompile Include="..\..\src\base\common\consts.cpp" />
     <ClCompile Include="..\..\src\base\config\ini.cpp" />
+    <ClCompile Include="..\..\src\base\config\xml.cpp" />
     <ClCompile Include="..\..\src\base\exception\exception.cpp" />
     <ClCompile Include="..\..\src\base\filesystem\directory.cpp" />
     <ClCompile Include="..\..\src\base\locker\null_locker.cpp" />

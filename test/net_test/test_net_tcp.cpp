@@ -92,7 +92,7 @@ static thread_return_t STUPID_STDCALL client_thread_run_1(thread_argument_t)
     s_stdout_locker.release();
 
     socket_t connecter = BAD_SOCKET;
-    if (!tcp_connect(s_host_name.c_str(), s_server_listen_port.c_str(), connecter, s_client_bind_port))
+    if (!tcp_connect(s_host_name.c_str(), s_server_listen_port.c_str(), connecter, "0.0.0.0", s_client_bind_port))
     {
         assert(false);
     }

@@ -11,9 +11,11 @@ gnu_home           = $(project_home)/gnu
 zlib_inc_path      = $(gnu_home)/zlib/inc
 openssl_inc_path   = $(gnu_home)/openssl/inc
 curl_inc_path      = $(gnu_home)/curl/inc
+cmarkup_inc_path   = $(gnu_home)/cmarkup/inc
 gnu_includes       = -I$(zlib_inc_path)
 gnu_includes      += -I$(openssl_inc_path)
 gnu_includes      += -I$(curl_inc_path)
+gnu_includes      += -I$(cmarkup_inc_path)
 
 # includes of stupid headers
 stupid_inc_path    = $(stupid_home)/inc
@@ -52,6 +54,7 @@ tool_objects       = $(tool_source:$(project_home)%.cpp=$(object_dir)%.o)
 
 # base depends librarys
 base_depend_libs   = -lpthread
+base_depend_libs   = -L$(gnu_home)/cmarkup/lib/linux -lcmarkup
 
 # net depends librarys
 net_depend_libs    = -L$(bin_dir) -lstupid_base
@@ -129,6 +132,6 @@ $(object_dir)/%.o:$(project_home)/%.cpp
 	g++ -c $(build_obj_flags) $(includes) -o $@ $<
 
 clean    : rmln
-	rm -rf $(object_dir) $(base_output_lib) $(net_output_lib) $(tool_output_lib)
+	rm -rf $(object_dir) $(bin_dir)/lib*
 
 rebuild  : clean build

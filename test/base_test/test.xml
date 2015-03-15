@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root name1="data1" name2="data2" name3="data3">
+    <web_service command_port="9912" manager_port="9915"></web_service>
+    <node_service port="9999"></node_service>
+</root>

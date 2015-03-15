@@ -236,6 +236,9 @@
     <ClInclude Include="..\..\inc\base\utility\utility.h">
       <Filter>inc\utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\inc\base\config\xml.h">
+      <Filter>inc\config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\base\common\consts.cpp">
@@ -324,6 +327,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\base\utility\utility.cpp">
       <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\config\xml.cpp">
+      <Filter>src\config</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

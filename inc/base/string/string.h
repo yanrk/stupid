@@ -16,6 +16,7 @@
 #include <cstdarg>
 #include <cstring>
 #include <string>
+#include <list>
 #include <sstream>
 #include <algorithm>
 #include "base/common/common.h"
@@ -41,6 +42,44 @@ bool stupid_type_to_string(T val, std::string & str)
     oss << val;
     str = oss.str();
     return(true);
+}
+
+template <typename T>
+bool stupid_string_to_type(const std::list<std::string> & str_list, std::list<T> & val_list)
+{
+    bool ret = true;
+    for (std::list<std::string>::const_iterator iter = str_list.begin(); str_list.end() != iter; ++iter)
+    {
+        T val;
+        if (stupid_string_to_type(*iter, val))
+        {
+            val_list.push_back(val);
+        }
+        else
+        {
+            ret = false;
+        }
+    }
+    return(ret);
+}
+
+template <typename T>
+bool stupid_type_to_string(const std::list<T> & val_list, std::list<std::string> & str_list)
+{
+    bool ret = true;
+    for (typename std::list<T>::const_iterator iter = val_list.begin(); val_list.end() != iter; ++iter)
+    {
+        std::string str;
+        if (stupid_type_to_string(*iter, str))
+        {
+            str_list.push_back(str);
+        }
+        else
+        {
+            ret = false;
+        }
+    }
+    return(ret);
 }
 
 template <typename IteratorAll, typename IteratorPart>

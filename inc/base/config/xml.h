@@ -63,7 +63,9 @@ public: /* write */
     bool insert_child_element(const char * child_element_name, const char * child_element_value = nullptr);
     bool insert_child_element(const char * child_element_name, const std::string & child_element_value);
     bool add_attribute(const char * attribute_name, const char * attribute_value);
+    bool add_attribute(const char * attribute_name, const std::string & attribute_value);
     bool add_child_attribute(const char * child_attribute_name, const char * child_attribute_value);
+    bool add_child_attribute(const char * child_attribute_name, const std::string & child_attribute_value);
     bool add_sub_document(const char * sub_document);
     bool insert_sub_document(const char * sub_document);
     bool add_child_sub_document(const char * child_sub_document);
@@ -77,7 +79,9 @@ public: /* modify */
     bool set_child_element(const char * child_element_name, const char * child_element_value = nullptr);
     bool set_child_element(const char * child_element_name, const std::string & child_element_value);
     bool set_attribute(const char * element_name, const char * attribute_name, const char * attribute_value);
+    bool set_attribute(const char * element_name, const char * attribute_name, const std::string & attribute_value);
     bool set_child_attribute(const char * child_element_name, const char * child_attribute_name, const char * child_attribute_value);
+    bool set_child_attribute(const char * child_element_name, const char * child_attribute_name, const std::string & child_attribute_value);
     bool set_element_content(const char * element_name, const char * element_content);
 
 public: /* template */
@@ -92,6 +96,13 @@ public: /* template */
     template <typename T> bool get_element_block(const char * element_name, const char * child_element_name, bool ignore_empty_value, std::list<T> & child_element_value_list);
     template <typename T> bool add_element_block(const char * element_name, const char * child_element_name, bool ignore_empty_value, const std::list<T> & child_element_value_list);
     template <typename T> bool insert_element_block(const char * element_name, const char * child_element_name, bool ignore_empty_value, const std::list<T> & child_element_value_list);
+    template <typename T> bool get_attribute(const char * attribute_name, T & attribute_value);
+    template <typename T> bool get_attribute(const char * element_name, const char * attribute_name, T & attribute_value);
+    template <typename T> bool get_child_attribute(const char * child_element_name, const char * child_attribute_name, T & child_attribute_value);
+    template <typename T> bool add_attribute(const char * attribute_name, T attribute_value);
+    template <typename T> bool add_child_attribute(const char * child_attribute_name, T child_attribute_value);
+    template <typename T> bool set_attribute(const char * element_name, const char * attribute_name, T attribute_value);
+    template <typename T> bool set_child_attribute(const char * child_element_name, const char * child_attribute_name, T child_attribute_value);
 
 private:
     CMarkup         * m_markup;
@@ -216,6 +227,83 @@ bool Xml::insert_element_block(const char * element_name, const char * child_ele
         return(false);
     }
     return(insert_element_block(element_name, child_element_name, ignore_empty_value, str_child_element_value_list));
+}
+
+template <typename T>
+bool Xml::get_attribute(const char * attribute_name, T & attribute_value)
+{
+    std::string str_attribute_value;
+    if (!get_attribute(attribute_name, str_attribute_value))
+    {
+        return(false);
+    }
+    return(stupid_string_to_type(str_attribute_value, attribute_value));
+}
+
+template <typename T>
+bool Xml::get_attribute(const char * element_name, const char * attribute_name, T & attribute_value)
+{
+    std::string str_attribute_value;
+    if (!get_attribute(element_name, attribute_name, str_attribute_value))
+    {
+        return(false);
+    }
+    return(stupid_string_to_type(str_attribute_value, attribute_value));
+}
+
+template <typename T>
+bool Xml::get_child_attribute(const char * child_element_name, const char * child_attribute_name, T & child_attribute_value)
+{
+    std::string str_child_attribute_value;
+    if (!get_child_attribute(child_element_name, child_attribute_name, str_child_attribute_value))
+    {
+        return(false);
+    }
+    return(stupid_string_to_type(str_child_attribute_value, child_attribute_value));
+}
+
+template <typename T>
+bool Xml::add_attribute(const char * attribute_name, T attribute_value)
+{
+    std::list<std::string> str_attribute_value;
+    if (!stupid_type_to_string(attribute_value, str_attribute_value))
+    {
+        return(false);
+    }
+    return(add_attribute(attribute_name, str_attribute_value));
+}
+
+template <typename T>
+bool Xml::add_child_attribute(const char * child_attribute_name, T child_attribute_value)
+{
+    std::list<std::string> str_child_attribute_value;
+    if (!stupid_type_to_string(child_attribute_value, str_child_attribute_value))
+    {
+        return(false);
+    }
+    return(add_child_attribute(child_attribute_name, str_child_attribute_value));
+}
+
+template <typename T>
+bool Xml::set_attribute(const char * element_name, const char * attribute_name, T attribute_value)
+{
+    std::list<std::string> str_attribute_value;
+    if (!stupid_type_to_string(attribute_value, str_attribute_value))
+    {
+        return(false);
+    }
+    return(set_attribute(element_name, attribute_name, str_attribute_value));
+}
+
+template <typename T>
+bool Xml::set_child_attribute(const char * child_element_name, const char * child_attribute_name, T child_attribute_value)
+{
+    std::list<std::string> str_child_attribute_value;
+    if (!stupid_type_to_string(child_attribute_value, str_child_attribute_value))
+    {
+        return(false);
+    }
+    return(set_child_attribute(child_element_name, child_attribute_name, str_child_attribute_value));
 }
 
 NAMESPACE_STUPID_BASE_END

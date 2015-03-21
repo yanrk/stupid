@@ -312,6 +312,11 @@ bool Xml::add_attribute(const char * attribute_name, const char * attribute_valu
     return(m_markup->AddAttrib(attribute_name, attribute_value));
 }
 
+bool Xml::add_attribute(const char * attribute_name, const std::string & attribute_value)
+{
+    return(add_attribute(attribute_name, attribute_value.c_str()));
+}
+
 bool Xml::add_child_attribute(const char * child_attribute_name, const char * child_attribute_value)
 {
     if (nullptr == child_attribute_name || nullptr == child_attribute_value)
@@ -319,6 +324,11 @@ bool Xml::add_child_attribute(const char * child_attribute_name, const char * ch
         return(false);
     }
     return(m_markup->AddChildAttrib(child_attribute_name, child_attribute_value));
+}
+
+bool Xml::add_child_attribute(const char * child_attribute_name, const std::string & child_attribute_value)
+{
+    return(add_child_attribute(child_attribute_name, child_attribute_value.c_str()));
 }
 
 bool Xml::add_sub_document(const char * sub_document)
@@ -428,6 +438,11 @@ bool Xml::set_attribute(const char * element_name, const char * attribute_name, 
     }
 }
 
+bool Xml::set_attribute(const char * element_name, const char * attribute_name, const std::string & attribute_value)
+{
+    return(set_attribute(element_name, attribute_name, attribute_value.c_str()));
+}
+
 bool Xml::set_child_attribute(const char * child_element_name, const char * child_attribute_name, const char * child_attribute_value)
 {
     if (nullptr == child_element_name || nullptr == child_attribute_name || nullptr == child_attribute_value)
@@ -443,6 +458,11 @@ bool Xml::set_child_attribute(const char * child_element_name, const char * chil
     {
         return(m_markup->AddChildElem(child_element_name, nullptr) && m_markup->AddChildAttrib(child_attribute_name, child_attribute_value));
     }
+}
+
+bool Xml::set_child_attribute(const char * child_element_name, const char * child_attribute_name, const std::string & child_attribute_value)
+{
+    return(set_child_attribute(child_element_name, child_attribute_name, child_attribute_value.c_str()));
 }
 
 bool Xml::set_element_content(const char * element_name, const char * element_content)

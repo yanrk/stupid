@@ -23,8 +23,8 @@
             #define STUPID_API     __declspec(dllimport)
         #else
             #define STUPID_API
-        #endif // STUPID_LIB
-    #endif // STUPID_DLL
+        #endif // USE_STUPID_DLL
+    #endif // EXPORT_STUPID_DLL
 #else
     #define STUPID_CDECL
     #define STUPID_STDCALL

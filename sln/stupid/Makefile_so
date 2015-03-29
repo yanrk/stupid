@@ -53,8 +53,8 @@ tool_objects       = $(tool_source:$(project_home)%.cpp=$(object_dir)%.o)
 
 
 # base depends librarys
-base_depend_libs   = -lpthread
-base_depend_libs   = -L$(gnu_home)/cmarkup/lib/linux -lcmarkup
+base_depend_libs   = -lpthread -ldl
+base_depend_libs  += -L$(gnu_home)/cmarkup/lib/linux -lcmarkup
 
 # net depends librarys
 net_depend_libs    = -L$(bin_dir) -lstupid_base

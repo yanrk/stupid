@@ -100,6 +100,9 @@
     <ClCompile Include="test_base_xml.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="test_base_library.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="log.ini">

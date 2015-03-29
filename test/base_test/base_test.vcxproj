@@ -219,6 +219,7 @@
     <ClCompile Include="test_base_hex.cpp" />
     <ClCompile Include="test_base_id_manager.cpp" />
     <ClCompile Include="test_base_ini.cpp" />
+    <ClCompile Include="test_base_library.cpp" />
     <ClCompile Include="test_base_locker.cpp" />
     <ClCompile Include="test_base_log.cpp" />
     <ClCompile Include="test_base_memory.cpp" />

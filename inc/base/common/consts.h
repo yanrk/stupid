@@ -18,7 +18,7 @@
 
 NAMESPACE_STUPID_BASE_BEGIN
 
-STUPID_C_TYPE(const char *) g_blank_character_set;
+STUPID_EXTERN_TYPE(const char *) g_blank_character_set;
 
 NAMESPACE_STUPID_BASE_END
 

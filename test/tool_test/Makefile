@@ -33,7 +33,7 @@ local_objects      = $(local_source:$(project_home)%.cpp=$(object_dir)%.o)
 
 
 # system librarys
-system_libs        = -lpthread
+system_libs        = -lpthread -ldl
 
 # open source librarys
 zlib_lib_inc       = $(gnu_home)/zlib/lib/linux

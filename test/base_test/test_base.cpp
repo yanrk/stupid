@@ -28,5 +28,6 @@ int main(int argc, char * argv[])
     test_base_thread_local_storage();
     test_base_utility();
     test_base_xml();
+    test_base_library();
     return(0);
 }

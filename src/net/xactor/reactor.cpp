@@ -195,11 +195,12 @@ void TcpReactor::close_connection(TcpConnection * connection)
     if (delete_connection_from_epoll(connection))
     {
         connection->set_error();
+
         BusinessEvent business_event;
         business_event.connection = connection;
         business_event.event = close_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
     }
 }
 
@@ -311,8 +312,10 @@ bool TcpReactor::append_connection_to_epoll(TcpConnection * connection)
     m_unique_creator.acquire(unique_value);
     connection->set_unique(unique_value);
 
-    m_binded_connection_set.insert(connection);
     connection->increase_reference();
+
+    m_binded_connection_set.insert(connection);
+
     return(true);
 }
 
@@ -334,7 +337,9 @@ bool TcpReactor::delete_connection_from_epoll(TcpConnection * connection)
     m_unique_creator.release(connection->get_unique());
 
     m_binded_connection_set.erase(connection);
+
     connection->decrease_reference();
+
     return(true);
 }
 
@@ -397,12 +402,12 @@ bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identit
     business_event.connection = connection;
 
     business_event.event = connect_notify;
-    append_business_event(business_event);
     connection->increase_reference();
+    append_business_event(business_event);
     /*
     business_event.event = send_notify;
-    append_business_event(business_event);
     connection->increase_reference();
+    append_business_event(business_event);
     */
     return(true);
 }
@@ -453,12 +458,12 @@ bool TcpReactor::do_accept(TcpConnection * listener_connection)
         business_event.connection = connection;
 
         business_event.event = accept_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
         /*
         business_event.event = send_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
         */
         accept_count += 1;
     }
@@ -867,9 +872,9 @@ void TcpReactor::reactor_connection_process()
                     data_events.connection = connection;
                     data_events.events = connection_event.events;
 
+                    connection->increase_reference();
                     DataEventsList & data_events_list = data_events_list_vector[connection->get_unique() % data_thread_count];
                     data_events_list.push_back(data_events);
-                    connection->increase_reference();
                 }
             }
         }
@@ -925,8 +930,8 @@ void TcpReactor::reactor_data_process(size_t thread_index)
                     BusinessEvent business_event;
                     business_event.connection = data_events.connection;
                     business_event.event = recv_notify;
-                    append_business_event(business_event);
                     connection->increase_reference();
+                    append_business_event(business_event);
                 }
             }
 
@@ -941,8 +946,8 @@ void TcpReactor::reactor_data_process(size_t thread_index)
                     BusinessEvent business_event;
                     business_event.connection = data_events.connection;
                     business_event.event = send_notify;
-                    append_business_event(business_event);
                     connection->increase_reference();
+                    append_business_event(business_event);
 
                     if (connection->get_eof())
                     {

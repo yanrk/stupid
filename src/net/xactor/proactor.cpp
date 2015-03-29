@@ -269,10 +269,10 @@ void TcpProactor::connection_send(TcpConnection * connection)
     /* when send-buffer has data, the connection should continue to send */
     do
     {
+        /* data has been sent in do_send() */
         if (0 == connection->send_buffer_size())
         {
-            RUN_LOG_TRK("connection_send failed: no data"); /* RUN_LOG_ERR */
-            break;
+            return;
         }
 
         iocp_event * post_event = &connection->m_async_send;
@@ -280,7 +280,17 @@ void TcpProactor::connection_send(TcpConnection * connection)
         /* wait do_send finish */
         while (post_event->buffer != post_event->data.buf || 0 != post_event->data.len)
         {
+            if (connection->get_error())
+            {
+                break;
+            }
             Stupid::Base::stupid_ms_sleep(10);
+        }
+
+        /* data has been sent in do_send() */
+        if (0 == connection->send_buffer_size())
+        {
+            return;
         }
 
         size_t send_len = std::min<size_t>(post_event->buffer_size, connection->send_buffer_size());
@@ -310,11 +320,12 @@ void TcpProactor::close_connection(TcpConnection * connection)
     if (delete_connection_from_iocp(connection))
     {
         connection->set_error();
+
         BusinessEvent business_event;
         business_event.connection = connection;
         business_event.event = close_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
     }
 }
 
@@ -363,15 +374,15 @@ bool TcpProactor::create_listener(unsigned short * service_port, size_t service_
 
         connection->set_socket(listener);
 
-        insert_connection(connection);
-
-        if (!append_connection_to_iocp(connection))
+        if (!get_extern_wsa_functions(listener))
         {
-            remove_connection(connection);
+            release_connection(connection);
             return(false);
         }
 
-        if (!get_extern_wsa_functions(listener))
+        insert_connection(connection);
+
+        if (!append_connection_to_iocp(connection))
         {
             remove_connection(connection);
             return(false);
@@ -454,8 +465,10 @@ bool TcpProactor::append_connection_to_iocp(TcpConnection * connection)
     m_unique_creator.acquire(unique_value);
     connection->set_unique(unique_value);
 
-    m_binded_connection_set.insert(connection);
     connection->increase_reference();
+
+    m_binded_connection_set.insert(connection);
+
     return(true);
 }
 
@@ -470,7 +483,9 @@ bool TcpProactor::delete_connection_from_iocp(TcpConnection * connection)
     m_unique_creator.release(connection->get_unique());
 
     m_binded_connection_set.erase(connection);
+
     connection->decrease_reference();
+
     return(true);
 }
 
@@ -593,12 +608,12 @@ bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identi
     business_event.connection = connection;
 
     business_event.event = connect_notify;
-    append_business_event(business_event);
     connection->increase_reference();
+    append_business_event(business_event);
     /*
     business_event.event = send_notify;
-    append_business_event(business_event);
     connection->increase_reference();
+    append_business_event(business_event);
     */
     return(post_recv(&connection->m_async_recv));
 }
@@ -657,12 +672,12 @@ bool TcpProactor::do_accept(iocp_event * post_event, size_t data_len)
         business_event.connection = connection;
 
         business_event.event = accept_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
         /*
         business_event.event = send_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
         */
         if (data_len > 0)
         {
@@ -699,8 +714,8 @@ bool TcpProactor::do_recv(iocp_event * post_event, size_t data_len)
         BusinessEvent business_event;
         business_event.connection = connection;
         business_event.event = recv_notify;
-        append_business_event(business_event);
         connection->increase_reference();
+        append_business_event(business_event);
     }
 
     return(post_recv(post_event));
@@ -734,8 +749,8 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
             BusinessEvent business_event;
             business_event.connection = connection;
             business_event.event = send_notify;
-            append_business_event(business_event);
             connection->increase_reference();
+            append_business_event(business_event);
             return(true);
         }
     }
@@ -1043,23 +1058,15 @@ void TcpProactor::proactor_connection_process(size_t thread_index)
         if (nullptr == post_event)
         {
             RUN_LOG_CRI("post_event is nullptr");
+            connection->decrease_reference();
             continue;
         }
         else if (nullptr == post_event->connection)
         {
             RUN_LOG_CRI("post_event->connection is nullptr");
+            connection->decrease_reference();
             continue;
         }
-
-        /*
-         * when accept_iocp == post_event->post_type
-         * m_listeners.end() != std::find(m_listeners.begin(), m_listeners.end(), connection)
-         * otherwise, connection == post_event->connection
-         * and we just operate the connection which handle message
-         * and we do "connection = post_event->connection" here
-         * because it is not safe do this above, may post_event is not exist
-         */
-        connection = post_event->connection;
 
         if (!good)
         {
@@ -1068,11 +1075,26 @@ void TcpProactor::proactor_connection_process(size_t thread_index)
             continue;
         }
 
-        if ((0 == data_len) && (recv_iocp == post_event->post_type || send_iocp == post_event->post_type))
+        /*
+         * when accept_iocp == post_event->post_type
+         * m_listeners.end() != std::find(m_listeners.begin(), m_listeners.end(), connection)
+         * otherwise, connection == post_event->connection
+         */
+        if (accept_iocp != post_event->post_type)
         {
-            do_close(connection);
-            connection->decrease_reference();
-            continue;
+            if (connection != post_event->connection)
+            {
+                RUN_LOG_CRI("accept_iocp != post_event->post_type && connection != post_event->connection");
+                do_close(connection);
+                connection->decrease_reference();
+                continue;
+            }
+            if (0 == data_len)
+            {
+                do_close(connection);
+                connection->decrease_reference();
+                continue;
+            }
         }
 
         switch (post_event->post_type)

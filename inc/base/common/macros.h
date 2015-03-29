@@ -31,11 +31,15 @@
     #define STUPID_API
 #endif // _MSC_VER
 
-#define STUPID_C_API(ret_type)     extern "C" STUPID_API ret_type STUPID_CDECL
-#define STUPID_CXX_API(ret_type)   extern     STUPID_API ret_type STUPID_CDECL
+#ifdef __cplusplus
+    #define STUPID_C_API(return_type)            extern "C" STUPID_API return_type STUPID_CDECL
+    #define STUPID_EXTERN_TYPE(variable_type)    extern "C" STUPID_API variable_type
+#else
+    #define STUPID_C_API(return_type)            extern     STUPID_API return_type STUPID_CDECL
+    #define STUPID_EXTERN_TYPE(variable_type)    extern     STUPID_API variable_type
+#endif // __cplusplus
 
-#define STUPID_C_TYPE(type)        extern "C" STUPID_API type
-#define STUPID_CXX_TYPE(type)      extern     STUPID_API type
+#define STUPID_CXX_API(return_type)              extern     STUPID_API return_type STUPID_CDECL
 
 #ifdef __cplusplus
     #define STUPID_INLINE             inline
@@ -60,6 +64,12 @@
     #define STUPID_I64_ARG(x)   ((long long)(x))
     #define STUPID_U64_ARG(x)   ((unsigned long long)(x))
 #endif // defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
+
+#ifdef _MSC_VER
+    #define STUPID_LIBRARY(path, library)   path "/" library ".dll"
+#else
+    #define STUPID_LIBRARY(path, library)   path "/lib" library ".so"
+#endif // _MSC_VER
 
 
 #endif // STUPID_BASE_MACROS_H

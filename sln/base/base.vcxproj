@@ -223,6 +223,7 @@
     <ClInclude Include="..\..\inc\base\exception\exception.h" />
     <ClInclude Include="..\..\inc\base\filesystem\directory.h" />
     <ClInclude Include="..\..\inc\base\filesystem\sys_io.h" />
+    <ClInclude Include="..\..\inc\base\library\library.h" />
     <ClInclude Include="..\..\inc\base\locker\linux_locker.h" />
     <ClInclude Include="..\..\inc\base\locker\locker.h" />
     <ClInclude Include="..\..\inc\base\locker\null_locker.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="..\..\src\base\config\xml.cpp" />
     <ClCompile Include="..\..\src\base\exception\exception.cpp" />
     <ClCompile Include="..\..\src\base\filesystem\directory.cpp" />
+    <ClCompile Include="..\..\src\base\library\library.cpp" />
     <ClCompile Include="..\..\src\base\locker\null_locker.cpp" />
     <ClCompile Include="..\..\src\base\locker\windows_locker.cpp" />
     <ClCompile Include="..\..\src\base\log\asyn_log.cpp" />

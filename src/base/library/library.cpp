@@ -94,4 +94,62 @@ const char * stupid_library_error(void)
     return(library_error);
 }
 
+Library::Library()
+    : m_name()
+    , m_what()
+    , m_library(nullptr)
+{
+
+}
+
+Library::~Library()
+{
+    release();
+}
+
+bool Library::acquire(const char * library_name)
+{
+    release();
+
+    if (nullptr == library_name)
+    {
+        m_what = "library name is nullptr";
+        return(false);
+    }
+
+    m_name = library_name;
+    m_library = stupid_library_acquire(library_name);
+    if (nullptr == m_library)
+    {
+        m_what = stupid_library_error();
+        return(false);
+    }
+
+    return(true);
+}
+
+void Library::release()
+{
+    m_name.clear();
+    m_what.clear();
+    if (nullptr != m_library)
+    {
+        if (0 == stupid_library_release(m_library))
+        {
+            m_what = stupid_library_error();
+        }
+        m_library = 0;
+    }
+}
+
+const std::string & Library::name() const
+{
+    return(m_name);
+}
+
+const std::string & Library::what() const
+{
+    return(m_what);
+}
+
 NAMESPACE_STUPID_BASE_END

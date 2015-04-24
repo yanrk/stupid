@@ -203,6 +203,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="simple_math.h" />
     <ClInclude Include="test_base.h" />
   </ItemGroup>
   <ItemGroup>

@@ -2,11 +2,11 @@
  * Description : time functions
  * Data        : 2013-05-24 12:15:59
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_TIME_H
@@ -44,6 +44,7 @@ STUPID_CXX_API(std::string) stupid_get_date(const char * date_delimiter = "-");
 STUPID_CXX_API(std::string) stupid_get_date(const struct tm & tm_value, const char * date_delimiter = "-");
 STUPID_CXX_API(std::string) stupid_get_time(const char * time_delimiter = ":");
 STUPID_CXX_API(std::string) stupid_get_time(const struct tm & tm_value, const char * time_delimiter = ":");
+STUPID_CXX_API(std::string) stupid_datetime();
 STUPID_CXX_API(std::string) stupid_get_datetime(const char * date_delimiter = "-", const char * time_delimiter = ":", const char * date_time_delimiter = " ");
 STUPID_CXX_API(std::string) stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter = "-", const char * time_delimiter = ":", const char * date_time_delimiter = " ");
 STUPID_CXX_API(std::string) stupid_get_comprehensive_datetime(const char * date_delimiter = "-", const char * time_delimiter = ":", const char * date_time_delimiter = " ", bool week_abbreviation = true);

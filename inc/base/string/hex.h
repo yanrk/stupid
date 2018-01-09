@@ -2,11 +2,11 @@
  * Description : conversions of binary and hexadecimal
  * Data        : 2013-05-19 11:53:27
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_HEX_H

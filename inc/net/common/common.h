@@ -2,11 +2,11 @@
  * Description : include some common files
  * Data        : 2013-10-29 23:56:54
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_COMMON_H

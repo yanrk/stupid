@@ -2,11 +2,11 @@
  * Description : ini parse class
  * Data        : 2013-07-27 16:11:54
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_INI_H
@@ -35,7 +35,9 @@ public:
 
 public:
     bool get_value(const std::string & app_name, const std::string & key_name, std::string & key_value) const;
+    bool get_value(const std::string & app_name, const std::string & key_name, char * key_value, size_t key_value_size) const;
     bool set_value(const std::string & app_name, const std::string & key_name, const std::string & key_value);
+    bool set_value(const std::string & app_name, const std::string & key_name, const char * key_value);
     template <typename T> bool get_value(const std::string & app_name, const std::string & key_name, T & key_value) const;
     template <typename T> bool set_value(const std::string & app_name, const std::string & key_name, T key_value);
 

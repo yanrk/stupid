@@ -2,11 +2,11 @@
  * Description : encode and decode of base64
  * Data        : 2013-05-19 10:20:25
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cstring>
@@ -213,7 +213,7 @@ bool base64_decode(const char * src, char * dst, size_t dst_len)
         return(false);
     }
 
-    memset(dst, 0, dst_len);
+    memset(dst, 0x00, dst_len);
 
     return(base64_decode(src, reinterpret_cast<unsigned char *>(dst), dst_len - 1));
 }

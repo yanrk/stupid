@@ -47,6 +47,9 @@ extern void test_base_thread_local_storage(void);
 extern void test_base_utility(void);
 extern void test_base_xml(void);
 extern void test_base_library(void);
+extern void test_base_file(void);
+extern void test_base_hardware(void);
+extern void test_base_process(void);
 
 
 #endif // STUPID_BASE_TEST_H

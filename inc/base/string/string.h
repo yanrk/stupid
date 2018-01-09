@@ -2,11 +2,11 @@
  * Description : string operator functions
  * Data        : 2013-05-18 20:41:33
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_STRING_H
@@ -34,6 +34,9 @@ bool stupid_string_to_type(const std::string & str, T & val)
 }
 
 template <typename T>
+bool stupid_string_to_type(const std::string & str, T * val);
+
+template <typename T>
 bool stupid_type_to_string(T val, std::string & str)
 {
     std::ostringstream oss;
@@ -43,6 +46,9 @@ bool stupid_type_to_string(T val, std::string & str)
     str = oss.str();
     return(true);
 }
+
+template <typename T>
+bool stupid_type_to_string(T * val, std::string & str);
 
 template <typename T>
 bool stupid_string_to_type(const std::list<std::string> & str_list, std::list<T> & val_list)
@@ -188,10 +194,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
             const char trim_set[2] = { delimiter, 0x00 };
             stupid_string_trim(param, trim_set);
         }
-        if (!param.empty())
-        {
-            result.push_back(param);
-        }
+        result.push_back(param);
 
         first = last;
     }

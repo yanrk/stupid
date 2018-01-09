@@ -2,11 +2,11 @@
  * Description : tcp connection class
  * Data        : 2014-06-30 10:59:25
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_CONNECTION_H
@@ -23,13 +23,7 @@
 
 NAMESPACE_STUPID_NET_BEGIN
 
-#ifdef _MSC_VER
-    class TcpProactor;
-    typedef TcpProactor   TcpXactor;
-#else
-    class TcpReactor;
-    typedef TcpReactor    TcpXactor;
-#endif // _MSC_VER
+class TcpXactor;
 
 class TcpConnection : public TcpConnectionBase, private Stupid::Base::Uncopy
 {
@@ -37,11 +31,7 @@ private:
     typedef Stupid::Base::ObjectPool<Block, Stupid::Base::ThreadLocker> BlockPool;
 
 private:
-#ifdef _MSC_VER
-    friend class TcpProactor;
-#else
-    friend class TcpReactor;
-#endif // _MSC_VER
+    friend class TcpXactor;
 
 public:
     TcpConnection(TcpXactor & xactor, BlockPool & block_pool);

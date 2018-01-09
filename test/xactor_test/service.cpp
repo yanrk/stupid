@@ -31,7 +31,7 @@ bool TestService::on_connect(Stupid::Net::TcpConnectionBase * connection, size_t
     if (m_requester)
     {
         RUN_LOG_DBG("connect client: %u", identity);
-        return(insert_connection(connection));
+        return(insert_connection(connection) && send_message(connection));
     }
     else
     {
@@ -65,35 +65,6 @@ bool TestService::on_recv(Stupid::Net::TcpConnectionBase * connection)
 
 bool TestService::on_send(Stupid::Net::TcpConnectionBase * connection)
 {
-    if (!m_test_data)
-    {
-        return(true);
-    }
-
-    if (!m_requester)
-    {
-        return(true);
-    }
-
-    bool first_time = false;
-
-    {
-        Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-        if (m_connections.end() == m_connections.find(connection))
-        {
-            RUN_LOG_CRI("can not find connection");
-            assert(false);
-            return(false);
-        }
-
-        first_time = (0 == m_connections[connection]);
-    }
-
-    if (first_time)
-    {
-        return(send_message(connection));
-    }
-
     return(true);
 }
 

@@ -2,11 +2,11 @@
  * Description : log class of lazy mode
  * Data        : 2013-05-23 13:56:44
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cassert>
@@ -16,7 +16,7 @@
 
 NAMESPACE_STUPID_BASE_BEGIN
 
-LazyLog::LazyLog(const std::string & path, const std::string & log_type, LOG_LEVEL min_log_level, size_t max_file_size, size_t max_record_count, bool output_to_console)
+LazyLog::LazyLog(const std::string & path, const std::string & log_type, STUPID_LOG_LEVEL min_log_level, size_t max_file_size, size_t max_record_count, bool output_to_console)
     : LogBase(path, log_type, min_log_level, max_file_size, output_to_console)
     , m_record(nullptr)
     , m_reserve(max_record_count)
@@ -33,7 +33,7 @@ LazyLog::~LazyLog()
     STUPID_DEL_ARR(m_record);
 }
 
-void LazyLog::save_record(LOG_LEVEL log_level, const char * data, size_t size)
+void LazyLog::save_record(STUPID_LOG_LEVEL log_level, const char * data, size_t size)
 {
     Guard<ThreadLocker> record_guard(m_record_locker);
 

@@ -24,6 +24,9 @@
     <Filter Include="inc\xactor">
       <UniqueIdentifier>{adc3f0e2-3342-4e13-9eb7-a599d3793ec3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{bbe28321-5b59-406e-9c30-234622ff14e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\inc\net\common\common.h">
@@ -83,6 +86,9 @@
     <ClInclude Include="..\..\inc\net\xactor\connection_base.h">
       <Filter>inc\xactor</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>res</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\net\utility\utility.cpp">
@@ -121,5 +127,10 @@
     <ClCompile Include="..\..\src\net\xactor\service_base.cpp">
       <Filter>src\xactor</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="net.rc">
+      <Filter>res</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

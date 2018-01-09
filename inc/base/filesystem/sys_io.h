@@ -2,11 +2,11 @@
  * Description : macros of system standard I/O
  * Data        : 2013-05-23 11:46:45
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_SYSTEM_IO_H
@@ -38,13 +38,14 @@
 
 #ifdef _MSC_VER
     #define stupid_umask()            (0)
+    #define stupid_chmod(file)        ::chmod(file, S_IREAD | S_IWRITE)
     #define stupid_open(file, mode)   ::_open(file, mode, S_IREAD | S_IWRITE)
     #define stupid_close              ::_close
     #define stupid_lseek              ::_lseek
     #define stupid_read               ::_read
     #define stupid_write              ::_write
-    #define stupid_stat               ::_stat
-    #define STUPID_STAT               struct _stat
+    #define stupid_stat               ::_stat64
+    #define stupid_stat_t             struct _stat64
     #define stupid_access             ::_access
     #define stupid_mkdir(dir)         ::_mkdir(dir)
     #define stupid_rmdir(dir)         ::_rmdir(dir)
@@ -55,13 +56,19 @@
     #define stupid_sync               ::_commit
 #else
     #define stupid_umask()            ::umask(S_IWGRP | S_IWOTH)
+    #define stupid_chmod(file)        ::chmod(file, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
     #define stupid_open(file, mode)   ::open(file, mode, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
     #define stupid_close              ::close
     #define stupid_lseek              ::lseek
     #define stupid_read               ::read
     #define stupid_write              ::write
+#ifdef _MAC_OS
     #define stupid_stat               ::stat
-    #define STUPID_STAT               struct stat
+    #define stupid_stat_t             struct stat
+#else
+    #define stupid_stat               ::stat64
+    #define stupid_stat_t             struct stat64
+#endif // _MAC_OS
     #define stupid_access             ::access
     #define stupid_mkdir(dir)         ::mkdir(dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)
     #define stupid_rmdir(dir)         ::rmdir(dir)

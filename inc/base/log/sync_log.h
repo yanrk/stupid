@@ -2,11 +2,11 @@
  * Description : log class of sync mode
  * Data        : 2013-05-23 14:02:13
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_SYNC_LOG_H
@@ -21,11 +21,11 @@ NAMESPACE_STUPID_BASE_BEGIN
 class STUPID_API SyncLog : public LogBase
 {
 public:
-    SyncLog(const std::string & path, const std::string & log_type, LOG_LEVEL min_log_level, size_t max_file_size, bool output_to_console);
+    SyncLog(const std::string & path, const std::string & log_type, STUPID_LOG_LEVEL min_log_level, size_t max_file_size, bool output_to_console);
     virtual ~SyncLog();
 
 protected:
-    virtual void save_record(LOG_LEVEL log_level, const char * data, size_t size);
+    virtual void save_record(STUPID_LOG_LEVEL log_level, const char * data, size_t size);
 };
 
 NAMESPACE_STUPID_BASE_END

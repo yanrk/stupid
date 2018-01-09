@@ -29,5 +29,8 @@ int main(int argc, char * argv[])
     test_base_utility();
     test_base_xml();
     test_base_library();
+    test_base_file();
+    test_base_hardware();
+    test_base_process();
     return(0);
 }

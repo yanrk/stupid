@@ -2,11 +2,11 @@
  * Description : tcp connection manager class
  * Data        : 2014-07-05 14:45:42
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_MANAGER_H
@@ -20,14 +20,7 @@ NAMESPACE_STUPID_NET_BEGIN
 
 class TcpConnectionBase;
 class TcpServiceBase;
-
-#ifdef _MSC_VER
-    class TcpProactor;
-    typedef TcpProactor   TcpXactor;
-#else
-    class TcpReactor;
-    typedef TcpReactor    TcpXactor;
-#endif // _MSC_VER
+class TcpXactor;
 
 class STUPID_API TcpManager : private Stupid::Base::Uncopy
 {
@@ -46,11 +39,7 @@ public:
     bool create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
 
 private:
-#ifdef _MSC_VER
-    friend class TcpProactor;
-#else
-    friend class TcpReactor;
-#endif // _MSC_VER
+    friend class TcpXactor;
 
 private:
     bool handle_connect(TcpConnectionBase * connection, size_t identity);

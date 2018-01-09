@@ -2,11 +2,11 @@
  * Description : ini parse class
  * Data        : 2013-07-27 16:11:54
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cctype>
@@ -15,6 +15,7 @@
 #include <sstream>
 #include <algorithm>
 #include "base/config/ini.h"
+#include "base/charset/charset.h"
 #include "base/filesystem/sys_io.h"
 
 NAMESPACE_STUPID_BASE_BEGIN
@@ -73,12 +74,12 @@ bool Ini::load(const std::string & file_name, char comment_char, bool support_mo
         comment_char = ';';
     }
 
-    m_file_name = file_name;
+    m_file_name = utf8_to_ansi(file_name);
     m_comment_char = comment_char;
     m_support_modify = support_modify;
     m_format_mode = (loose ? 1 : 0);
 
-    std::ifstream ifs(file_name.c_str());
+    std::ifstream ifs(m_file_name.c_str());
     if (!ifs.is_open())
     {
         return(support_modify);
@@ -177,7 +178,7 @@ bool Ini::save()
 
     stupid_rename(m_file_name.c_str(), tmp_file.c_str());
 
-    std::ofstream ofs(m_file_name, std::ios::trunc);
+    std::ofstream ofs(m_file_name.c_str(), std::ios::trunc);
     if (!ofs.is_open())
     {
         return(false);
@@ -224,6 +225,21 @@ bool Ini::get_value(const std::string & app_name, const std::string & key_name, 
     }
 }
 
+bool Ini::get_value(const std::string & app_name, const std::string & key_name, char * key_value, size_t key_value_size) const
+{
+    std::string str_key_value;
+    if (!get_value(app_name, key_name, str_key_value))
+    {
+        return(false);
+    }
+    if (nullptr == key_value || str_key_value.size() >= key_value_size)
+    {
+        return(false);
+    }
+    strncpy(key_value, str_key_value.c_str(), key_value_size);
+    return(true);
+}
+
 bool Ini::set_value(const std::string & app_name, const std::string & key_name, const std::string & key_value)
 {
     if (!m_support_modify)
@@ -258,6 +274,20 @@ bool Ini::set_value(const std::string & app_name, const std::string & key_name, 
 
     m_need_save = true;
 
+    return(true);
+}
+
+bool Ini::set_value(const std::string & app_name, const std::string & key_name, const char * key_value)
+{
+    if (nullptr == key_value)
+    {
+        return(false);
+    }
+    const std::string str_key_value(key_value);
+    if (!set_value(app_name, key_name, str_key_value))
+    {
+        return(false);
+    }
     return(true);
 }
 

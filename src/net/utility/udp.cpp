@@ -2,11 +2,11 @@
  * Description : simple encapsulations of udp socket
  * Data        : 2013-11-10 21:36:20
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifdef _MSC_VER
@@ -21,22 +21,28 @@
 
 #include <cstring>
 #include "base/log/log.h"
+#include "net/utility/utility.h"
 #include "net/utility/udp.h"
 
 NAMESPACE_STUPID_NET_BEGIN
 
-bool udp_bind(const char * host, const char * service, socket_t & binder)
+bool udp_listen(const char * host, const char * service, socket_t & listener)
 {
-    binder = BAD_SOCKET;
+    listener = BAD_SOCKET;
 
     if (nullptr == host || nullptr == service)
     {
-        DBG_LOG("udp_bind failed: nullptr");
+        DBG_LOG("udp_listen failed: nullptr");
         return(false);
     }
 
+    if (0 == strcmp(host, "127.0.0.1"))
+    {
+        host = "0.0.0.0";
+    }
+
     struct addrinfo addr_temp;
-    memset(&addr_temp, 0, sizeof(addr_temp));
+    memset(&addr_temp, 0x00, sizeof(addr_temp));
     addr_temp.ai_flags = AI_PASSIVE;
     addr_temp.ai_family = AF_UNSPEC;
     addr_temp.ai_socktype = SOCK_DGRAM;
@@ -53,24 +59,39 @@ bool udp_bind(const char * host, const char * service, socket_t & binder)
 
     for ( ; nullptr != addr_info; addr_info = addr_info->ai_next)
     {
-        socket_t bindfd = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
-        if (BAD_SOCKET == bindfd)
+        socket_t listenfd = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
+        if (BAD_SOCKET == listenfd)
         {
             DBG_LOG("socket failed: %d, try again", stupid_net_error());
             continue;
         }
 
-        if (bind(bindfd, addr_info->ai_addr, addr_info->ai_addrlen) < 0)
+        do
         {
-            RUN_LOG_ERR("bind failed: %d", stupid_net_error());
-            stupid_close_socket(bindfd);
-        }
-        else
-        {
-            binder = bindfd;
+            const int reuse_addr_on = 1;
+            const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+            if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            {
+                RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+                break;
+            }
+
+            if (bind(listenfd, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
+            {
+                RUN_LOG_ERR("bind failed: %d", stupid_net_error());
+                break;
+            }
+
             ret = true;
+        } while (false);
+
+        if (ret)
+        {
+            listener = listenfd;
             break;
         }
+
+        udp_close(listenfd);
     }
 
     freeaddrinfo(addr_dup);
@@ -78,7 +99,51 @@ bool udp_bind(const char * host, const char * service, socket_t & binder)
     return(ret);
 }
 
-bool udp_connect(const char * host, const char * service, socket_t & connecter)
+bool udp_listen(unsigned short port, socket_t & listener)
+{
+    sockaddr_in_t address;
+    if (!transform_address("0.0.0.0", port, address))
+    {
+        DBG_LOG("transform_address failed");
+        return(false);
+    }
+    return(udp_listen(address, listener));
+}
+
+bool udp_listen(const sockaddr_in_t & address, socket_t & listener)
+{
+    listener = socket(AF_INET, SOCK_DGRAM, 0);
+    if (BAD_SOCKET == listener)
+    {
+        RUN_LOG_ERR("socket failed: %d", stupid_net_error());
+        return(false);
+    }
+
+    do
+    {
+        const int reuse_addr_on = 1;
+        const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+        if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+        {
+            RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+            break;
+        }
+
+        if (bind(listener, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
+        {
+            RUN_LOG_ERR("bind failed: %d", stupid_net_error());
+            break;
+        }
+
+        return(true);
+    } while (false);
+
+    udp_close(listener);
+
+    return(false);
+}
+
+bool udp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
 {
     connecter = BAD_SOCKET;
 
@@ -88,8 +153,22 @@ bool udp_connect(const char * host, const char * service, socket_t & connecter)
         return(false);
     }
 
+    sockaddr_in_t bind_address;
+    if (0 != bind_port)
+    {
+        if (nullptr == bind_ip || 0 == strcmp(bind_ip, "127.0.0.1"))
+        {
+            bind_ip = "0.0.0.0";
+        }
+        if (!transform_address(bind_ip, bind_port, bind_address))
+        {
+            DBG_LOG("transform_address failed");
+            return(false);
+        }
+    }
+
     struct addrinfo addr_temp;
-    memset(&addr_temp, 0, sizeof(addr_temp));
+    memset(&addr_temp, 0x00, sizeof(addr_temp));
     addr_temp.ai_family = AF_UNSPEC;
     addr_temp.ai_socktype = SOCK_DGRAM;
 
@@ -112,10 +191,29 @@ bool udp_connect(const char * host, const char * service, socket_t & connecter)
             continue;
         }
 
-        if (connect(connectfd, addr_info->ai_addr, addr_info->ai_addrlen) < 0)
+        if (0 != bind_port)
+        {
+            const int reuse_addr_on = 1;
+            const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+            if (setsockopt(connectfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            {
+                RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+                udp_close(connectfd);
+                continue;
+            }
+
+            if (bind(connectfd, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
+            {
+                RUN_LOG_ERR("bind failed: %d, try again", stupid_net_error());
+                udp_close(connectfd);
+                continue;
+            }
+        }
+
+        if (connect(connectfd, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
         {
             RUN_LOG_ERR("connect failed: %d", stupid_net_error());
-            stupid_close_socket(connectfd);
+            udp_close(connectfd);
         }
         else
         {
@@ -128,6 +226,348 @@ bool udp_connect(const char * host, const char * service, socket_t & connecter)
     freeaddrinfo(addr_dup);
 
     return(ret);
+}
+
+bool udp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
+{
+    sockaddr_in_t address;
+    if (!transform_address(ip, port, address))
+    {
+        DBG_LOG("transform_address failed");
+        return(false);
+    }
+    return(udp_connect(address, connecter, bind_ip, bind_port));
+}
+
+bool udp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
+{
+    connecter = socket(AF_INET, SOCK_DGRAM, 0);
+    if (BAD_SOCKET == connecter)
+    {
+        RUN_LOG_ERR("socket failed: %d", stupid_net_error());
+        return(false);
+    }
+
+    if (0 != bind_port)
+    {
+        sockaddr_in_t bind_address;
+        if (nullptr == bind_ip || 0 == strcmp(bind_ip, "127.0.0.1"))
+        {
+            bind_ip = "0.0.0.0";
+        }
+        if (!transform_address(bind_ip, bind_port, bind_address))
+        {
+            DBG_LOG("transform_address failed");
+            udp_close(connecter);
+            return(false);
+        }
+
+        const int reuse_addr_on = 1;
+        const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+        if (setsockopt(connecter, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+        {
+            RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+            udp_close(connecter);
+            return(false);
+        }
+
+        if (bind(connecter, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
+        {
+            RUN_LOG_ERR("bind failed: %d", stupid_net_error());
+            udp_close(connecter);
+            return(false);
+        }
+    }
+
+    if (connect(connecter, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
+    {
+        RUN_LOG_ERR("connect failed: %d", stupid_net_error());
+        udp_close(connecter);
+        return(false);
+    }
+
+    return(true);
+}
+
+bool udp_accept(socket_t listener, socket_t & accepter, char * buff, size_t buff_size, size_t & recv_size, sockaddr_in_t * address, sockaddr_len_t * addr_len)
+{
+    if (nullptr == buff)
+    {
+        DBG_LOG("buffer is nullptr");
+        return(false);
+    }
+
+    sockaddr_in_t remote_address;
+    memset(&remote_address, 0x00, sizeof(remote_address));
+    sockaddr_len_t remote_addr_len = sizeof(remote_address);
+
+    int recv_len = recvfrom(listener, buff, static_cast<int>(buff_size), 0, reinterpret_cast<sockaddr_t *>(&remote_address), &remote_addr_len);
+    if (recv_len < 0)
+    {
+        if (!stupid_is_net_blocking_error())
+        {
+            RUN_LOG_ERR("udp_accept failed: %d", stupid_net_error());
+        }
+        return(false);
+    }
+    recv_size = static_cast<size_t>(recv_len);
+
+    accepter = socket(AF_INET, SOCK_DGRAM, 0);
+    if (BAD_SOCKET == accepter)
+    {
+        RUN_LOG_ERR("socket failed: %d", stupid_net_error());
+        return(false);
+    }
+
+    if (connect(accepter, reinterpret_cast<sockaddr_t *>(&remote_address), remote_addr_len) < 0)
+    {
+        RUN_LOG_ERR("connect failed: %d", stupid_net_error());
+        udp_close(accepter);
+        return(false);
+    }
+
+    if (nullptr != address)
+    {
+        memcpy(address, &remote_address, sizeof(remote_address));
+    }
+
+    if (nullptr != addr_len)
+    {
+        memcpy(addr_len, &remote_addr_len, sizeof(remote_addr_len));
+    }
+
+    return(true);
+}
+
+bool udp_accept(socket_t listener, sockaddr_in_t & address, sockaddr_len_t & addr_len, char * buff, size_t buff_size, size_t & recv_size)
+{
+    if (nullptr == buff)
+    {
+        DBG_LOG("buffer is nullptr");
+        return(false);
+    }
+
+    memset(&address, 0x00, sizeof(address));
+    addr_len = sizeof(address);
+
+    int recv_len = recvfrom(listener, buff, static_cast<int>(buff_size), 0, reinterpret_cast<sockaddr_t *>(&address), &addr_len);
+    if (recv_len < 0)
+    {
+        if (!stupid_is_net_blocking_error())
+        {
+            RUN_LOG_ERR("udp_accept failed: %d", stupid_net_error());
+        }
+        return(false);
+    }
+    recv_size = static_cast<size_t>(recv_len);
+
+    return(true);
+}
+
+bool udp_socket(socket_t & sock)
+{
+    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (BAD_SOCKET == sock)
+    {
+        RUN_LOG_ERR("socket failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
+bool udp_close(socket_t & sock)
+{
+    if (BAD_SOCKET != sock)
+    {
+        if (stupid_close_socket(sock) < 0)
+        {
+            if (!stupid_is_net_blocking_error())
+            {
+                RUN_LOG_ERR("close failed: %d", stupid_net_error());
+            }
+            return(false);
+        }
+        sock = BAD_SOCKET;
+    }
+    return(true);
+}
+
+bool udp_set_block_switch(socket_t sock, bool blocking)
+{
+#ifdef _MSC_VER
+    u_long non_blocking_mode = (blocking ? 0 : 1);
+    int ret = ioctlsocket(sock, FIONBIO, &non_blocking_mode);
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("ioctlsocket(%s) failed: %d", (blocking ? "blocking" : "non-blocking"), stupid_net_error());
+        return(false);
+    }
+    return(true);
+#else
+    int flags = fcntl(sock, F_GETFL, 0);
+    if (flags < 0)
+    {
+        RUN_LOG_ERR("fcntl(get-%s-flags) failed: %d", (blocking ? "blocking" : "non-blocking"), stupid_net_error());
+        return(false);
+    }
+    if (blocking)
+    {
+        flags &= ~O_NONBLOCK;
+    }
+    else
+    {
+        flags |= O_NONBLOCK;
+    }
+    int ret = fcntl(sock, F_SETFL, flags);
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("fcntl(set-%s-flags) failed: %d", (blocking ? "blocking" : "non-blocking"), stupid_net_error());
+        return(false);
+    }
+    return(true);
+#endif // _MSC_VER
+}
+
+bool udp_set_send_timeout(socket_t sock, size_t send_timeout_ms)
+{
+#ifdef _MSC_VER
+    int timeout = static_cast<int>(send_timeout_ms);
+#else
+    struct timeval timeout = { static_cast<time_t>(send_timeout_ms) / 1000, static_cast<suseconds_t>(send_timeout_ms % 1000 * 1000) };
+#endif // _MSC_VER
+    int ret = setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, reinterpret_cast<char *>(&timeout), sizeof(timeout));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(send-timeout) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
+bool udp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms)
+{
+#ifdef _MSC_VER
+    int timeout = static_cast<int>(recv_timeout_ms);
+#else
+    struct timeval timeout = { static_cast<time_t>(recv_timeout_ms / 1000), static_cast<suseconds_t>(recv_timeout_ms % 1000 * 1000) };
+#endif // _MSC_VER
+    int ret = setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char *>(&timeout), sizeof(timeout));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(recv-timeout) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
+bool udp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
+{
+    int ret = setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char *>(&send_buffsiz), sizeof(send_buffsiz));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(send-buf) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
+bool udp_set_recv_buffer_size(socket_t sock, size_t recv_buffsiz)
+{
+    int ret = setsockopt(sock, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char *>(&recv_buffsiz), sizeof(recv_buffsiz));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(recv-buf) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
+bool udp_send(socket_t sock, const sockaddr_in_t & address, const char * data, size_t data_size)
+{
+    if (nullptr == data)
+    {
+        DBG_LOG("udp_send failed: nullptr");
+        return(false);
+    }
+
+    sockaddr_len_t addr_len = sizeof(address);
+    int send_len = sendto(sock, data, static_cast<int>(data_size), 0, reinterpret_cast<const sockaddr_t *>(&address), addr_len);
+    if (send_len < 0 || send_len != static_cast<int>(data_size))
+    {
+        if (!stupid_is_net_blocking_error())
+        {
+            RUN_LOG_TRK("udp_send failed: %d", stupid_net_error()); /* DBG_LOG */
+        }
+        return(false);
+    }
+
+    return(true);
+}
+
+bool udp_send(socket_t sock, const char * data, size_t data_size)
+{
+    if (nullptr == data)
+    {
+        DBG_LOG("udp_send failed: nullptr");
+        return(false);
+    }
+
+    int send_len = stupid_send(sock, data, static_cast<int>(data_size));
+    if (send_len < 0 || send_len != static_cast<int>(data_size))
+    {
+        if (!stupid_is_net_blocking_error())
+        {
+            RUN_LOG_TRK("udp_send failed: %d", stupid_net_error()); /* DBG_LOG */
+        }
+        return(false);
+    }
+
+    return(true);
+}
+
+bool udp_recv(socket_t sock, sockaddr_in_t & address, char * buff, size_t buff_size, size_t & recv_size)
+{
+    if (nullptr == buff)
+    {
+        DBG_LOG("udp_recv failed: nullptr");
+        return(false);
+    }
+
+    sockaddr_len_t addr_len = sizeof(address);
+    int recv_len = recvfrom(sock, buff, static_cast<int>(buff_size), 0, reinterpret_cast<sockaddr_t *>(&address), &addr_len);
+    if (recv_len < 0)
+    {
+        if (!stupid_is_net_blocking_error())
+        {
+            RUN_LOG_TRK("udp_recv failed: %d", stupid_net_error()); /* DBG_LOG */
+        }
+        return(false);
+    }
+    recv_size = static_cast<size_t>(recv_len);
+
+    return(true);
+}
+
+bool udp_recv(socket_t sock, char * buff, size_t buff_size, size_t & recv_size)
+{
+    if (nullptr == buff)
+    {
+        DBG_LOG("udp_recv failed: nullptr");
+        return(false);
+    }
+
+    int recv_len = stupid_recv(sock, buff, static_cast<int>(buff_size));
+    if (recv_len < 0)
+    {
+        if (!stupid_is_net_blocking_error())
+        {
+            RUN_LOG_TRK("udp_recv failed: %d", stupid_net_error()); /* DBG_LOG */
+        }
+        return(false);
+    }
+    recv_size = static_cast<size_t>(recv_len);
+
+    return(true);
 }
 
 NAMESPACE_STUPID_NET_END

@@ -1,20 +1,17 @@
 /********************************************************
- * Description : linux tcp connection reactor class
+ * Description : unix tcp connection reactor class
  * Data        : 2014-07-01 18:07:20
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || defined(XACTOR_USE_SELECT)
 
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <algorithm>
 #include "net/xactor/reactor.h"
 #include "net/xactor/manager.h"
@@ -25,15 +22,30 @@
 #include "base/utility/guard.h"
 #include "base/utility/singleton.h"
 
+#ifdef _MSC_VER
+    #include <winsock2.h>
+#else
+    #include <arpa/inet.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+#if defined(XACTOR_USE_SELECT)
+    #include <sys/select.h>
+#elif defined(_MAC_OS)
+    #include <sys/event.h>
+#else
+    #include <sys/epoll.h>
+#endif // defined(XACTOR_USE_SELECT)
+#endif // _MSC_VER
+
 NAMESPACE_STUPID_NET_BEGIN
 
 struct REACTOR_THREAD_PARAM
 {
-    TcpReactor & tcp_reactor;
-    size_t       thread_index;
+    TcpXactor & tcp_xactor;
+    size_t      thread_index;
 
-    REACTOR_THREAD_PARAM(TcpReactor & reactor, size_t index)
-        : tcp_reactor(reactor), thread_index(index)
+    REACTOR_THREAD_PARAM(TcpXactor & xactor, size_t index)
+        : tcp_xactor(xactor), thread_index(index)
     {
 
     }
@@ -44,7 +56,7 @@ thread_return_t STUPID_STDCALL connection_thread_process(thread_argument_t param
     if (nullptr != param)
     {
         REACTOR_THREAD_PARAM * thread_param = reinterpret_cast<REACTOR_THREAD_PARAM *>(param);
-        thread_param->tcp_reactor.reactor_connection_process();
+        thread_param->tcp_xactor.reactor_connection_process();
         STUPID_DEL(thread_param);
     }
     return(THREAD_DEFAULT_RET);
@@ -55,7 +67,7 @@ thread_return_t STUPID_STDCALL data_thread_process(thread_argument_t param)
     if (nullptr != param)
     {
         REACTOR_THREAD_PARAM * thread_param = reinterpret_cast<REACTOR_THREAD_PARAM *>(param);
-        thread_param->tcp_reactor.reactor_data_process(thread_param->thread_index);
+        thread_param->tcp_xactor.reactor_data_process(thread_param->thread_index);
         STUPID_DEL(thread_param);
     }
     return(THREAD_DEFAULT_RET);
@@ -66,11 +78,18 @@ thread_return_t STUPID_STDCALL business_thread_process(thread_argument_t param)
     if (nullptr != param)
     {
         REACTOR_THREAD_PARAM * thread_param = reinterpret_cast<REACTOR_THREAD_PARAM *>(param);
-        thread_param->tcp_reactor.reactor_business_process(thread_param->thread_index);
+        thread_param->tcp_xactor.reactor_business_process(thread_param->thread_index);
         STUPID_DEL(thread_param);
     }
     return(THREAD_DEFAULT_RET);
 }
+
+enum data_event_enum
+{
+    recv_data_event = 0x01, 
+    send_data_event = 0x02, 
+    exception_event = 0x04  
+};
 
 enum business_event_enum
 {
@@ -81,10 +100,9 @@ enum business_event_enum
     close_notify 
 };
 
-TcpReactor::TcpReactor()
+TcpXactor::TcpXactor()
     : m_running(false)
     , m_manager(nullptr)
-    , m_epoll(-1)
     , m_listeners()
     , m_thread(nullptr)
     , m_thread_count(0)
@@ -100,15 +118,24 @@ TcpReactor::TcpReactor()
     , m_binded_connection_set()
     , m_binded_connection_set_locker()
 {
-
+#if defined(XACTOR_USE_SELECT)
+    FD_ZERO(&m_reactor.read_set);
+    FD_ZERO(&m_reactor.write_set);
+    m_reactor.max_socket = -1;
+#ifdef _MSC_VER
+    m_reactor.select_worker = BAD_SOCKET;
+#endif // _MSC_VER
+#else
+    m_reactor = -1;
+#endif // defined(XACTOR_USE_SELECT)
 }
 
-TcpReactor::~TcpReactor()
+TcpXactor::~TcpXactor()
 {
     exit();
 }
 
-bool TcpReactor::init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
+bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == manager)
     {
@@ -122,13 +149,13 @@ bool TcpReactor::init(TcpManager * manager, size_t event_thread_count, size_t ha
 
     m_manager = manager;
 
-    if (!create_epoll())
+    if (!create_reactor())
     {
         return(false);
     }
     else
     {
-        RUN_LOG_DBG("create epoll success");
+        RUN_LOG_DBG("create reactor success");
     }
 
     if (!create_listener(service_port, service_port_count))
@@ -154,7 +181,7 @@ bool TcpReactor::init(TcpManager * manager, size_t event_thread_count, size_t ha
     return(true);
 }
 
-void TcpReactor::exit()
+void TcpXactor::exit()
 {
     if (!m_running)
     {
@@ -163,7 +190,7 @@ void TcpReactor::exit()
 
     m_running = false;
 
-    destroy_epoll();
+    destroy_reactor();
     release_reactor_threads();
     destroy_listener();
     destroy_connections();
@@ -178,21 +205,21 @@ void TcpReactor::exit()
     RUN_LOG_DBG("exit tcp reactor success");
 }
 
-bool TcpReactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
+bool TcpXactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     return(do_connect(server_address, identity, bind_ip, bind_port));
 }
 
-void TcpReactor::connection_send(TcpConnection * connection)
+void TcpXactor::connection_send(TcpConnection * connection)
 {
     /* when send-buffer has data, the connection should continue to send */
-    modify_connection_of_epoll(connection, true, true);
+    modify_connection_of_reactor(connection, true, true);
 }
 
-void TcpReactor::close_connection(TcpConnection * connection)
+void TcpXactor::close_connection(TcpConnection * connection)
 {
     /* binded-set make sure we will not close connection more times */
-    if (delete_connection_from_epoll(connection))
+    if (delete_connection_from_reactor(connection))
     {
         connection->set_error();
 
@@ -204,12 +231,12 @@ void TcpReactor::close_connection(TcpConnection * connection)
     }
 }
 
-bool TcpReactor::running()
+bool TcpXactor::running()
 {
     return(m_running);
 }
 
-bool TcpReactor::create_listener(unsigned short * service_port, size_t service_port_count)
+bool TcpXactor::create_listener(unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == service_port || 0 == service_port_count)
     {
@@ -244,7 +271,7 @@ bool TcpReactor::create_listener(unsigned short * service_port, size_t service_p
 
         insert_connection(connection);
 
-        if (!append_connection_to_epoll(connection))
+        if (!append_connection_to_reactor(connection))
         {
             remove_connection(connection);
             return(false);
@@ -259,39 +286,70 @@ bool TcpReactor::create_listener(unsigned short * service_port, size_t service_p
     return(true);
 }
 
-void TcpReactor::destroy_listener()
+void TcpXactor::destroy_listener()
 {
     ConnectionVector::iterator iter = m_listeners.begin();
     while (m_listeners.end() != iter)
     {
-        delete_connection_from_epoll(*iter);
+        delete_connection_from_reactor(*iter);
         ++iter;
     }
     m_listeners.clear();
 }
 
-bool TcpReactor::create_epoll()
+bool TcpXactor::create_reactor()
 {
+#if defined(XACTOR_USE_SELECT)
+    FD_ZERO(&m_reactor.read_set);
+    FD_ZERO(&m_reactor.write_set);
+    m_reactor.max_socket = -1;
+#ifdef _MSC_VER
+    if (!tcp_socket(m_reactor.select_worker))
+    {
+        RUN_LOG_CRI("tcp socket failed: %d", stupid_net_error());
+        return(false);
+    }
+    FD_SET(m_reactor.select_worker, &m_reactor.read_set);
+#endif // _MSC_VER
+#elif defined(_MAC_OS)
+    m_reactor = kqueue();
+    if (-1 == m_reactor)
+    {
+        RUN_LOG_CRI("create kqueue failed: %d", stupid_net_error());
+        return(false);
+    }
+#else
     const int max_connect_count = 99999; /* maybe it is disable */
-    m_epoll = epoll_create(max_connect_count);
-    if (-1 == m_epoll)
+    m_reactor = epoll_create(max_connect_count);
+    if (-1 == m_reactor)
     {
         RUN_LOG_CRI("create epoll failed: %d", stupid_net_error());
         return(false);
     }
+#endif // defined(XACTOR_USE_SELECT)
     return(true);
 }
 
-void TcpReactor::destroy_epoll()
+void TcpXactor::destroy_reactor()
 {
-    if (-1 != m_epoll)
+#if defined(XACTOR_USE_SELECT)
+    FD_ZERO(&m_reactor.read_set);
+    FD_ZERO(&m_reactor.write_set);
+    m_reactor.max_socket = -1;
+#ifdef _MSC_VER
+    FD_CLR(m_reactor.select_worker, &m_reactor.read_set);
+    tcp_close(m_reactor.select_worker);
+#endif // _MSC_VER
+#else
+    if (-1 != m_reactor)
     {
-        close(m_epoll);
-        m_epoll = -1;
+        close(m_reactor);
+        m_reactor = -1;
     }
+#endif // defined(XACTOR_USE_SELECT)
 }
 
-bool TcpReactor::append_connection_to_epoll(TcpConnection * connection)
+bool TcpXactor::append_connection_to_reactor(TcpConnection * connection)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     if (m_binded_connection_set.end() != m_binded_connection_set.find(connection))
@@ -299,14 +357,34 @@ bool TcpReactor::append_connection_to_epoll(TcpConnection * connection)
         return(false);
     }
 
+#if defined(XACTOR_USE_SELECT)
+    FD_SET(connection->get_socket(), &m_reactor.read_set);
+#ifndef _MSC_VER
+    if (m_reactor.max_socket < static_cast<int>(connection->get_socket()))
+    {
+        m_reactor.max_socket = static_cast<int>(connection->get_socket());
+    }
+#endif // _MSC_VER
+#elif defined(_MAC_OS)
+    struct kevent event[2];
+    struct timespec wait_timeout = { 0, 0 };
+    EV_SET(&event[0], connection->get_socket(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, connection);
+    EV_SET(&event[1], connection->get_socket(), EVFILT_WRITE, EV_ADD | EV_DISABLE, 0, 0, connection);
+    if (-1 == kevent(m_reactor, event, sizeof(event) / sizeof(event[0]), nullptr, 0, &wait_timeout))
+    {
+        RUN_LOG_CRI("append connection to kqueue failed: %d", stupid_net_error());
+        return(false);
+    }
+#else
     struct epoll_event event;
     event.data.ptr = connection;
     event.events = EPOLLIN | EPOLLET;
-    if (-1 == epoll_ctl(m_epoll, EPOLL_CTL_ADD, connection->get_socket(), &event))
+    if (-1 == epoll_ctl(m_reactor, EPOLL_CTL_ADD, connection->get_socket(), &event))
     {
         RUN_LOG_CRI("append connection to epoll failed: %d", stupid_net_error());
         return(false);
     }
+#endif // defined(XACTOR_USE_SELECT)
 
     size_t unique_value = 0;
     m_unique_creator.acquire(unique_value);
@@ -319,7 +397,7 @@ bool TcpReactor::append_connection_to_epoll(TcpConnection * connection)
     return(true);
 }
 
-bool TcpReactor::delete_connection_from_epoll(TcpConnection * connection)
+bool TcpXactor::delete_connection_from_reactor(TcpConnection * connection)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     if (m_binded_connection_set.end() == m_binded_connection_set.find(connection))
@@ -327,12 +405,26 @@ bool TcpReactor::delete_connection_from_epoll(TcpConnection * connection)
         return(false);
     }
 
+#if defined(XACTOR_USE_SELECT)
+    FD_CLR(connection->get_socket(), &m_reactor.read_set);
+    FD_CLR(connection->get_socket(), &m_reactor.write_set);
+#elif defined(_MAC_OS)
+    struct kevent event[2];
+    struct timespec wait_timeout = { 0, 0 };
+    EV_SET(&event[0], connection->get_socket(), EVFILT_READ, EV_DELETE, 0, 0, connection);
+    EV_SET(&event[1], connection->get_socket(), EVFILT_WRITE, EV_DELETE, 0, 0, connection);
+    if (-1 == kevent(m_reactor, event, sizeof(event) / sizeof(event[0]), nullptr, 0, &wait_timeout))
+    {
+        RUN_LOG_CRI("delete connection from kqueue failed: %d", stupid_net_error());
+    }
+#else
     struct epoll_event event;
     event.data.ptr = connection;
-    if (-1 == epoll_ctl(m_epoll, EPOLL_CTL_DEL, connection->get_socket(), &event))
+    if (-1 == epoll_ctl(m_reactor, EPOLL_CTL_DEL, connection->get_socket(), &event))
     {
         RUN_LOG_CRI("delete connection from epoll failed: %d", stupid_net_error());
     }
+#endif // defined(XACTOR_USE_SELECT)
 
     m_unique_creator.release(connection->get_unique());
 
@@ -343,8 +435,48 @@ bool TcpReactor::delete_connection_from_epoll(TcpConnection * connection)
     return(true);
 }
 
-bool TcpReactor::modify_connection_of_epoll(TcpConnection * connection, bool send, bool recv)
+bool TcpXactor::modify_connection_of_reactor(TcpConnection * connection, bool send, bool recv)
 {
+#if defined(XACTOR_USE_SELECT)
+    if (send)
+    {
+        FD_SET(connection->get_socket(), &m_reactor.write_set);
+#ifndef _MSC_VER
+        if (m_reactor.max_socket < static_cast<int>(connection->get_socket()))
+        {
+            m_reactor.max_socket = static_cast<int>(connection->get_socket());
+        }
+#endif // _MSC_VER
+    }
+    else
+    {
+        FD_CLR(connection->get_socket(), &m_reactor.write_set);
+    }
+    if (recv)
+    {
+        FD_SET(connection->get_socket(), &m_reactor.read_set);
+#ifndef _MSC_VER
+        if (m_reactor.max_socket < static_cast<int>(connection->get_socket()))
+        {
+            m_reactor.max_socket = static_cast<int>(connection->get_socket());
+        }
+#endif // _MSC_VER
+    }
+    else
+    {
+        FD_CLR(connection->get_socket(), &m_reactor.read_set);
+    }
+#elif defined(_MAC_OS)
+    struct kevent event[2];
+    struct timespec wait_timeout = { 0, 0 };
+    EV_SET(&event[0], connection->get_socket(), EVFILT_READ, (recv ? EV_ENABLE : EV_DISABLE), 0, 0, connection);
+    EV_SET(&event[1], connection->get_socket(), EVFILT_WRITE, (send ? EV_ENABLE : EV_DISABLE), 0, 0, connection);
+    if (-1 == kevent(m_reactor, event, sizeof(event) / sizeof(event[0]), nullptr, 0, &wait_timeout))
+    {
+        RUN_LOG_CRI("modify connection of kqueue failed: %d", stupid_net_error());
+        return(false);
+    }
+#else
     struct epoll_event event;
     event.data.ptr = connection;
     event.events = EPOLLET;
@@ -356,17 +488,16 @@ bool TcpReactor::modify_connection_of_epoll(TcpConnection * connection, bool sen
     {
         event.events |= EPOLLIN;
     }
-
-    if (-1 == epoll_ctl(m_epoll, EPOLL_CTL_MOD, connection->get_socket(), &event))
+    if (-1 == epoll_ctl(m_reactor, EPOLL_CTL_MOD, connection->get_socket(), &event))
     {
         RUN_LOG_CRI("modify connection of epoll failed: %d", stupid_net_error());
         return(false);
     }
-
+#endif // defined(XACTOR_USE_SELECT)
     return(true);
 }
 
-bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
+bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     socket_t connecter = BAD_SOCKET;
     if (!tcp_connect(server_address, connecter, bind_ip, bind_port))
@@ -392,7 +523,7 @@ bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identit
 
     insert_connection(connection);
 
-    if (!append_connection_to_epoll(connection))
+    if (!append_connection_to_reactor(connection))
     {
         remove_connection(connection);
         return(false);
@@ -412,18 +543,18 @@ bool TcpReactor::do_connect(const sockaddr_in_t & server_address, size_t identit
     return(true);
 }
 
-bool TcpReactor::do_accept(TcpConnection * listener_connection)
+bool TcpXactor::do_accept(TcpConnection * listener_connection)
 {
     size_t accept_count = 0;
 
     socket_t listener = listener_connection->get_listener();
     unsigned short listener_port = listener_connection->get_listener_port();
 
-    while (true)
+    do
     {
         socket_t accepter = BAD_SOCKET;
         sockaddr_in_t client_address;
-        sock_len_t address_len = sizeof(client_address);
+        sockaddr_len_t address_len = sizeof(client_address);
         if (!tcp_accept(listener, accepter, &client_address, &address_len))
         {
             break;
@@ -448,7 +579,7 @@ bool TcpReactor::do_accept(TcpConnection * listener_connection)
 
         insert_connection(connection);
 
-        if (!append_connection_to_epoll(connection))
+        if (!append_connection_to_reactor(connection))
         {
             remove_connection(connection);
             break;
@@ -466,12 +597,16 @@ bool TcpReactor::do_accept(TcpConnection * listener_connection)
         append_business_event(business_event);
         */
         accept_count += 1;
-    }
+#if defined(XACTOR_USE_SELECT) || defined(_MAC_OS)
+    } while (false);
+#else
+    } while (true);
+#endif // defined(XACTOR_USE_SELECT) || defined(_MAC_OS)
 
     return(0 != accept_count);
 }
 
-bool TcpReactor::do_recv(TcpConnection * connection)
+bool TcpXactor::do_recv(TcpConnection * connection)
 {
     const int buff_siz = 1024 * 4;
     char buffer[buff_siz];
@@ -509,7 +644,7 @@ bool TcpReactor::do_recv(TcpConnection * connection)
     return(true);
 }
 
-bool TcpReactor::do_send(TcpConnection * connection)
+bool TcpXactor::do_send(TcpConnection * connection)
 {
     const int buff_siz = 1024 * 4;
     char buffer[buff_siz];
@@ -558,37 +693,37 @@ bool TcpReactor::do_send(TcpConnection * connection)
     return(true);
 }
 
-void TcpReactor::do_close(TcpConnection * connection)
+void TcpXactor::do_close(TcpConnection * connection)
 {
     close_connection(connection);
 }
 
-bool TcpReactor::handle_connect(TcpConnection * connection, size_t identity)
+bool TcpXactor::handle_connect(TcpConnection * connection, size_t identity)
 {
     return(m_manager->handle_connect(connection, identity));
 }
 
-bool TcpReactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
+bool TcpXactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
 {
     return(m_manager->handle_accept(connection, listener_port));
 }
 
-bool TcpReactor::handle_recv(TcpConnection * connection)
+bool TcpXactor::handle_recv(TcpConnection * connection)
 {
     return(m_manager->handle_recv(connection));
 }
 
-bool TcpReactor::handle_send(TcpConnection * connection)
+bool TcpXactor::handle_send(TcpConnection * connection)
 {
     return(m_manager->handle_send(connection));
 }
 
-bool TcpReactor::handle_close(TcpConnection * connection)
+bool TcpXactor::handle_close(TcpConnection * connection)
 {
     return(m_manager->handle_close(connection));
 }
 
-bool TcpReactor::acquire_reactor_threads(size_t event_thread_count, size_t handle_thread_count)
+bool TcpXactor::acquire_reactor_threads(size_t event_thread_count, size_t handle_thread_count)
 {
     const size_t connection_thread_count = 1;
     const size_t data_thread_count = (0 != event_thread_count ? event_thread_count : 10);
@@ -646,7 +781,7 @@ bool TcpReactor::acquire_reactor_threads(size_t event_thread_count, size_t handl
     return(true);
 }
 
-void TcpReactor::release_reactor_threads()
+void TcpXactor::release_reactor_threads()
 {
     for (size_t thread_index = 0; thread_index < m_thread_count; ++thread_index)
     {
@@ -657,19 +792,19 @@ void TcpReactor::release_reactor_threads()
     m_thread_count = 0;
 }
 
-TcpConnection * TcpReactor::acquire_connection()
+TcpConnection * TcpXactor::acquire_connection()
 {
     TcpConnection * connection = nullptr;
     STUPID_NEW(connection, TcpConnection(*this, m_block_pool));
     return(connection);
 }
 
-void TcpReactor::release_connection(TcpConnection *& connection)
+void TcpXactor::release_connection(TcpConnection *& connection)
 {
     STUPID_DEL(connection);
 }
 
-void TcpReactor::insert_connection(TcpConnection * connection)
+void TcpXactor::insert_connection(TcpConnection * connection)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     m_normal_connection_set.insert(connection);
@@ -687,7 +822,7 @@ void TcpReactor::insert_connection(TcpConnection * connection)
     }
 }
 
-void TcpReactor::remove_connection(TcpConnection *& connection)
+void TcpXactor::remove_connection(TcpConnection *& connection)
 {
     /*
      * when get to here, maybe connection->has_reference() is true
@@ -711,7 +846,7 @@ void TcpReactor::remove_connection(TcpConnection *& connection)
     }
 }
 
-void TcpReactor::destroy_invalid_connections()
+void TcpXactor::destroy_invalid_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     ConnectionSet valid_connection_set;
@@ -732,7 +867,7 @@ void TcpReactor::destroy_invalid_connections()
     m_closed_connection_set.swap(valid_connection_set);
 }
 
-void TcpReactor::destroy_normal_connections()
+void TcpXactor::destroy_normal_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     ConnectionSet::iterator iter = m_normal_connection_set.begin();
@@ -745,7 +880,7 @@ void TcpReactor::destroy_normal_connections()
     m_normal_connection_set.clear();
 }
 
-void TcpReactor::destroy_closed_connections()
+void TcpXactor::destroy_closed_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     ConnectionSet::iterator iter = m_closed_connection_set.begin();
@@ -758,20 +893,20 @@ void TcpReactor::destroy_closed_connections()
     m_closed_connection_set.clear();
 }
 
-void TcpReactor::destroy_binded_connections()
+void TcpXactor::destroy_binded_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     m_binded_connection_set.clear();
 }
 
-void TcpReactor::destroy_connections()
+void TcpXactor::destroy_connections()
 {
     destroy_normal_connections();
     destroy_closed_connections();
     destroy_binded_connections();
 }
 
-void TcpReactor::append_data_events(DataEventsListVector & data_events_list_vector)
+void TcpXactor::append_data_events(DataEventsListVector & data_events_list_vector)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> data_events_guard(m_data_events_list_vector_locker);
     const size_t data_thread_count = m_data_events_list_vector.size();
@@ -783,20 +918,20 @@ void TcpReactor::append_data_events(DataEventsListVector & data_events_list_vect
     }
 }
 
-void TcpReactor::delete_data_events(size_t thread_index, DataEventsList & events_list)
+void TcpXactor::delete_data_events(size_t thread_index, DataEventsList & events_list)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> data_events_guard(m_data_events_list_vector_locker);
     DataEventsList & data_events_list = m_data_events_list_vector[thread_index - 1];
     events_list.splice(events_list.end(), data_events_list);
 }
 
-void TcpReactor::clear_data_events()
+void TcpXactor::clear_data_events()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> data_events_guard(m_data_events_list_vector_locker);
     m_data_events_list_vector.clear();
 }
 
-void TcpReactor::append_business_event(BusinessEvent & business_event)
+void TcpXactor::append_business_event(BusinessEvent & business_event)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> business_event_guard(m_business_event_list_vector_locker);
     const size_t business_thread_count = m_business_event_list_vector.size();
@@ -805,35 +940,52 @@ void TcpReactor::append_business_event(BusinessEvent & business_event)
     business_event_list.push_back(business_event);
 }
 
-void TcpReactor::delete_business_event(size_t thread_index, BusinessEventList & event_list)
+void TcpXactor::delete_business_event(size_t thread_index, BusinessEventList & event_list)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> business_event_guard(m_business_event_list_vector_locker);
     BusinessEventList & business_event_list = m_business_event_list_vector[thread_index - 1];
     event_list.splice(event_list.end(), business_event_list);
 }
 
-void TcpReactor::clear_business_event()
+void TcpXactor::clear_business_event()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> business_event_guard(m_business_event_list_vector_locker);
     m_business_event_list_vector.clear();
 }
 
-void TcpReactor::reactor_connection_process()
+void TcpXactor::reactor_connection_process()
 {
     RUN_LOG_DBG("reactor connection thread begin");
 
-    struct epoll_event connection_events[256];
-    const size_t max_event_count = sizeof(connection_events) / sizeof(connection_events[0]);
-    const size_t wait_timeout_ms = 1000;
+#if defined(XACTOR_USE_SELECT)
+    struct timeval wait_timeout = { 0, 0 }; // seconds
+#elif defined(_MAC_OS)
+    const size_t max_event_count = 256;
+    struct kevent connection_events[max_event_count];
+    struct timespec wait_timeout = { 1, 0 }; // seconds
+#else
+    const size_t max_event_count = 256;
+    struct epoll_event connection_events[max_event_count];
+    const size_t wait_timeout = 1000; // milliseconds
+#endif // defined(XACTOR_USE_SELECT)
+
     const size_t data_thread_count = m_data_events_list_vector.size();
     DataEventsListVector data_events_list_vector(data_thread_count);
 
     while (running())
     {
-        int event_count = epoll_wait(m_epoll, connection_events, max_event_count, wait_timeout_ms);
+#if defined(XACTOR_USE_SELECT)
+        fd_set read_set = m_reactor.read_set;
+        fd_set write_set = m_reactor.write_set;
+        int event_count = select(m_reactor.max_socket + 1, &read_set, &write_set, nullptr, &wait_timeout);
+#elif defined(_MAC_OS)
+        int event_count = kevent(m_reactor, nullptr, 0, connection_events, max_event_count, &wait_timeout);
+#else
+        int event_count = epoll_wait(m_reactor, connection_events, max_event_count, wait_timeout);
+#endif // defined(XACTOR_USE_SELECT)
         if (-1 == event_count)
         {
-            if (-1 == m_epoll)
+            if (!running())
             {
                 break;
             }
@@ -844,21 +996,78 @@ void TcpReactor::reactor_connection_process()
             }
             else
             {
+#if defined(XACTOR_USE_SELECT)
+                RUN_LOG_CRI("select failed: %d", stupid_net_error());
+#elif defined(_MAC_OS)
+                RUN_LOG_CRI("kevent failed: %d", stupid_net_error());
+#else
                 RUN_LOG_CRI("epoll wait failed: %d", stupid_net_error());
+#endif // defined(XACTOR_USE_SELECT)
                 break;
             }
         }
         else if (0 == event_count)
         {
+#if defined(XACTOR_USE_SELECT)
+            Stupid::Base::stupid_ms_sleep(10);
+#endif // defined(XACTOR_USE_SELECT)
             continue;
         }
 
         ConnectionVector listener_connections;
 
+#if defined(XACTOR_USE_SELECT)
+        {
+            for (ConnectionVector::const_iterator iter = m_listeners.begin(); m_listeners.end() != iter && event_count > 0; ++iter)
+            {
+                TcpConnection * connection = *iter;
+                if (FD_ISSET(connection->get_socket(), &read_set))
+                {
+                    listener_connections.push_back(connection);
+                    --event_count;
+                }
+            }
+        }
+
+        {
+            Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
+            for (ConnectionSet::const_iterator iter = m_normal_connection_set.begin(); m_normal_connection_set.end() != iter && event_count > 0; ++iter)
+            {
+                DataEvents data_events;
+                data_events.events = 0;
+                TcpConnection * connection = *iter;
+                if (FD_ISSET(connection->get_socket(), &read_set))
+                {
+                    data_events.events |= recv_data_event;
+                    --event_count;
+                }
+                if (FD_ISSET(connection->get_socket(), &write_set))
+                {
+                    data_events.events |= send_data_event;
+                    --event_count;
+                }
+                if (0 != data_events.events)
+                {
+                    data_events.connection = connection;
+                    connection->increase_reference();
+                    DataEventsList & data_events_list = data_events_list_vector[connection->get_unique() % data_thread_count];
+                    data_events_list.push_back(data_events);
+#ifdef XACTOR_USE_SELECT
+                    modify_connection_of_reactor(connection, false, false);
+#endif // XACTOR_USE_SELECT
+                }
+            }
+        }
+#else
         for (int index = 0; index < event_count; ++index)
         {
+#ifdef _MAC_OS
+            struct kevent & connection_event = connection_events[index];
+            TcpConnection * connection = reinterpret_cast<TcpConnection *>(connection_event.udata);
+#else
             struct epoll_event & connection_event = connection_events[index];
             TcpConnection * connection = reinterpret_cast<TcpConnection *>(connection_event.data.ptr);
+#endif // _MAC_OS
             if (m_listeners.end() != std::find(m_listeners.begin(), m_listeners.end(), connection))
             {
                 listener_connections.push_back(connection);
@@ -870,14 +1079,37 @@ void TcpReactor::reactor_connection_process()
                 {
                     DataEvents data_events;
                     data_events.connection = connection;
-                    data_events.events = connection_event.events;
-
+#ifdef _MAC_OS
+                    if (EVFILT_READ == connection_event.filter)
+                    {
+                        data_events.events = recv_data_event;
+                    }
+                    else if (EVFILT_WRITE == connection_event.filter)
+                    {
+                        data_events.events = send_data_event;
+                    }
+#else
+                    data_events.events = 0;
+                    if (connection_event.events & EPOLLIN)
+                    {
+                        data_events.events |= recv_data_event;
+                    }
+                    if (connection_event.events & EPOLLOUT)
+                    {
+                        data_events.events |= send_data_event;
+                    }
+                    if (connection_event.events & EPOLLERR)
+                    {
+                        data_events.events |= exception_event;
+                    }
+#endif // _MAC_OS
                     connection->increase_reference();
                     DataEventsList & data_events_list = data_events_list_vector[connection->get_unique() % data_thread_count];
                     data_events_list.push_back(data_events);
                 }
             }
         }
+#endif // defined(XACTOR_USE_SELECT)
 
         append_data_events(data_events_list_vector);
 
@@ -893,7 +1125,7 @@ void TcpReactor::reactor_connection_process()
     RUN_LOG_DBG("reactor connection thread end");
 }
 
-void TcpReactor::reactor_data_process(size_t thread_index)
+void TcpXactor::reactor_data_process(size_t thread_index)
 {
     RUN_LOG_DBG("reactor data thread-%d begin", thread_index);
 
@@ -919,7 +1151,7 @@ void TcpReactor::reactor_data_process(size_t thread_index)
 
             bool good = true;
 
-            if (data_events.events & EPOLLIN)
+            if (data_events.events & recv_data_event)
             {
                 if (!do_recv(connection))
                 {
@@ -935,7 +1167,11 @@ void TcpReactor::reactor_data_process(size_t thread_index)
                 }
             }
 
-            if (data_events.events & EPOLLOUT)
+#ifdef XACTOR_USE_SELECT
+            modify_connection_of_reactor(connection, true, true);
+#endif // XACTOR_USE_SELECT
+
+            if (data_events.events & send_data_event)
             {
                 if (!do_send(connection))
                 {
@@ -955,12 +1191,12 @@ void TcpReactor::reactor_data_process(size_t thread_index)
                     }
                     else if (!connection->get_error())
                     {
-                        modify_connection_of_epoll(connection, false, true);
+                        modify_connection_of_reactor(connection, false, true);
                     }
                 }
             }
 
-            if (!good || (data_events.events & EPOLLERR))
+            if (!good || (data_events.events & exception_event))
             {
                 do_close(connection);
             }
@@ -980,7 +1216,7 @@ void TcpReactor::reactor_data_process(size_t thread_index)
     RUN_LOG_DBG("reactor data thread-%d end", thread_index);
 }
 
-void TcpReactor::reactor_business_process(size_t thread_index)
+void TcpXactor::reactor_business_process(size_t thread_index)
 {
     RUN_LOG_DBG("reactor business thread-%d begin", thread_index);
 
@@ -1066,4 +1302,4 @@ void TcpReactor::reactor_business_process(size_t thread_index)
 NAMESPACE_STUPID_NET_END
 
 
-#endif // _MSC_VER
+#endif // !defined(_MSC_VER) || defined(XACTOR_USE_SELECT)

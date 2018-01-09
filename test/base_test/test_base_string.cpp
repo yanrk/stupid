@@ -590,6 +590,35 @@ static void test_base_string_6(void)
     std::cout << std::endl;
 }
 
+static void test_base_string_7()
+{
+    /*
+    {
+        const std::string src("hello");
+        char dst[16] = { 0 };
+        stupid_string_to_type(src, dst); // string-to-pointer has been disabled
+    }
+
+    {
+        std::string src("hello");
+        char dst[16] = { 0 };
+        stupid_string_to_type(src, dst); // string-to-pointer has been disabled
+    }
+
+    {
+        const char src[16] = "hello";
+        std::string dst;
+        stupid_type_to_string(src, dst); // pointer-to-string has been disabled
+    }
+
+    {
+        char src[16] = "hello";
+        std::string dst;
+        stupid_type_to_string(src, dst); // pointer-to-string has been disabled
+    }
+    */
+}
+
 void test_base_string(void)
 {
     test_base_string_1();
@@ -598,4 +627,5 @@ void test_base_string(void)
     test_base_string_4();
     test_base_string_5();
     test_base_string_6();
+    test_base_string_7();
 }

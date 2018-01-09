@@ -2,11 +2,11 @@
  * Description : log class of asyn mode
  * Data        : 2013-05-23 20:12:41
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_ASYN_LOG_H
@@ -26,7 +26,7 @@ NAMESPACE_STUPID_BASE_BEGIN
 class STUPID_API AsynLog : public LogBase
 {
 public:
-    AsynLog(const std::string & path, const std::string & log_type, LOG_LEVEL min_log_level, size_t max_file_size, bool output_to_console);
+    AsynLog(const std::string & path, const std::string & log_type, STUPID_LOG_LEVEL min_log_level, size_t max_file_size, bool output_to_console);
     virtual ~AsynLog();
 
 public:
@@ -39,7 +39,7 @@ public:
     static void write_file();
 
 protected:
-    virtual void save_record(LOG_LEVEL log_level, const char * data, size_t size);
+    virtual void save_record(STUPID_LOG_LEVEL log_level, const char * data, size_t size);
 
 private:
     static bool try_write_file();

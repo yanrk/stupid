@@ -2,16 +2,18 @@
  * Description : utility of net
  * Data        : 2014-02-28 11:44:56
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifdef _MSC_VER
     #include <ws2tcpip.h>
 #else
+    #include <netdb.h>
+    #include <sys/types.h>
     #include <arpa/inet.h>
     #include <netinet/in.h>
     #include <sys/socket.h>
@@ -93,7 +95,7 @@ bool transform_address(const char * ip, unsigned short port, sockaddr_in_t & add
         return(false);
     }
 
-    memset(&address, 0, sizeof(address));
+    memset(&address, 0x00, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
 #ifdef _MSC_VER
@@ -101,6 +103,46 @@ bool transform_address(const char * ip, unsigned short port, sockaddr_in_t & add
 #else
     inet_aton(ip, &address.sin_addr);
 #endif // _MSC_VER
+
+    return(true);
+}
+
+bool resolve_address(const char * host, const char * service, bool is_listen, bool is_tcp, std::list<sockaddr_in_t> & address_list)
+{
+    if (nullptr == host)
+    {
+        DBG_LOG("resolve_address failed: host is nullptr");
+        return(false);
+    }
+
+    struct addrinfo addr_temp;
+    memset(&addr_temp, 0x00, sizeof(addr_temp));
+    addr_temp.ai_flags = (is_listen ? AI_PASSIVE : 0);
+    addr_temp.ai_family = AF_INET;
+    addr_temp.ai_socktype = (is_tcp ? SOCK_STREAM : SOCK_DGRAM);
+
+    struct addrinfo * addr_info = nullptr;
+    if (0 != getaddrinfo(host, service, &addr_temp, &addr_info))
+    {
+        RUN_LOG_ERR("getaddrinfo failed: %d", stupid_net_error());
+        return(false);
+    }
+
+    struct addrinfo * addr_dup = addr_info;
+
+    while (nullptr != addr_dup)
+    {
+        if (addr_temp.ai_family == addr_dup->ai_family && addr_temp.ai_socktype == addr_dup->ai_socktype)
+        {
+            sockaddr_in_t address;
+            memset(&address, 0x00, sizeof(address));
+            memcpy(&address, addr_dup->ai_addr, addr_dup->ai_addrlen);
+            address_list.push_back(address);
+        }
+        addr_dup = addr_dup->ai_next;
+    }
+
+    freeaddrinfo(addr_info);
 
     return(true);
 }

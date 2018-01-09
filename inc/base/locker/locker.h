@@ -2,11 +2,11 @@
  * Description : locker classes
  * Data        : 2013-05-20 08:03:27
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_LOCKER_H
@@ -18,7 +18,7 @@
 #ifdef _MSC_VER
     #include "base/locker/windows_locker.h"
 #else
-    #include "base/locker/linux_locker.h"
+    #include "base/locker/unix_locker.h"
 #endif // _MSC_VER
 
 NAMESPACE_STUPID_BASE_BEGIN
@@ -27,8 +27,8 @@ NAMESPACE_STUPID_BASE_BEGIN
     typedef WindowsThreadLocker      ThreadLocker;
     typedef WindowsProcessLocker     ProcessLocker;
 #else
-    typedef LinuxMutexLocker<true>   ThreadLocker;
-    typedef LinuxMutexLocker<false>  ProcessLocker;
+    typedef UnixMutexLocker<true>    ThreadLocker;
+    typedef UnixMutexLocker<false>   ProcessLocker;
 #endif // _MSC_VER
 
 NAMESPACE_STUPID_BASE_END

@@ -2,11 +2,11 @@
  * Description : log class of asyn mode
  * Data        : 2013-05-23 20:12:41
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cassert>
@@ -28,7 +28,7 @@ Thread AsynLog::s_write_file_thread;
 std::list<AsynLog *> AsynLog::s_asyn_log_obj_list;
 ThreadLocker AsynLog::s_asyn_log_obj_locker;
 
-AsynLog::AsynLog(const std::string & path, const std::string & log_type, LOG_LEVEL min_log_level, size_t max_file_size, bool output_to_console)
+AsynLog::AsynLog(const std::string & path, const std::string & log_type, STUPID_LOG_LEVEL min_log_level, size_t max_file_size, bool output_to_console)
     : LogBase(path, log_type, min_log_level, max_file_size, output_to_console)
     , m_idle_pool("idle pool of asyn log", "idle pool locker of asyn log")
     , m_data_pool("data pool of asyn log", "data pool locker of asyn log")
@@ -50,7 +50,7 @@ AsynLog::~AsynLog()
     m_idle_pool.release(m_current_record);
 }
 
-void AsynLog::save_record(LOG_LEVEL log_level, const char * data, size_t size)
+void AsynLog::save_record(STUPID_LOG_LEVEL log_level, const char * data, size_t size)
 {
     Guard<ThreadLocker> record_guard(m_current_record_locker);
 

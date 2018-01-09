@@ -5,9 +5,9 @@
 
 USING_NAMESPACE_STUPID_BASE
 
-static void test_log_with_write_mode_1(LOG_WRITE_MODE write_mode, const char * mode)
+static void test_log_with_write_mode_1(STUPID_LOG_WRITE_MODE write_mode, const char * mode)
 {
-    LOG_CONFIG log_config;
+    STUPID_LOG_CONFIG log_config;
     log_config.log_file_path = "./test_base_log/log_1/";
     if (nullptr != mode)
     {
@@ -22,7 +22,7 @@ static void test_log_with_write_mode_1(LOG_WRITE_MODE write_mode, const char * m
         log_config.log_file[type].output_to_console = false;
     }
 
-    log_init(log_config);
+    stupid_log_init(log_config);
 
     for (size_t index = 0; index < 10; ++index)
     {
@@ -34,12 +34,12 @@ static void test_log_with_write_mode_1(LOG_WRITE_MODE write_mode, const char * m
         DBG_LOG("%s %d", "test DBG_LOG", 6);
     }
 
-    log_exit();
+    stupid_log_exit();
 }
 
-static void test_log_with_write_mode_2(LOG_WRITE_MODE write_mode, const char * mode)
+static void test_log_with_write_mode_2(STUPID_LOG_WRITE_MODE write_mode, const char * mode)
 {
-    LOG_CONFIG log_config;
+    STUPID_LOG_CONFIG log_config;
     log_config.log_file_path = "./test_base_log/log_2/";
     if (nullptr != mode)
     {

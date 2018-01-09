@@ -6,11 +6,11 @@
  * Email       : cnjinhao@hotmail.com
  * WebSide     : www.nanapro.org/zh-cn/
  * Modified By : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * Data        : 2014-10-31 09:51:45
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_CHARSET_H
@@ -63,6 +63,13 @@ public:
 private:
     CharacterSetImpl * m_impl;
 };
+
+STUPID_CXX_API(std::string)  ansi_to_utf8   (const std::string & str_ansi);
+STUPID_CXX_API(std::wstring) ansi_to_unicode(const std::string & str_ansi);
+STUPID_CXX_API(std::string)  utf8_to_ansi   (const std::string & str_utf8);
+STUPID_CXX_API(std::wstring) utf8_to_unicode(const std::string & str_utf8);
+STUPID_CXX_API(std::string)  unicode_to_ansi(const std::wstring & str_unicode);
+STUPID_CXX_API(std::string)  unicode_to_utf8(const std::wstring & str_unicode);
 
 NAMESPACE_STUPID_BASE_END
 

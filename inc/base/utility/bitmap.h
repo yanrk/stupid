@@ -2,11 +2,11 @@
  * Description : bit-map
  * Data        : 2014-12-26 18:06:00
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_BITMAP_H
@@ -61,7 +61,7 @@ bool BitMap<T>::reset()
     {
         return(false);
     }
-    memset(m_bit, 0, m_siz);
+    memset(m_bit, 0x00, m_siz);
     return(true);
 }
 

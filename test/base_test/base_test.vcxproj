@@ -5,17 +5,33 @@
       <Configuration>dll_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="dll_debug|x64">
+      <Configuration>dll_debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="dll_release|Win32">
       <Configuration>dll_release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll_release|x64">
+      <Configuration>dll_release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="lib_debug|Win32">
       <Configuration>lib_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_debug|x64">
+      <Configuration>lib_debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="lib_release|Win32">
       <Configuration>lib_release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_release|x64">
+      <Configuration>lib_release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -29,12 +45,28 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -46,19 +78,37 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -67,20 +117,40 @@
     <OutDir>./bin/windows/$(Configuration)/</OutDir>
     <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)_x64/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)_x64/</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>./bin/windows/$(Configuration)/</OutDir>
     <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)_x64/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)_x64/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>./bin/windows/$(Configuration)/</OutDir>
     <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)_x64/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)_x64/</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>./bin/windows/$(Configuration)/</OutDir>
     <IntDir>./bin/windows/tmp/$(configuration)/</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>./bin/windows/$(Configuration)_x64/</OutDir>
+    <IntDir>./bin/windows/tmp/$(configuration)_x64/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
     <ClCompile>
@@ -97,7 +167,36 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PreLinkEvent>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
+      </Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)_x64/;</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -125,7 +224,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
     </Link>
@@ -133,6 +232,35 @@
       <Command>
         copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
         copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\cmarkup.*  .\bin\windows\$(Configuration)\;
+      </Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;USE_STUPID_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)_x64/;</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PreLinkEvent>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)_x64\stupid_base.*  .\bin\windows\$(Configuration)_x64\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)_x64\cmarkup.*  .\bin\windows\$(Configuration)_x64\;
       </Command>
     </PreLinkEvent>
     <PostBuildEvent>
@@ -159,7 +287,38 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;</AdditionalLibraryDirectories>
+    </Link>
+    <PreLinkEvent>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
+      </Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)_x64/;</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
       <Command>
@@ -189,12 +348,43 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)/;</AdditionalLibraryDirectories>
     </Link>
     <PreLinkEvent>
       <Command>
         copy ..\..\lib\windows\$(Configuration)\stupid_base.*  .\bin\windows\$(Configuration)\;
         copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)\cmarkup.*  .\bin\windows\$(Configuration)\;
+      </Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;USE_STUPID_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;../../inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>stupid_base.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(Configuration)_x64/;</AdditionalLibraryDirectories>
+    </Link>
+    <PreLinkEvent>
+      <Command>
+        copy ..\..\lib\windows\$(Configuration)_x64\stupid_base.*  .\bin\windows\$(Configuration)_x64\;
+        copy ..\..\gnu\cmarkup\lib\windows\$(Configuration)_x64\cmarkup.*  .\bin\windows\$(Configuration)_x64\;
       </Command>
     </PreLinkEvent>
     <PostBuildEvent>
@@ -216,7 +406,9 @@
     <ClCompile Include="test_base_counter.cpp" />
     <ClCompile Include="test_base_directory.cpp" />
     <ClCompile Include="test_base_exception.cpp" />
+    <ClCompile Include="test_base_file.cpp" />
     <ClCompile Include="test_base_guard.cpp" />
+    <ClCompile Include="test_base_hardware.cpp" />
     <ClCompile Include="test_base_hex.cpp" />
     <ClCompile Include="test_base_id_manager.cpp" />
     <ClCompile Include="test_base_ini.cpp" />
@@ -226,6 +418,7 @@
     <ClCompile Include="test_base_memory.cpp" />
     <ClCompile Include="test_base_multi_timer.cpp" />
     <ClCompile Include="test_base_object_pool.cpp" />
+    <ClCompile Include="test_base_process.cpp" />
     <ClCompile Include="test_base_singleton.cpp" />
     <ClCompile Include="test_base_single_timer.cpp" />
     <ClCompile Include="test_base_splitter.cpp" />

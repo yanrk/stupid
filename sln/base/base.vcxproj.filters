@@ -94,6 +94,21 @@
     <Filter Include="src\library">
       <UniqueIdentifier>{f1d29122-1d01-4c9b-849b-eb13c2c22569}</UniqueIdentifier>
     </Filter>
+    <Filter Include="inc\process">
+      <UniqueIdentifier>{5daaefcd-e596-4633-abf0-3c1016aff430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\process">
+      <UniqueIdentifier>{1e1ea9e1-d6ee-494d-88ec-e44e1d23f78c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inc\record">
+      <UniqueIdentifier>{592b6694-13a9-44a9-a94e-6b7900cd3e01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\record">
+      <UniqueIdentifier>{e3668238-283e-4624-bb6f-166f4db7f01d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{02b64aaa-4b95-47ef-9e2f-efb9a796bd00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\cfg\log.ini">
@@ -133,9 +148,6 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\base\filesystem\sys_io.h">
       <Filter>inc\filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\inc\base\locker\linux_locker.h">
-      <Filter>inc\locker</Filter>
     </ClInclude>
     <ClInclude Include="..\..\inc\base\locker\locker.h">
       <Filter>inc\locker</Filter>
@@ -188,9 +200,6 @@
     <ClInclude Include="..\..\inc\base\string\string.h">
       <Filter>inc\string</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\base\thread\linux_thread.h">
-      <Filter>inc\thread</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\base\thread\thread.h">
       <Filter>inc\thread</Filter>
     </ClInclude>
@@ -230,9 +239,6 @@
     <ClInclude Include="..\..\inc\base\utility\bitmap.h">
       <Filter>inc\utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\inc\base\thread\linux_thread_local_storage.h">
-      <Filter>inc\thread</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\inc\base\thread\thread_local_storage.h">
       <Filter>inc\thread</Filter>
     </ClInclude>
@@ -247,6 +253,42 @@
     </ClInclude>
     <ClInclude Include="..\..\inc\base\library\library.h">
       <Filter>inc\library</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\thread_group.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\utility\exclusive.h">
+      <Filter>inc\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\filesystem\file.h">
+      <Filter>inc\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\filesystem\hardware.h">
+      <Filter>inc\filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\locker\unix_locker.h">
+      <Filter>inc\locker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\unix_thread.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\thread\unix_thread_local_storage.h">
+      <Filter>inc\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\process\process.h">
+      <Filter>inc\process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\process\unix_process.h">
+      <Filter>inc\process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\process\windows_process.h">
+      <Filter>inc\process</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\inc\base\record\record.h">
+      <Filter>inc\record</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>res</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -301,9 +343,6 @@
     <ClCompile Include="..\..\src\base\string\string.cpp">
       <Filter>src\string</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\base\thread\linux_thread.cpp">
-      <Filter>src\thread</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\base\thread\windows_thread.cpp">
       <Filter>src\thread</Filter>
     </ClCompile>
@@ -328,9 +367,6 @@
     <ClCompile Include="..\..\src\base\utility\counter.cpp">
       <Filter>src\utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\base\thread\linux_thread_local_storage.cpp">
-      <Filter>src\thread</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\base\thread\windows_thread_local_storage.cpp">
       <Filter>src\thread</Filter>
     </ClCompile>
@@ -343,5 +379,37 @@
     <ClCompile Include="..\..\src\base\library\library.cpp">
       <Filter>src\library</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\thread_group.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\utility\exclusive.cpp">
+      <Filter>src\utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\filesystem\file.cpp">
+      <Filter>src\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\filesystem\hardware.cpp">
+      <Filter>src\filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\unix_thread.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\thread\unix_thread_local_storage.cpp">
+      <Filter>src\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\process\unix_process.cpp">
+      <Filter>src\process</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\process\windows_process.cpp">
+      <Filter>src\process</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\base\record\record.cpp">
+      <Filter>src\record</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="base.rc">
+      <Filter>res</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

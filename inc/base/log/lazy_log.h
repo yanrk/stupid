@@ -2,11 +2,11 @@
  * Description : log class of lazy mode
  * Data        : 2013-05-23 13:56:44
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_LAZY_LOG_H
@@ -22,11 +22,11 @@ NAMESPACE_STUPID_BASE_BEGIN
 class STUPID_API LazyLog : public LogBase
 {
 public:
-    LazyLog(const std::string & path, const std::string & log_type, LOG_LEVEL min_log_level, size_t max_file_size, size_t max_record_count, bool output_to_console);
+    LazyLog(const std::string & path, const std::string & log_type, STUPID_LOG_LEVEL min_log_level, size_t max_file_size, size_t max_record_count, bool output_to_console);
     virtual ~LazyLog();
 
 protected:
-    virtual void save_record(LOG_LEVEL log_level, const char * data, size_t size);
+    virtual void save_record(STUPID_LOG_LEVEL log_level, const char * data, size_t size);
 
 private:
     void flush();

@@ -2,11 +2,11 @@
  * Description : xml parse class which base on cmarkup
  * Data        : 2015-03-10 16:14:00
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_XML_H
@@ -36,14 +36,19 @@ public: /* read */
     bool load(const char * file_name);
     bool set_document(const char * document);
     bool find_element(const char * element_name);
-    const std::string & get_document() const;
+    std::string get_document() const;
     bool get_sub_document(std::string & sub_document);
     bool get_element(const char * element_name, std::string & element_value);
+    bool get_element(const char * element_name, char * element_value, size_t element_value_size);
     bool get_element_block(const char * element_name, const char * child_element_name, bool ignore_empty_value, std::list<std::string> & child_element_value_list);
     bool get_attribute(const char * attribute_name, std::string & attribute_value);
+    bool get_attribute(const char * attribute_name, char * attribute_value, size_t attribute_value_size);
     bool get_attribute(const char * element_name, const char * attribute_name, std::string & attribute_value);
+    bool get_attribute(const char * element_name, const char * attribute_name, char * attribute_value, size_t attribute_value_size);
     bool get_child_element(const char * child_element_name, std::string & child_element_value);
+    bool get_child_element(const char * child_element_name, char * child_element_value, size_t child_element_value_size);
     bool get_child_attribute(const char * child_element_name, const char * child_attribute_name, std::string & child_attribute_value);
+    bool get_child_attribute(const char * child_element_name, const char * child_attribute_name, char * child_attribute_value, size_t child_attribute_value_size);
     bool into_element(const char * element_name = nullptr);
     bool outof_element();
     std::string get_element_content();
@@ -265,7 +270,7 @@ bool Xml::get_child_attribute(const char * child_element_name, const char * chil
 template <typename T>
 bool Xml::add_attribute(const char * attribute_name, T attribute_value)
 {
-    std::list<std::string> str_attribute_value;
+    std::string str_attribute_value;
     if (!stupid_type_to_string(attribute_value, str_attribute_value))
     {
         return(false);
@@ -276,7 +281,7 @@ bool Xml::add_attribute(const char * attribute_name, T attribute_value)
 template <typename T>
 bool Xml::add_child_attribute(const char * child_attribute_name, T child_attribute_value)
 {
-    std::list<std::string> str_child_attribute_value;
+    std::string str_child_attribute_value;
     if (!stupid_type_to_string(child_attribute_value, str_child_attribute_value))
     {
         return(false);
@@ -287,7 +292,7 @@ bool Xml::add_child_attribute(const char * child_attribute_name, T child_attribu
 template <typename T>
 bool Xml::set_attribute(const char * element_name, const char * attribute_name, T attribute_value)
 {
-    std::list<std::string> str_attribute_value;
+    std::string str_attribute_value;
     if (!stupid_type_to_string(attribute_value, str_attribute_value))
     {
         return(false);
@@ -298,7 +303,7 @@ bool Xml::set_attribute(const char * element_name, const char * attribute_name, 
 template <typename T>
 bool Xml::set_child_attribute(const char * child_element_name, const char * child_attribute_name, T child_attribute_value)
 {
-    std::list<std::string> str_child_attribute_value;
+    std::string str_child_attribute_value;
     if (!stupid_type_to_string(child_attribute_value, str_child_attribute_value))
     {
         return(false);

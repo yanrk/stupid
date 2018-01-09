@@ -2,18 +2,18 @@
  * Description : windows tcp connection proactor class
  * Data        : 2014-07-03 10:49:42
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_PROACTOR_H
 #define STUPID_NET_PROACTOR_H
 
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(XACTOR_USE_SELECT)
 
 
 #include <winsock2.h>
@@ -34,7 +34,7 @@ NAMESPACE_STUPID_NET_BEGIN
 
 class TcpManager;
 
-class TcpProactor : private Stupid::Base::Uncopy
+class TcpXactor : private Stupid::Base::Uncopy
 {
 private:
     struct BusinessEvent
@@ -53,8 +53,8 @@ private:
     typedef std::vector<TcpConnection *>                                  ConnectionVector;
 
 public:
-    TcpProactor();
-    ~TcpProactor();
+    TcpXactor();
+    ~TcpXactor();
 
 public:
     bool init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count);
@@ -150,7 +150,7 @@ private:
 NAMESPACE_STUPID_NET_END
 
 
-#endif // _MSC_VER
+#endif // defined(_MSC_VER) && !defined(XACTOR_USE_SELECT)
 
 
 #endif // STUPID_NET_PROACTOR_H

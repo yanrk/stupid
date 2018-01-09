@@ -22,6 +22,7 @@
 // MARKUP_STDCONV to use neither WINCONV or ICONV, falls back to setlocale based conversion for ANSI
 //
 
+#define MARKUP_WCHAR // USE WCHAR
 #define MARKUP_STL // USE STL
 
 #if ! defined(MARKUP_WINDOWS)

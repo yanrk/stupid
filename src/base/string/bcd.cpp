@@ -2,11 +2,11 @@
  * Description : encode and decode of bcd
  * Data        : 2014-03-22 17:03:12
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cstring>
@@ -87,7 +87,7 @@ bool bcd_decode(const unsigned char * src, size_t src_len, char * dst, size_t ds
 {
     dst_len = 0;
 
-    if (nullptr == src || nullptr == dst || 0 > dst_siz)
+    if (nullptr == src || nullptr == dst)
     {
         return(false);
     }

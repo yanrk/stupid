@@ -2,11 +2,11 @@
  * Description : time functions
  * Data        : 2013-05-24 12:15:59
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <sstream>
@@ -162,6 +162,23 @@ std::string stupid_get_time(const struct tm & tm_value, const char * time_delimi
 std::string stupid_get_time(const char * time_delimiter)
 {
     return(stupid_get_time(stupid_localtime(), time_delimiter));
+}
+
+std::string stupid_datetime()
+{
+    time_t t_now = time(nullptr);
+    struct tm tm_now = { 0x00 };
+
+#ifdef _MSC_VER
+    localtime_s(&tm_now, &t_now);
+#else
+    localtime_r(&t_now, &tm_now);
+#endif // _MSC_VER
+
+    char str_time[32] = { 0x00 };
+    strftime(str_time, sizeof(str_time), "%Y-%m-%d %H:%M:%S", &tm_now);
+
+    return(str_time);
 }
 
 std::string stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter, const char * time_delimiter, const char * date_time_delimiter)

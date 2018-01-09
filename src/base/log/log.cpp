@@ -2,11 +2,11 @@
  * Description : interface of log module
  * Data        : 2013-05-22 22:34:24
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cassert>
@@ -22,7 +22,7 @@
 
 USING_NAMESPACE_STUPID_BASE
 
-static bool transform_log_write_mode(const std::string & key_value, LOG_WRITE_MODE & write_mode)
+static bool transform_log_write_mode(const std::string & key_value, STUPID_LOG_WRITE_MODE & write_mode)
 {
     if ("SYNC_WRITE_MODE" == key_value)
     {
@@ -44,7 +44,7 @@ static bool transform_log_write_mode(const std::string & key_value, LOG_WRITE_MO
     return(true);
 }
 
-static bool transform_log_level(const std::string & key_value, LOG_LEVEL & log_level)
+static bool transform_log_level(const std::string & key_value, STUPID_LOG_LEVEL & log_level)
 {
     if ("CRI_LEVEL" == key_value)
     {
@@ -74,7 +74,7 @@ static bool transform_log_level(const std::string & key_value, LOG_LEVEL & log_l
     return(true);
 }
 
-bool log_load_config(const std::string & file, LOG_CONFIG & log_config)
+bool stupid_log_load_config(const std::string & file, STUPID_LOG_CONFIG & log_config)
 {
     Ini log_ini;
     if (!log_ini.load(file))
@@ -89,7 +89,7 @@ bool log_load_config(const std::string & file, LOG_CONFIG & log_config)
 
     for (int type = LOG_TYPE_MIN; type < LOG_TYPE_MAX; ++type)
     {
-        std::string app_name(LOG_TYPE_INFO[type]);
+        std::string app_name(STUPID_LOG_TYPE_INFO[type]);
         std::string key_value;
 
         if (!log_ini.get_value(app_name, "write_mode", key_value))
@@ -135,7 +135,7 @@ static LogBase * s_log[LOG_TYPE_MAX] = { nullptr };
 static unsigned char s_log_type_open[LOG_TYPE_MAX] = { 0x00 };
 static bool s_need_aysn_write_thread = false;
 
-bool log_init(const LOG_CONFIG & log_config)
+bool stupid_log_init(const STUPID_LOG_CONFIG & log_config)
 {
     for (size_t type = LOG_TYPE_MIN; type < LOG_TYPE_MAX; ++type)
     {
@@ -149,7 +149,7 @@ bool log_init(const LOG_CONFIG & log_config)
                     SyncLog
                     (
                         log_config.log_file_path, 
-                        LOG_TYPE_INFO[type], 
+                        STUPID_LOG_TYPE_INFO[type], 
                         log_config.log_file[type].log_min_level, 
                         log_config.log_file[type].log_file_size, 
                         log_config.log_file[type].output_to_console
@@ -165,7 +165,7 @@ bool log_init(const LOG_CONFIG & log_config)
                     AsynLog
                     (
                         log_config.log_file_path, 
-                        LOG_TYPE_INFO[type], 
+                        STUPID_LOG_TYPE_INFO[type], 
                         log_config.log_file[type].log_min_level, 
                         log_config.log_file[type].log_file_size, 
                         log_config.log_file[type].output_to_console
@@ -182,7 +182,7 @@ bool log_init(const LOG_CONFIG & log_config)
                     LazyLog
                     (
                         log_config.log_file_path, 
-                        LOG_TYPE_INFO[type], 
+                        STUPID_LOG_TYPE_INFO[type], 
                         log_config.log_file[type].log_min_level, 
                         log_config.log_file[type].log_file_size, 
                         log_config.log_file[type].buffer_count, 
@@ -205,7 +205,7 @@ bool log_init(const LOG_CONFIG & log_config)
         }
     }
 
-    log_enable_all();
+    stupid_log_enable_all();
 
     if (s_need_aysn_write_thread)
     {
@@ -215,9 +215,9 @@ bool log_init(const LOG_CONFIG & log_config)
     return(true);
 }
 
-void log_exit()
+void stupid_log_exit()
 {
-    log_disable_all();
+    stupid_log_disable_all();
 
     if (s_need_aysn_write_thread)
     {
@@ -231,27 +231,27 @@ void log_exit()
     }
 }
 
-void log_enable(LOG_TYPE log_type)
+void stupid_log_enable(STUPID_LOG_TYPE log_type)
 {
     s_log_type_open[log_type] = 0x01;
 }
 
-void log_disable(LOG_TYPE log_type)
+void stupid_log_disable(STUPID_LOG_TYPE log_type)
 {
     s_log_type_open[log_type] = 0x00;
 }
 
-void log_enable_all()
+void stupid_log_enable_all()
 {
     memset(s_log_type_open, 0x01, sizeof(s_log_type_open));
 }
 
-void log_disable_all()
+void stupid_log_disable_all()
 {
     memset(s_log_type_open, 0x00, sizeof(s_log_type_open));
 }
 
-void log_set_level(LOG_TYPE log_type, LOG_LEVEL log_level)
+void stupid_log_set_level(STUPID_LOG_TYPE log_type, STUPID_LOG_LEVEL log_level)
 {
     if (log_type < LOG_TYPE_MIN || log_type >= LOG_TYPE_MAX)
     {
@@ -264,7 +264,7 @@ void log_set_level(LOG_TYPE log_type, LOG_LEVEL log_level)
     }
 }
 
-void log_set_console(LOG_TYPE log_type, bool output_to_console)
+void stupid_log_set_console(STUPID_LOG_TYPE log_type, bool output_to_console)
 {
     if (log_type < LOG_TYPE_MIN || log_type >= LOG_TYPE_MAX)
     {
@@ -277,32 +277,43 @@ void log_set_console(LOG_TYPE log_type, bool output_to_console)
     }
 }
 
-void run_log(LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, ...)
+void stupid_run_log(STUPID_LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, ...)
 {
-    va_list args = nullptr;
-
-    va_start(args, format);
-
-    if (0x00 != s_log_type_open[LOG_TYPE_RUN] && nullptr != s_log[LOG_TYPE_RUN])
     {
-        s_log[LOG_TYPE_RUN]->push_record(level, file, func, line, format, args);
-    }
-    if (0x00 != s_log_type_open[LOG_TYPE_DBG] && nullptr != s_log[LOG_TYPE_DBG])
-    {
-        s_log[LOG_TYPE_DBG]->push_record(level, file, func, line, format, args);
+        va_list args;
+
+        va_start(args, format);
+
+        if (0x00 != s_log_type_open[LOG_TYPE_RUN] && nullptr != s_log[LOG_TYPE_RUN])
+        {
+            s_log[LOG_TYPE_RUN]->push_record(level, file, func, line, format, args);
+        }
+
+        va_end(args);
     }
 
-    va_end(args);
+    {
+        va_list args;
+
+        va_start(args, format);
+
+        if (0x00 != s_log_type_open[LOG_TYPE_DBG] && nullptr != s_log[LOG_TYPE_DBG])
+        {
+            s_log[LOG_TYPE_DBG]->push_record(level, file, func, line, format, args);
+        }
+
+        va_end(args);
+    }
 }
 
-void debug_log(LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, ...)
+void stupid_debug_log(STUPID_LOG_LEVEL level, const char * file, const char * func, size_t line, const char * format, ...)
 {
     if (0x00 == s_log_type_open[LOG_TYPE_DBG] || nullptr == s_log[LOG_TYPE_DBG])
     {
         return;
     }
 
-    va_list args = nullptr;
+    va_list args;
 
     va_start(args, format);
 

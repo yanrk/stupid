@@ -1,6 +1,12 @@
+# arguments
+platform = linux/x64
+
+
+
+# paths home
 project_home       = ../..
 build_dir          = $(project_home)/sln/stupid
-bin_dir            = $(project_home)/lib/linux
+bin_dir            = $(project_home)/lib/$(platform)
 object_dir         = $(project_home)/.objs
 stupid_home        = $(project_home)
 gnu_home           = $(project_home)/gnu
@@ -54,15 +60,15 @@ tool_objects       = $(tool_source:$(project_home)%.cpp=$(object_dir)%.o)
 
 # base depends librarys
 base_depend_libs   = -lpthread -ldl
-base_depend_libs  += -L$(gnu_home)/cmarkup/lib/linux -lcmarkup
+base_depend_libs  += -L$(gnu_home)/cmarkup/lib/$(platform) -lcmarkup
 
 # net depends librarys
 net_depend_libs    = -L$(bin_dir) -lstupid_base
 
 # tool depends librarys
-tool_depend_libs   = -L$(gnu_home)/zlib/lib/linux -lz
-tool_depend_libs  += -L$(gnu_home)/openssl/lib/linux -lcrypto -lssl
-tool_depend_libs  += -L$(gnu_home)/curl/lib/linux -lcurl
+tool_depend_libs   = -L$(gnu_home)/zlib/lib/$(platform) -lz
+tool_depend_libs  += -L$(gnu_home)/openssl/lib/$(platform) -lcrypto -lssl
+tool_depend_libs  += -L$(gnu_home)/curl/lib/$(platform) -lcurl
 tool_depend_libs  += -L$(bin_dir) -lstupid_base
 
 
@@ -78,7 +84,7 @@ tool_output_lib    = $(bin_dir)/libstupid_tool.so
 # so no -m64, and add a macro -Dnullptr=0
 
 # build flags for objects
-build_obj_flags    = -std=c++0x -g -Wall -O1 -pipe -fPIC -Dnullptr=0
+build_obj_flags    = -std=c++11 -g -Wall -O1 -pipe -fPIC
 
 # build flags for execution
 build_exec_flags   = $(build_obj_flags)

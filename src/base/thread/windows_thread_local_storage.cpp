@@ -2,11 +2,11 @@
  * Description : thread local storage class in windows
  * Data        : 2015-02-27 16:01:00
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifdef _MSC_VER

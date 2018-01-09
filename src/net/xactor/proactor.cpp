@@ -2,14 +2,14 @@
  * Description : windows tcp connection proactor class
  * Data        : 2014-07-03 10:49:42
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(XACTOR_USE_SELECT)
 
 
 #include <algorithm>
@@ -26,11 +26,11 @@ NAMESPACE_STUPID_NET_BEGIN
 
 struct PROACTOR_THREAD_PARAM
 {
-    TcpProactor & tcp_proactor;
-    size_t        thread_index;
+    TcpXactor & tcp_xactor;
+    size_t      thread_index;
 
-    PROACTOR_THREAD_PARAM(TcpProactor & proactor, size_t index)
-        : tcp_proactor(proactor), thread_index(index)
+    PROACTOR_THREAD_PARAM(TcpXactor & xactor, size_t index)
+        : tcp_xactor(xactor), thread_index(index)
     {
 
     }
@@ -41,7 +41,7 @@ thread_return_t STUPID_STDCALL connection_thread_process(thread_argument_t param
     if (nullptr != param)
     {
         PROACTOR_THREAD_PARAM * thread_param = reinterpret_cast<PROACTOR_THREAD_PARAM *>(param);
-        thread_param->tcp_proactor.proactor_connection_process(thread_param->thread_index);
+        thread_param->tcp_xactor.proactor_connection_process(thread_param->thread_index);
         STUPID_DEL(thread_param);
     }
     return(THREAD_DEFAULT_RET);
@@ -52,7 +52,7 @@ thread_return_t STUPID_STDCALL business_thread_process(thread_argument_t param)
     if (nullptr != param)
     {
         PROACTOR_THREAD_PARAM * thread_param = reinterpret_cast<PROACTOR_THREAD_PARAM *>(param);
-        thread_param->tcp_proactor.proactor_business_process(thread_param->thread_index);
+        thread_param->tcp_xactor.proactor_business_process(thread_param->thread_index);
         STUPID_DEL(thread_param);
     }
     return(THREAD_DEFAULT_RET);
@@ -158,7 +158,7 @@ enum business_event_enum
     close_notify 
 };
 
-TcpProactor::TcpProactor()
+TcpXactor::TcpXactor()
     : m_running(false)
     , m_manager(nullptr)
     , m_iocp(nullptr)
@@ -179,12 +179,12 @@ TcpProactor::TcpProactor()
 
 }
 
-TcpProactor::~TcpProactor()
+TcpXactor::~TcpXactor()
 {
     exit();
 }
 
-bool TcpProactor::init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
+bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == manager)
     {
@@ -236,7 +236,7 @@ bool TcpProactor::init(TcpManager * manager, size_t event_thread_count, size_t h
     return(true);
 }
 
-void TcpProactor::exit()
+void TcpXactor::exit()
 {
     if (!m_running)
     {
@@ -259,12 +259,12 @@ void TcpProactor::exit()
     RUN_LOG_DBG("exit tcp proactor success");
 }
 
-bool TcpProactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
+bool TcpXactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     return(do_connect(server_address, identity, bind_ip, bind_port));
 }
 
-void TcpProactor::connection_send(TcpConnection * connection)
+void TcpXactor::connection_send(TcpConnection * connection)
 {
     /* when send-buffer has data, the connection should continue to send */
     do
@@ -295,7 +295,7 @@ void TcpProactor::connection_send(TcpConnection * connection)
 
         size_t send_len = std::min<size_t>(post_event->buffer_size, connection->send_buffer_size());
         post_event->data.buf = post_event->buffer;
-        post_event->data.len = send_len;
+        post_event->data.len = static_cast<ULONG>(send_len);
         if (!connection->send_buffer_copy_len(post_event->buffer, send_len))
         {
             RUN_LOG_TRK("connection_send failed: send_buffer_copy_len error"); /* RUN_LOG_ERR */
@@ -314,7 +314,7 @@ void TcpProactor::connection_send(TcpConnection * connection)
     do_close(connection);
 }
 
-void TcpProactor::close_connection(TcpConnection * connection)
+void TcpXactor::close_connection(TcpConnection * connection)
 {
     /* binded-set make sure we will not close connection more times */
     if (delete_connection_from_iocp(connection))
@@ -329,19 +329,19 @@ void TcpProactor::close_connection(TcpConnection * connection)
     }
 }
 
-bool TcpProactor::running()
+bool TcpXactor::running()
 {
     return(m_running);
 }
 
-void TcpProactor::calc_event_thread_count(size_t & event_thread_count)
+void TcpXactor::calc_event_thread_count(size_t & event_thread_count)
 {
     SYSTEM_INFO system_info;
     GetSystemInfo(&system_info);
     event_thread_count = system_info.dwNumberOfProcessors;
 }
 
-bool TcpProactor::create_listener(unsigned short * service_port, size_t service_port_count)
+bool TcpXactor::create_listener(unsigned short * service_port, size_t service_port_count)
 {
     if (nullptr == service_port || 0 == service_port_count)
     {
@@ -416,7 +416,7 @@ bool TcpProactor::create_listener(unsigned short * service_port, size_t service_
     return(true);
 }
 
-void TcpProactor::destroy_listener()
+void TcpXactor::destroy_listener()
 {
     ConnectionVector::iterator iter = m_listeners.begin();
     while (m_listeners.end() != iter)
@@ -427,7 +427,7 @@ void TcpProactor::destroy_listener()
     m_listeners.clear();
 }
 
-bool TcpProactor::create_iocp()
+bool TcpXactor::create_iocp()
 {
     m_iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
     if (nullptr == m_iocp)
@@ -438,7 +438,7 @@ bool TcpProactor::create_iocp()
     return(true);
 }
 
-void TcpProactor::destroy_iocp()
+void TcpXactor::destroy_iocp()
 {
     if (nullptr != m_iocp)
     {
@@ -447,7 +447,7 @@ void TcpProactor::destroy_iocp()
     }
 }
 
-bool TcpProactor::append_connection_to_iocp(TcpConnection * connection)
+bool TcpXactor::append_connection_to_iocp(TcpConnection * connection)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     if (m_binded_connection_set.end() != m_binded_connection_set.find(connection))
@@ -472,7 +472,7 @@ bool TcpProactor::append_connection_to_iocp(TcpConnection * connection)
     return(true);
 }
 
-bool TcpProactor::delete_connection_from_iocp(TcpConnection * connection)
+bool TcpXactor::delete_connection_from_iocp(TcpConnection * connection)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     if (m_binded_connection_set.end() == m_binded_connection_set.find(connection))
@@ -489,7 +489,7 @@ bool TcpProactor::delete_connection_from_iocp(TcpConnection * connection)
     return(true);
 }
 
-bool TcpProactor::post_accept(iocp_event * post_event)
+bool TcpXactor::post_accept(iocp_event * post_event)
 {
     socket_t accepter = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, nullptr, 0, WSA_FLAG_OVERLAPPED);
     if (INVALID_SOCKET == accepter)
@@ -521,7 +521,7 @@ bool TcpProactor::post_accept(iocp_event * post_event)
     return(true);
 }
 
-bool TcpProactor::post_recv(iocp_event * post_event)
+bool TcpXactor::post_recv(iocp_event * post_event)
 {
     TcpConnection * connection = post_event->connection;
     WSABUF buffer_array[1] = { post_event->data };
@@ -540,7 +540,7 @@ bool TcpProactor::post_recv(iocp_event * post_event)
     return(true);
 }
 
-bool TcpProactor::post_send(iocp_event * post_event)
+bool TcpXactor::post_send(iocp_event * post_event)
 {
     TcpConnection * connection = post_event->connection;
     WSABUF buffer_array[1] = { post_event->data };
@@ -559,7 +559,7 @@ bool TcpProactor::post_send(iocp_event * post_event)
     return(true);
 }
 
-void TcpProactor::post_exit()
+void TcpXactor::post_exit()
 {
     for (size_t thread_index = 0; thread_index < m_connection_thread_count; ++thread_index)
     {
@@ -570,7 +570,7 @@ void TcpProactor::post_exit()
     }
 }
 
-bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
+bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
     socket_t connecter = BAD_SOCKET;
     if (!tcp_connect(server_address, connecter, bind_ip, bind_port))
@@ -618,7 +618,7 @@ bool TcpProactor::do_connect(const sockaddr_in_t & server_address, size_t identi
     return(post_recv(&connection->m_async_recv));
 }
 
-bool TcpProactor::do_accept(iocp_event * post_event, size_t data_len)
+bool TcpXactor::do_accept(iocp_event * post_event, size_t data_len)
 {
     socket_t listener = post_event->connection->get_listener();
     unsigned short listener_port = post_event->connection->get_listener_port();
@@ -699,7 +699,7 @@ bool TcpProactor::do_accept(iocp_event * post_event, size_t data_len)
     return(post_accept(post_event));
 }
 
-bool TcpProactor::do_recv(iocp_event * post_event, size_t data_len)
+bool TcpXactor::do_recv(iocp_event * post_event, size_t data_len)
 {
     TcpConnection * connection = post_event->connection;
 
@@ -721,7 +721,7 @@ bool TcpProactor::do_recv(iocp_event * post_event, size_t data_len)
     return(post_recv(post_event));
 }
 
-bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
+bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
 {
     TcpConnection * connection = post_event->connection;
 
@@ -735,7 +735,7 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
     {
         size_t send_len = std::min<size_t>(post_event->buffer_size, connection->send_buffer_size());
         post_event->data.buf = post_event->buffer;
-        post_event->data.len = send_len;
+        post_event->data.len = static_cast<ULONG>(send_len);
         if (0 != send_len)
         {
             if (!connection->send_buffer_copy_len(post_event->buffer, send_len))
@@ -757,7 +757,7 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
     else if (data_len < post_event->data.len)
     {
         post_event->data.buf += data_len;
-        post_event->data.len -= data_len;
+        post_event->data.len -= static_cast<ULONG>(data_len);
     }
     else
     {
@@ -768,37 +768,37 @@ bool TcpProactor::do_send(iocp_event * post_event, size_t data_len)
     return(post_send(post_event));
 }
 
-void TcpProactor::do_close(TcpConnection * connection)
+void TcpXactor::do_close(TcpConnection * connection)
 {
     close_connection(connection);
 }
 
-bool TcpProactor::handle_connect(TcpConnection * connection, size_t identity)
+bool TcpXactor::handle_connect(TcpConnection * connection, size_t identity)
 {
     return(m_manager->handle_connect(connection, identity));
 }
 
-bool TcpProactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
+bool TcpXactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
 {
     return(m_manager->handle_accept(connection, listener_port));
 }
 
-bool TcpProactor::handle_recv(TcpConnection * connection)
+bool TcpXactor::handle_recv(TcpConnection * connection)
 {
     return(m_manager->handle_recv(connection));
 }
 
-bool TcpProactor::handle_send(TcpConnection * connection)
+bool TcpXactor::handle_send(TcpConnection * connection)
 {
     return(m_manager->handle_send(connection));
 }
 
-bool TcpProactor::handle_close(TcpConnection * connection)
+bool TcpXactor::handle_close(TcpConnection * connection)
 {
     return(m_manager->handle_close(connection));
 }
 
-void TcpProactor::handle_error(iocp_event * post_event)
+void TcpXactor::handle_error(iocp_event * post_event)
 {
     if (accept_iocp == post_event->post_type)
     {
@@ -814,7 +814,7 @@ void TcpProactor::handle_error(iocp_event * post_event)
     }
 }
 
-bool TcpProactor::acquire_proactor_threads(size_t handle_thread_count)
+bool TcpXactor::acquire_proactor_threads(size_t handle_thread_count)
 {
     const size_t connection_thread_count = m_connection_thread_count;
     const size_t business_thread_count = handle_thread_count;
@@ -865,7 +865,7 @@ bool TcpProactor::acquire_proactor_threads(size_t handle_thread_count)
     return(true);
 }
 
-void TcpProactor::release_proactor_threads()
+void TcpXactor::release_proactor_threads()
 {
     post_exit();
 
@@ -879,19 +879,19 @@ void TcpProactor::release_proactor_threads()
     m_connection_thread_count = 0;
 }
 
-TcpConnection * TcpProactor::acquire_connection()
+TcpConnection * TcpXactor::acquire_connection()
 {
     TcpConnection * connection = nullptr;
     STUPID_NEW(connection, TcpConnection(*this, m_block_pool));
     return(connection);
 }
 
-void TcpProactor::release_connection(TcpConnection *& connection)
+void TcpXactor::release_connection(TcpConnection *& connection)
 {
     STUPID_DEL(connection);
 }
 
-void TcpProactor::insert_connection(TcpConnection * connection)
+void TcpXactor::insert_connection(TcpConnection * connection)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     m_normal_connection_set.insert(connection);
@@ -909,7 +909,7 @@ void TcpProactor::insert_connection(TcpConnection * connection)
     }
 }
 
-void TcpProactor::remove_connection(TcpConnection *& connection)
+void TcpXactor::remove_connection(TcpConnection *& connection)
 {
     /*
      * when get to here, maybe connection->has_reference() is true
@@ -933,7 +933,7 @@ void TcpProactor::remove_connection(TcpConnection *& connection)
     }
 }
 
-void TcpProactor::destroy_invalid_connections()
+void TcpXactor::destroy_invalid_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     ConnectionSet valid_connection_set;
@@ -954,7 +954,7 @@ void TcpProactor::destroy_invalid_connections()
     m_closed_connection_set.swap(valid_connection_set);
 }
 
-void TcpProactor::destroy_normal_connections()
+void TcpXactor::destroy_normal_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     ConnectionSet::iterator iter = m_normal_connection_set.begin();
@@ -967,7 +967,7 @@ void TcpProactor::destroy_normal_connections()
     m_normal_connection_set.clear();
 }
 
-void TcpProactor::destroy_closed_connections()
+void TcpXactor::destroy_closed_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> connection_set_guard(m_connection_set_locker);
     ConnectionSet::iterator iter = m_closed_connection_set.begin();
@@ -980,20 +980,20 @@ void TcpProactor::destroy_closed_connections()
     m_closed_connection_set.clear();
 }
 
-void TcpProactor::destroy_binded_connections()
+void TcpXactor::destroy_binded_connections()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     m_binded_connection_set.clear();
 }
 
-void TcpProactor::destroy_connections()
+void TcpXactor::destroy_connections()
 {
     destroy_normal_connections();
     destroy_closed_connections();
     destroy_binded_connections();
 }
 
-void TcpProactor::append_business_event(BusinessEvent & business_event)
+void TcpXactor::append_business_event(BusinessEvent & business_event)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> business_event_guard(m_business_event_list_vector_locker);
     const size_t business_thread_count = m_business_event_list_vector.size();
@@ -1002,20 +1002,20 @@ void TcpProactor::append_business_event(BusinessEvent & business_event)
     business_event_list.push_back(business_event);
 }
 
-void TcpProactor::delete_business_event(size_t thread_index, BusinessEventList & event_list)
+void TcpXactor::delete_business_event(size_t thread_index, BusinessEventList & event_list)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> business_event_guard(m_business_event_list_vector_locker);
     BusinessEventList & business_event_list = m_business_event_list_vector[thread_index - 1];
     event_list.splice(event_list.end(), business_event_list);
 }
 
-void TcpProactor::clear_business_event()
+void TcpXactor::clear_business_event()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> business_event_guard(m_business_event_list_vector_locker);
     m_business_event_list_vector.clear();
 }
 
-void TcpProactor::proactor_connection_process(size_t thread_index)
+void TcpXactor::proactor_connection_process(size_t thread_index)
 {
     RUN_LOG_DBG("proactor connection thread-%d begin", thread_index);
 
@@ -1134,7 +1134,7 @@ void TcpProactor::proactor_connection_process(size_t thread_index)
     RUN_LOG_DBG("proactor connection thread-%d end", thread_index);
 }
 
-void TcpProactor::proactor_business_process(size_t thread_index)
+void TcpXactor::proactor_business_process(size_t thread_index)
 {
     RUN_LOG_DBG("proactor business thread-%d begin", thread_index);
 
@@ -1220,4 +1220,4 @@ void TcpProactor::proactor_business_process(size_t thread_index)
 NAMESPACE_STUPID_NET_END
 
 
-#endif // _MSC_VER
+#endif // defined(_MSC_VER) && !defined(XACTOR_USE_SELECT)

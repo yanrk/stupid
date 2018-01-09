@@ -2,11 +2,11 @@
  * Description : macros of stupid net
  * Data        : 2013-10-30 00:01:10
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_MACROS_H
@@ -22,12 +22,10 @@
 #ifdef _MSC_VER
     #define BAD_SOCKET                           (INVALID_SOCKET)
     #define stupid_close_socket(sock)            ::closesocket(sock)
-    #define stupid_system_error()                (::GetLastError())
     #define stupid_net_error()                   (::WSAGetLastError())
 #else
     #define BAD_SOCKET                           (-1)
     #define stupid_close_socket(sock)            ::close(sock)
-    #define stupid_system_error()                (errno + 0)
     #define stupid_net_error()                   (errno + 0)
 #endif // _MSC_VER
 

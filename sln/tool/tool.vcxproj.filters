@@ -30,6 +30,9 @@
     <Filter Include="src\utility">
       <UniqueIdentifier>{36291c3c-a302-4f14-a246-eed5f0478188}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{c99e1bd3-e085-4b7f-a6cd-050355bff81e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\tool\mail\mail.cpp">
@@ -58,5 +61,13 @@
     <ClInclude Include="..\..\inc\tool\utility\curl_switch.h">
       <Filter>inc\utility</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>res</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tool.rc">
+      <Filter>res</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

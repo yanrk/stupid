@@ -2,24 +2,24 @@
  * Description : tcp connection class
  * Data        : 2014-06-30 10:59:25
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
+
+#ifndef _MSC_VER
+	#include <arpa/inet.h>
+#endif // _MSC_VER
 
 #include <cstring>
 #include <cstdlib>
 #include "net/xactor/connection.h"
 #include "net/utility/tcp.h"
 #include "base/utility/guard.h"
-
-#ifdef _MSC_VER
-    #include "net/xactor/proactor.h"
-#else
-    #include "net/xactor/reactor.h"
-#endif // _MSC_VER
+#include "net/xactor/proactor.h"
+#include "net/xactor/reactor.h"
 
 NAMESPACE_STUPID_NET_BEGIN
 
@@ -48,7 +48,7 @@ TcpConnection::TcpConnection(TcpXactor & xactor, BlockPool & block_pool)
     m_async_recv.post_type = 0;
     m_async_recv.buffer_size = sizeof(m_async_recv.buffer) / sizeof(m_async_recv.buffer[0]);
     m_async_recv.data.buf = m_async_recv.buffer;
-    m_async_recv.data.len = m_async_recv.buffer_size;
+    m_async_recv.data.len = static_cast<ULONG>(m_async_recv.buffer_size);
 
     memset(&m_async_send.overlapped, 0x00, sizeof(m_async_send.overlapped));
     m_async_send.connection = this;

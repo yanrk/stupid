@@ -5,17 +5,33 @@
       <Configuration>dll_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="dll_debug|x64">
+      <Configuration>dll_debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="dll_release|Win32">
       <Configuration>dll_release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="dll_release|x64">
+      <Configuration>dll_release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="lib_debug|Win32">
       <Configuration>lib_debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_debug|x64">
+      <Configuration>lib_debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="lib_release|Win32">
       <Configuration>lib_release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="lib_release|x64">
+      <Configuration>lib_release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -31,6 +47,13 @@
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -38,7 +61,22 @@
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -54,19 +92,39 @@
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -74,6 +132,16 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>../../lib/windows/$(configuration)/</OutDir>
     <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)/</IntDir>
+    <TargetExt>.lib</TargetExt>
+    <TargetName>stupid_base</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)_x64/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)_x64/</IntDir>
     <TargetExt>.lib</TargetExt>
     <TargetName>stupid_base</TargetName>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -91,6 +159,17 @@
     <CodeAnalysisRuleAssemblies />
     <IgnoreImportLibrary>false</IgnoreImportLibrary>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)_x64/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)_x64/</IntDir>
+    <TargetExt>.dll</TargetExt>
+    <TargetName>stupid_base</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>../../lib/windows/$(configuration)/</OutDir>
@@ -101,10 +180,31 @@
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)_x64/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)_x64/</IntDir>
+    <TargetName>stupid_base</TargetName>
+    <TargetExt>.lib</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>../../lib/windows/$(configuration)/</OutDir>
     <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)/</IntDir>
+    <TargetName>stupid_base</TargetName>
+    <TargetExt>.dll</TargetExt>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../lib/windows/$(configuration)_x64/</OutDir>
+    <IntDir>../../lib/windows/tmp/$(TargetName)/$(configuration)_x64/</IntDir>
     <TargetName>stupid_base</TargetName>
     <TargetExt>.dll</TargetExt>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -131,6 +231,30 @@
     <Lib>
       <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <TargetMachine>MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'">
@@ -149,6 +273,28 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;</IgnoreSpecificDefaultLibraries>
     </Link>
     <ProjectReference>
@@ -178,6 +324,34 @@
     <Lib>
       <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <TargetMachine>MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'">
@@ -206,6 +380,32 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;BASE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../inc/;../../gnu/cmarkup/inc/;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>cmarkup.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../gnu/cmarkup/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\..\cfg\log.ini" />
   </ItemGroup>
@@ -222,9 +422,11 @@
     <ClInclude Include="..\..\inc\base\config\xml.h" />
     <ClInclude Include="..\..\inc\base\exception\exception.h" />
     <ClInclude Include="..\..\inc\base\filesystem\directory.h" />
+    <ClInclude Include="..\..\inc\base\filesystem\file.h" />
+    <ClInclude Include="..\..\inc\base\filesystem\hardware.h" />
     <ClInclude Include="..\..\inc\base\filesystem\sys_io.h" />
     <ClInclude Include="..\..\inc\base\library\library.h" />
-    <ClInclude Include="..\..\inc\base\locker\linux_locker.h" />
+    <ClInclude Include="..\..\inc\base\locker\unix_locker.h" />
     <ClInclude Include="..\..\inc\base\locker\locker.h" />
     <ClInclude Include="..\..\inc\base\locker\null_locker.h" />
     <ClInclude Include="..\..\inc\base\locker\windows_locker.h" />
@@ -236,15 +438,20 @@
     <ClInclude Include="..\..\inc\base\log\sync_log.h" />
     <ClInclude Include="..\..\inc\base\pool\memory_pool.h" />
     <ClInclude Include="..\..\inc\base\pool\object_pool.h" />
+    <ClInclude Include="..\..\inc\base\process\process.h" />
+    <ClInclude Include="..\..\inc\base\process\unix_process.h" />
+    <ClInclude Include="..\..\inc\base\process\windows_process.h" />
+    <ClInclude Include="..\..\inc\base\record\record.h" />
     <ClInclude Include="..\..\inc\base\stream\bytestream.h" />
     <ClInclude Include="..\..\inc\base\string\base64.h" />
     <ClInclude Include="..\..\inc\base\string\bcd.h" />
     <ClInclude Include="..\..\inc\base\string\hex.h" />
     <ClInclude Include="..\..\inc\base\string\splitter.h" />
     <ClInclude Include="..\..\inc\base\string\string.h" />
-    <ClInclude Include="..\..\inc\base\thread\linux_thread.h" />
-    <ClInclude Include="..\..\inc\base\thread\linux_thread_local_storage.h" />
+    <ClInclude Include="..\..\inc\base\thread\unix_thread.h" />
+    <ClInclude Include="..\..\inc\base\thread\unix_thread_local_storage.h" />
     <ClInclude Include="..\..\inc\base\thread\thread.h" />
+    <ClInclude Include="..\..\inc\base\thread\thread_group.h" />
     <ClInclude Include="..\..\inc\base\thread\thread_local_storage.h" />
     <ClInclude Include="..\..\inc\base\thread\windows_thread.h" />
     <ClInclude Include="..\..\inc\base\thread\windows_thread_local_storage.h" />
@@ -253,12 +460,14 @@
     <ClInclude Include="..\..\inc\base\time\time.h" />
     <ClInclude Include="..\..\inc\base\utility\bitmap.h" />
     <ClInclude Include="..\..\inc\base\utility\counter.h" />
+    <ClInclude Include="..\..\inc\base\utility\exclusive.h" />
     <ClInclude Include="..\..\inc\base\utility\guard.h" />
     <ClInclude Include="..\..\inc\base\utility\id_manager.h" />
     <ClInclude Include="..\..\inc\base\utility\log_switch.h" />
     <ClInclude Include="..\..\inc\base\utility\singleton.h" />
     <ClInclude Include="..\..\inc\base\utility\uncopy.h" />
     <ClInclude Include="..\..\inc\base\utility\utility.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\base\charset\charset.cpp" />
@@ -267,6 +476,8 @@
     <ClCompile Include="..\..\src\base\config\xml.cpp" />
     <ClCompile Include="..\..\src\base\exception\exception.cpp" />
     <ClCompile Include="..\..\src\base\filesystem\directory.cpp" />
+    <ClCompile Include="..\..\src\base\filesystem\file.cpp" />
+    <ClCompile Include="..\..\src\base\filesystem\hardware.cpp" />
     <ClCompile Include="..\..\src\base\library\library.cpp" />
     <ClCompile Include="..\..\src\base\locker\null_locker.cpp" />
     <ClCompile Include="..\..\src\base\locker\windows_locker.cpp" />
@@ -275,23 +486,31 @@
     <ClCompile Include="..\..\src\base\log\log.cpp" />
     <ClCompile Include="..\..\src\base\log\log_base.cpp" />
     <ClCompile Include="..\..\src\base\log\sync_log.cpp" />
+    <ClCompile Include="..\..\src\base\process\unix_process.cpp" />
+    <ClCompile Include="..\..\src\base\process\windows_process.cpp" />
+    <ClCompile Include="..\..\src\base\record\record.cpp" />
     <ClCompile Include="..\..\src\base\stream\bytestream.cpp" />
     <ClCompile Include="..\..\src\base\string\base64.cpp" />
     <ClCompile Include="..\..\src\base\string\bcd.cpp" />
     <ClCompile Include="..\..\src\base\string\hex.cpp" />
     <ClCompile Include="..\..\src\base\string\splitter.cpp" />
     <ClCompile Include="..\..\src\base\string\string.cpp" />
-    <ClCompile Include="..\..\src\base\thread\linux_thread.cpp" />
-    <ClCompile Include="..\..\src\base\thread\linux_thread_local_storage.cpp" />
+    <ClCompile Include="..\..\src\base\thread\unix_thread.cpp" />
+    <ClCompile Include="..\..\src\base\thread\unix_thread_local_storage.cpp" />
+    <ClCompile Include="..\..\src\base\thread\thread_group.cpp" />
     <ClCompile Include="..\..\src\base\thread\windows_thread.cpp" />
     <ClCompile Include="..\..\src\base\thread\windows_thread_local_storage.cpp" />
     <ClCompile Include="..\..\src\base\time\multi_timer.cpp" />
     <ClCompile Include="..\..\src\base\time\single_timer.cpp" />
     <ClCompile Include="..\..\src\base\time\time.cpp" />
     <ClCompile Include="..\..\src\base\utility\counter.cpp" />
+    <ClCompile Include="..\..\src\base\utility\exclusive.cpp" />
     <ClCompile Include="..\..\src\base\utility\log_switch.cpp" />
     <ClCompile Include="..\..\src\base\utility\uncopy.cpp" />
     <ClCompile Include="..\..\src\base\utility\utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="base.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

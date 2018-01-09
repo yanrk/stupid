@@ -2,11 +2,11 @@
  * Description : simple encapsulations of tcp socket
  * Data        : 2013-11-10 16:25:42
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_TCP_H
@@ -23,9 +23,11 @@ STUPID_CXX_API(bool) tcp_listen(const sockaddr_in_t & address, socket_t & listen
 STUPID_CXX_API(bool) tcp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
 STUPID_CXX_API(bool) tcp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
 STUPID_CXX_API(bool) tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip = "0.0.0.0", unsigned short bind_port = 0);
-STUPID_CXX_API(bool) tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address = nullptr, sock_len_t * addr_len = nullptr);
-STUPID_CXX_API(void) tcp_close(socket_t & sock);
+STUPID_CXX_API(bool) tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address = nullptr, sockaddr_len_t * addr_len = nullptr);
+STUPID_CXX_API(bool) tcp_socket(socket_t & sock);
+STUPID_CXX_API(bool) tcp_close(socket_t & sock);
 STUPID_CXX_API(bool) tcp_set_block_switch(socket_t sock, bool blocking);
+STUPID_CXX_API(bool) tcp_set_linger_switch(socket_t sock, bool forced_to_close, size_t wait_seconds = 0);
 STUPID_CXX_API(bool) tcp_set_send_timeout(socket_t sock, size_t send_timeout_ms = 30000);
 STUPID_CXX_API(bool) tcp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms = 30000);
 STUPID_CXX_API(bool) tcp_set_send_buffer_size(socket_t sock, size_t send_buffsiz = 65535);

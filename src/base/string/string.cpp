@@ -2,11 +2,11 @@
  * Description : string operator functions
  * Data        : 2013-05-18 20:41:33
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include <cstring>
@@ -39,7 +39,7 @@ size_t stupid_snprintf(char * buffer, size_t bufsiz, const char * fmt, ...)
         return(0);
     }
 
-    va_list args = nullptr;
+    va_list args;
 
     va_start(args, fmt);
 

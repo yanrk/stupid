@@ -2,11 +2,11 @@
  * Description : thread local storage class
  * Data        : 2015-02-27 16:18:00
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_BASE_THREAD_LOCAL_STORAGE_H
@@ -18,7 +18,7 @@
 #ifdef _MSC_VER
     #include "base/thread/windows_thread_local_storage.h"
 #else
-    #include "base/thread/linux_thread_local_storage.h"
+    #include "base/thread/unix_thread_local_storage.h"
 #endif // _MSC_VER
 
 NAMESPACE_STUPID_BASE_BEGIN
@@ -26,7 +26,7 @@ NAMESPACE_STUPID_BASE_BEGIN
 #ifdef _MSC_VER
     typedef WindowsThreadLocalStorage   ThreadLocalStorage;
 #else
-    typedef LinuxThreadLocalStorage     ThreadLocalStorage;
+    typedef UnixThreadLocalStorage      ThreadLocalStorage;
 #endif // _MSC_VER
 
 NAMESPACE_STUPID_BASE_END

@@ -6,11 +6,11 @@
  * Email       : cnjinhao@hotmail.com
  * WebSide     : www.nanapro.org/zh-cn/
  * Modified By : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * Data        : 2014-10-31 09:51:45
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifdef _MSC_VER
@@ -308,7 +308,7 @@ static void put_utf16char(unsigned long utf16_value, bool dst_is_little_endian, 
 {
     if (dst_is_little_endian)
     {
-        if ((utf16_value >= 0x0000 && utf16_value <= 0xD7FF) || (utf16_value >= 0xE000 && utf16_value <= 0xFFFF))
+        if ((utf16_value <= 0xD7FF) || (utf16_value >= 0xE000 && utf16_value <= 0xFFFF))
         {
             utf16_str += static_cast<char>((utf16_value & 0xFF));
             utf16_str += static_cast<char>((utf16_value & 0xFF00) >> 8);
@@ -325,7 +325,7 @@ static void put_utf16char(unsigned long utf16_value, bool dst_is_little_endian, 
     }
     else
     {
-        if ((utf16_value >= 0x0000 && utf16_value <= 0xD7FF) || (utf16_value >= 0xE000 && utf16_value <= 0xFFFF))
+        if ((utf16_value <= 0xD7FF) || (utf16_value >= 0xE000 && utf16_value <= 0xFFFF))
         {
             utf16_str += static_cast<char>((utf16_value & 0xFF00) >> 8);
             utf16_str += static_cast<char>((utf16_value & 0xFF));
@@ -1113,6 +1113,36 @@ std::string CharacterSet::utf16(ENDIAN::TYPE endian_type)
 std::string CharacterSet::utf32(ENDIAN::TYPE endian_type)
 {
     return(utfx(UTFX::UTF32, endian_type));
+}
+
+std::string ansi_to_utf8(const std::string & str_ansi)
+{
+    return(CharacterSet(str_ansi).utf8());
+}
+
+std::wstring ansi_to_unicode(const std::string & str_ansi)
+{
+    return(CharacterSet(str_ansi).wstr());
+}
+
+std::string utf8_to_ansi(const std::string & str_utf8)
+{
+    return(CharacterSet(str_utf8, UTFX::UTF8).str());
+}
+
+std::wstring utf8_to_unicode(const std::string & str_utf8)
+{
+    return(CharacterSet(str_utf8, UTFX::UTF8).wstr());
+}
+
+std::string unicode_to_ansi(const std::wstring & str_unicode)
+{
+    return(CharacterSet(str_unicode).str());
+}
+
+std::string unicode_to_utf8(const std::wstring & str_unicode)
+{
+    return(CharacterSet(str_unicode).utf8());
 }
 
 NAMESPACE_STUPID_BASE_END

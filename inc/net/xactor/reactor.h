@@ -1,23 +1,21 @@
 /********************************************************
- * Description : linux tcp connection reactor class
+ * Description : unix tcp connection reactor class
  * Data        : 2014-07-01 18:07:20
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifndef STUPID_NET_REACTOR_H
 #define STUPID_NET_REACTOR_H
 
 
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) || defined(XACTOR_USE_SELECT)
 
 
-#include <arpa/inet.h>
-#include <sys/epoll.h>
 #include <set>
 #include <list>
 #include <vector>
@@ -34,7 +32,7 @@ NAMESPACE_STUPID_NET_BEGIN
 
 class TcpManager;
 
-class TcpReactor : private Stupid::Base::Uncopy
+class TcpXactor : private Stupid::Base::Uncopy
 {
 private:
     struct DataEvents
@@ -49,6 +47,20 @@ private:
         size_t          event;
     };
 
+#ifdef XACTOR_USE_SELECT
+    typedef struct
+    {
+        fd_set          read_set;
+        fd_set          write_set;
+        int             max_socket;
+#ifdef _MSC_VER
+        socket_t        select_worker;
+#endif // _MSC_VER
+    } reactor_t;
+#else
+    typedef int reactor_t;
+#endif // XACTOR_USE_SELECT
+
 private:
     typedef TcpConnection::BlockPool                                      BlockPool;
     typedef std::list<DataEvents>                                         DataEventsList;
@@ -60,8 +72,8 @@ private:
     typedef std::vector<TcpConnection *>                                  ConnectionVector;
 
 public:
-    TcpReactor();
-    ~TcpReactor();
+    TcpXactor();
+    ~TcpXactor();
 
 public:
     bool init(TcpManager * manager, size_t event_thread_count, size_t handle_thread_count, unsigned short * service_port, size_t service_port_count);
@@ -85,11 +97,11 @@ private:
     void destroy_listener();
 
 private:
-    bool create_epoll();
-    void destroy_epoll();
-    bool append_connection_to_epoll(TcpConnection * connection);
-    bool delete_connection_from_epoll(TcpConnection * connection);
-    bool modify_connection_of_epoll(TcpConnection * connection, bool send, bool recv);
+    bool create_reactor();
+    void destroy_reactor();
+    bool append_connection_to_reactor(TcpConnection * connection);
+    bool delete_connection_from_reactor(TcpConnection * connection);
+    bool modify_connection_of_reactor(TcpConnection * connection, bool send, bool recv);
 
 private:
     bool do_connect(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port);
@@ -135,7 +147,7 @@ private:
 private:
     volatile bool                                  m_running;
     TcpManager                                   * m_manager;
-    int                                            m_epoll;
+    reactor_t                                      m_reactor;
     ConnectionVector                               m_listeners;
     Stupid::Base::Thread                         * m_thread;
     size_t                                         m_thread_count;
@@ -155,7 +167,7 @@ private:
 NAMESPACE_STUPID_NET_END
 
 
-#endif // _MSC_VER
+#endif // !defined(_MSC_VER) || defined(XACTOR_USE_SELECT)
 
 
 #endif // STUPID_NET_REACTOR_H

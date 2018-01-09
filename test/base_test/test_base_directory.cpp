@@ -14,7 +14,7 @@ static void test_base_directory_1(void)
 
     while (dir.read())
     {
-        printf("%s%s\n", dir.sub_file_name().c_str(), (dir.sub_file_is_dir() ? " <dir>" : ""));
+        printf("%s%s\n", dir.sub_path_name().c_str(), (dir.sub_path_is_directory() ? " <dir>" : ""));
     }
 
     dir.close();
@@ -101,9 +101,97 @@ static void test_base_directory_3(void)
     std::cout << "current work directory: " << dirname << std::endl;
 }
 
+static void test_base_directory_4(void)
+{
+    std::cout << "format pathname strictly" << std::endl;
+
+    {
+        const std::string src_pathname("c:/abc\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("c:////abc\\///bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("abc\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("/abc\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("\\\\\\\\abc\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("\\192.168.0.49\\abc\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("\\\\192.168.0.49\\///abc\\\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("\\\\192.168.0.49\\///abc\\\\bcd");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("\\\\\\192.168.0.49\\///abc\\\\bcd\\\\");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    {
+        const std::string src_pathname("www.munu.com:9915\\sys//node_list?id=123456789");
+        std::string dst_pathname;
+        stupid_pathname_format_strictly(src_pathname, dst_pathname);
+        std::cout << "src: " << src_pathname << std::endl;
+        std::cout << "dst: " << dst_pathname << std::endl;
+    }
+
+    std::cout << std::endl;
+}
+
 void test_base_directory(void)
 {
     test_base_directory_1();
     test_base_directory_2();
     test_base_directory_3();
+    test_base_directory_4();
 }

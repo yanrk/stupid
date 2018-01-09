@@ -2,11 +2,11 @@
  * Description : tcp connection manager class
  * Data        : 2014-07-05 14:45:42
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #include "net/xactor/manager.h"
@@ -14,12 +14,8 @@
 #include "net/xactor/service_base.h"
 #include "base/common/memory.h"
 #include "base/log/log.h"
-
-#ifdef _MSC_VER
-    #include "net/xactor/proactor.h"
-#else
-    #include "net/xactor/reactor.h"
-#endif // _MSC_VER
+#include "net/xactor/proactor.h"
+#include "net/xactor/reactor.h"
 
 NAMESPACE_STUPID_NET_BEGIN
 

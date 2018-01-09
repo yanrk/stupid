@@ -2,11 +2,11 @@
  * Description : utility of base
  * Data        : 2015-02-28 10:38:00
  * Author      : yanrk
- * Email       : yanrkchina@hotmail.com
+ * Email       : yanrkchina@163.com
  * Blog        : blog.csdn.net/cxxmaker
  * Version     : 1.0
  * History     :
- * Copyright(C): 2013 - 2015
+ * Copyright(C): 2013 - 2020
  ********************************************************/
 
 #ifdef _MSC_VER
@@ -33,6 +33,8 @@ size_t get_tid()
 {
 #ifdef _MSC_VER
     return(static_cast<size_t>(GetCurrentThreadId()));
+#elif defined(_MAC_OS)
+    return(reinterpret_cast<size_t>(pthread_self()));
 #else
     return(static_cast<size_t>(pthread_self()));
 #endif // _MSC_VER

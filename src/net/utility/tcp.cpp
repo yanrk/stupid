@@ -110,7 +110,7 @@ bool tcp_listen(unsigned short port, socket_t & listener, int backlog)
     sockaddr_in_t address;
     if (!transform_address("0.0.0.0", port, address))
     {
-        DBG_LOG("transform_address failed");
+        RUN_LOG_ERR("transform_address failed");
         return(false);
     }
     return(tcp_listen(address, listener, backlog));
@@ -174,7 +174,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
         }
         if (!transform_address(bind_ip, bind_port, bind_address))
         {
-            DBG_LOG("transform_address failed");
+            RUN_LOG_ERR("transform_address failed");
             return(false);
         }
     }
@@ -245,7 +245,7 @@ bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, con
     sockaddr_in_t address;
     if (!transform_address(ip, port, address))
     {
-        DBG_LOG("transform_address failed");
+        RUN_LOG_ERR("transform_address failed");
         return(false);
     }
     return(tcp_connect(address, connecter, bind_ip, bind_port));
@@ -269,7 +269,7 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
         }
         if (!transform_address(bind_ip, bind_port, bind_address))
         {
-            DBG_LOG("transform_address failed");
+            RUN_LOG_ERR("transform_address failed");
             tcp_close(connecter);
             return(false);
         }
@@ -394,6 +394,18 @@ bool tcp_set_block_switch(socket_t sock, bool blocking)
 #endif // _MSC_VER
 }
 
+bool tcp_set_reuse_switch(socket_t sock, bool reuse_address)
+{
+    int reuse_addr_on = (reuse_address ? 1 : 0);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char *>(&reuse_addr_on), sizeof(reuse_addr_on));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
 bool tcp_set_linger_switch(socket_t sock, bool forced_to_close, size_t wait_seconds)
 {
     struct linger linger_switch;
@@ -446,7 +458,8 @@ bool tcp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms)
 
 bool tcp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
 {
-    int ret = setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char *>(&send_buffsiz), sizeof(send_buffsiz));
+    int buffsize = static_cast<int>(send_buffsiz);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char *>(&buffsize), sizeof(buffsize));
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(send-buf) failed: %d", stupid_net_error());
@@ -457,7 +470,8 @@ bool tcp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
 
 bool tcp_set_recv_buffer_size(socket_t sock, size_t recv_buffsiz)
 {
-    int ret = setsockopt(sock, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char *>(&recv_buffsiz), sizeof(recv_buffsiz));
+    int buffsize = static_cast<int>(recv_buffsiz);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char *>(&buffsize), sizeof(buffsize));
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(recv-buf) failed: %d", stupid_net_error());

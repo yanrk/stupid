@@ -26,7 +26,7 @@
 
 NAMESPACE_STUPID_NET_BEGIN
 
-bool udp_listen(const char * host, const char * service, socket_t & listener)
+bool udp_listen(const char * host, const char * service, socket_t & listener, bool reuse_address, bool broadcast)
 {
     listener = BAD_SOCKET;
 
@@ -68,12 +68,26 @@ bool udp_listen(const char * host, const char * service, socket_t & listener)
 
         do
         {
-            const int reuse_addr_on = 1;
-            const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-            if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            if (reuse_address)
             {
-                RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-                break;
+                const int reuse_addr_on = 1;
+                const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+                if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+                {
+                    RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+                    break;
+                }
+            }
+
+            if (broadcast)
+            {
+                const int broadcast_on = 1;
+                const char * broadcast_ptr = reinterpret_cast<const char *>(&broadcast_on);
+                if (setsockopt(listenfd, SOL_SOCKET, SO_BROADCAST, broadcast_ptr, sizeof(broadcast_on)) < 0)
+                {
+                    RUN_LOG_ERR("setsockopt(broadcast) failed: %d", stupid_net_error());
+                    break;
+                }
             }
 
             if (bind(listenfd, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
@@ -99,18 +113,18 @@ bool udp_listen(const char * host, const char * service, socket_t & listener)
     return(ret);
 }
 
-bool udp_listen(unsigned short port, socket_t & listener)
+bool udp_listen(unsigned short port, socket_t & listener, bool reuse_address, bool broadcast)
 {
     sockaddr_in_t address;
     if (!transform_address("0.0.0.0", port, address))
     {
-        DBG_LOG("transform_address failed");
+        RUN_LOG_ERR("transform_address failed");
         return(false);
     }
-    return(udp_listen(address, listener));
+    return(udp_listen(address, listener, reuse_address, broadcast));
 }
 
-bool udp_listen(const sockaddr_in_t & address, socket_t & listener)
+bool udp_listen(const sockaddr_in_t & address, socket_t & listener, bool reuse_address, bool broadcast)
 {
     listener = socket(AF_INET, SOCK_DGRAM, 0);
     if (BAD_SOCKET == listener)
@@ -121,12 +135,26 @@ bool udp_listen(const sockaddr_in_t & address, socket_t & listener)
 
     do
     {
-        const int reuse_addr_on = 1;
-        const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-        if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+        if (reuse_address)
         {
-            RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-            break;
+            const int reuse_addr_on = 1;
+            const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+            if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            {
+                RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+                break;
+            }
+        }
+
+        if (broadcast)
+        {
+            const int broadcast_on = 1;
+            const char * broadcast_ptr = reinterpret_cast<const char *>(&broadcast_on);
+            if (setsockopt(listener, SOL_SOCKET, SO_BROADCAST, broadcast_ptr, sizeof(broadcast_on)) < 0)
+            {
+                RUN_LOG_ERR("setsockopt(broadcast) failed: %d", stupid_net_error());
+                break;
+            }
         }
 
         if (bind(listener, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
@@ -143,7 +171,7 @@ bool udp_listen(const sockaddr_in_t & address, socket_t & listener)
     return(false);
 }
 
-bool udp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
+bool udp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip, unsigned short bind_port, bool reuse_address)
 {
     connecter = BAD_SOCKET;
 
@@ -162,7 +190,7 @@ bool udp_connect(const char * host, const char * service, socket_t & connecter, 
         }
         if (!transform_address(bind_ip, bind_port, bind_address))
         {
-            DBG_LOG("transform_address failed");
+            RUN_LOG_ERR("transform_address failed");
             return(false);
         }
     }
@@ -193,13 +221,16 @@ bool udp_connect(const char * host, const char * service, socket_t & connecter, 
 
         if (0 != bind_port)
         {
-            const int reuse_addr_on = 1;
-            const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-            if (setsockopt(connectfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            if (reuse_address)
             {
-                RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-                udp_close(connectfd);
-                continue;
+                const int reuse_addr_on = 1;
+                const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+                if (setsockopt(connectfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+                {
+                    RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+                    udp_close(connectfd);
+                    continue;
+                }
             }
 
             if (bind(connectfd, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
@@ -228,18 +259,18 @@ bool udp_connect(const char * host, const char * service, socket_t & connecter, 
     return(ret);
 }
 
-bool udp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
+bool udp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip, unsigned short bind_port, bool reuse_address)
 {
     sockaddr_in_t address;
     if (!transform_address(ip, port, address))
     {
-        DBG_LOG("transform_address failed");
+        RUN_LOG_ERR("transform_address failed");
         return(false);
     }
-    return(udp_connect(address, connecter, bind_ip, bind_port));
+    return(udp_connect(address, connecter, bind_ip, bind_port, reuse_address));
 }
 
-bool udp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
+bool udp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip, unsigned short bind_port, bool reuse_address)
 {
     connecter = socket(AF_INET, SOCK_DGRAM, 0);
     if (BAD_SOCKET == connecter)
@@ -257,18 +288,21 @@ bool udp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
         }
         if (!transform_address(bind_ip, bind_port, bind_address))
         {
-            DBG_LOG("transform_address failed");
+            RUN_LOG_ERR("transform_address failed");
             udp_close(connecter);
             return(false);
         }
 
-        const int reuse_addr_on = 1;
-        const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-        if (setsockopt(connecter, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+        if (reuse_address)
         {
-            RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-            udp_close(connecter);
-            return(false);
+            const int reuse_addr_on = 1;
+            const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
+            if (setsockopt(connecter, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            {
+                RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+                udp_close(connecter);
+                return(false);
+            }
         }
 
         if (bind(connecter, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
@@ -392,6 +426,27 @@ bool udp_close(socket_t & sock)
     return(true);
 }
 
+bool udp_bind(socket_t sock, const char * bind_ip, unsigned short bind_port)
+{
+    sockaddr_in_t address;
+    if (!transform_address(bind_ip, bind_port, address))
+    {
+        RUN_LOG_ERR("transform_address failed");
+        return(false);
+    }
+    return(udp_bind(sock, address));
+}
+
+bool udp_bind(socket_t sock, const sockaddr_in_t & address)
+{
+    if (bind(sock, reinterpret_cast<const sockaddr_t *>(&address), sizeof(address)) < 0)
+    {
+        RUN_LOG_ERR("bind failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
 bool udp_set_block_switch(socket_t sock, bool blocking)
 {
 #ifdef _MSC_VER
@@ -428,6 +483,30 @@ bool udp_set_block_switch(socket_t sock, bool blocking)
 #endif // _MSC_VER
 }
 
+bool udp_set_reuse_switch(socket_t sock, bool reuse_address)
+{
+    int reuse_addr_on = (reuse_address ? 1 : 0);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char *>(&reuse_addr_on), sizeof(reuse_addr_on));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
+bool udp_set_broadcast_switch(socket_t sock, bool broadcast)
+{
+    int broadcast_on = (broadcast ? 1 : 0);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<char *>(&broadcast_on), sizeof(broadcast_on));
+    if (ret < 0)
+    {
+        RUN_LOG_ERR("setsockopt(broadcast) failed: %d", stupid_net_error());
+        return(false);
+    }
+    return(true);
+}
+
 bool udp_set_send_timeout(socket_t sock, size_t send_timeout_ms)
 {
 #ifdef _MSC_VER
@@ -462,7 +541,8 @@ bool udp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms)
 
 bool udp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
 {
-    int ret = setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char *>(&send_buffsiz), sizeof(send_buffsiz));
+    int buffsize = static_cast<int>(send_buffsiz);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char *>(&buffsize), sizeof(buffsize));
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(send-buf) failed: %d", stupid_net_error());
@@ -473,7 +553,8 @@ bool udp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
 
 bool udp_set_recv_buffer_size(socket_t sock, size_t recv_buffsiz)
 {
-    int ret = setsockopt(sock, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char *>(&recv_buffsiz), sizeof(recv_buffsiz));
+    int buffsize = static_cast<int>(recv_buffsiz);
+    int ret = setsockopt(sock, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char *>(&buffsize), sizeof(buffsize));
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(recv-buf) failed: %d", stupid_net_error());

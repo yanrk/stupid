@@ -27,6 +27,7 @@ STUPID_CXX_API(bool) tcp_accept(socket_t listener, socket_t & accepter, sockaddr
 STUPID_CXX_API(bool) tcp_socket(socket_t & sock);
 STUPID_CXX_API(bool) tcp_close(socket_t & sock);
 STUPID_CXX_API(bool) tcp_set_block_switch(socket_t sock, bool blocking);
+STUPID_CXX_API(bool) tcp_set_reuse_switch(socket_t sock, bool reuse_address);
 STUPID_CXX_API(bool) tcp_set_linger_switch(socket_t sock, bool forced_to_close, size_t wait_seconds = 0);
 STUPID_CXX_API(bool) tcp_set_send_timeout(socket_t sock, size_t send_timeout_ms = 30000);
 STUPID_CXX_API(bool) tcp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms = 30000);

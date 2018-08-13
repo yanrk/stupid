@@ -137,6 +137,8 @@ static thread_return_t STUPID_STDCALL client_thread_run_1(thread_argument_t)
         s_stdout_locker.release();
     }
 
+    tcp_close(connecter);
+
     s_stdout_locker.acquire();
     printf("client thread end\n");
     s_stdout_locker.release();

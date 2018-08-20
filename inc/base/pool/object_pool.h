@@ -139,7 +139,9 @@ void ObjectPool<ObjectType, LockerType>::operator >> (std::list<ObjectType *> & 
 template <typename ObjectType, typename LockerType>
 void ObjectPool<ObjectType, LockerType>::operator << (ObjectPool<ObjectType, LockerType> & other)
 {
-    other >> m_objs;
+    std::list<ObjectType *> obj_list;
+    other >> obj_list;
+    *this << obj_list;
 }
 
 template <typename ObjectType, typename LockerType>

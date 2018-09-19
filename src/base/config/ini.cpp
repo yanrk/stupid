@@ -86,18 +86,15 @@ bool Ini::load(const std::string & file_name, char comment_char, bool support_mo
     }
 
     std::string app_name;
-    const int bufsiz = 4096;
-    char buffer[bufsiz];
+    std::string message;
     while (!ifs.eof())
     {
-        ifs.getline(buffer, bufsiz);
-
-        char * comment_pos = strchr(buffer, comment_char);
-        if (nullptr != comment_pos)
+        message.clear();
+        std::getline(ifs, message);
+        if (ifs.fail())
         {
-            comment_pos[0] = '\0';
+            ifs.clear();
         }
-        std::string message(buffer);
         stupid_string_trim(message);
 
         if (message.empty())

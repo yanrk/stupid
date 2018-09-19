@@ -406,6 +406,10 @@ bool get_system_cpu_usage(std::vector<size_t> & cpu_usage)
         {
             memset(buffer, 0x00, sizeof(buffer));
             ifs.getline(buffer, sizeof(buffer));
+            if (ifs.fail())
+            {
+                ifs.clear();
+            }
             cpu_occupy_t cpu_occupy;
             memset(&cpu_occupy, 0x00, sizeof(cpu_occupy));
             sscanf(buffer, "%s %u %u %u %u", cpu_occupy.name, &cpu_occupy.user, &cpu_occupy.nice, &cpu_occupy.system, &cpu_occupy.idle);

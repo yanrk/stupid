@@ -91,10 +91,6 @@ bool Ini::load(const std::string & file_name, char comment_char, bool support_mo
     {
         message.clear();
         std::getline(ifs, message);
-        if (ifs.fail())
-        {
-            ifs.clear();
-        }
         stupid_string_trim(message);
 
         if (message.empty())

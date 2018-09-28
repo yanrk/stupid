@@ -122,6 +122,10 @@ void LogBase::write(const char * data, size_t size)
         return;
     }
 
+#ifndef _MSC_VER
+    m_file.flush();
+#endif // _MSC_VER
+
     m_cur_file_size += size;
     if (m_cur_file_size < m_max_file_size)
     {

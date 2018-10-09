@@ -92,7 +92,11 @@ bool Ini::load(const std::string & file_name, char comment_char, bool support_mo
         message.clear();
         std::getline(ifs, message);
         stupid_string_trim(message);
-
+        std::string::size_type comment_pos = message.find(comment_char);
+        if (std::string::npos != comment_pos)
+        {
+            message.resize(comment_pos);
+        }
         if (message.empty())
         {
             continue;

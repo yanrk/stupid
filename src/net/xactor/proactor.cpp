@@ -751,7 +751,7 @@ bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
             business_event.event = send_notify;
             connection->increase_reference();
             append_business_event(business_event);
-            return(true);
+            return(!connection->get_eof());
         }
     }
     else if (data_len < post_event->data.len)

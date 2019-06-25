@@ -207,7 +207,7 @@ bool get_system_memory_usage(uint64_t & total_size, uint64_t & avali_size)
     }
     else
     {
-        avali_size = static_cast<uint64_t>(page_size) * static_cast<uint64_t>(vm_stats.free_count);
+        avali_size = static_cast<uint64_t>(page_size) * static_cast<uint64_t>(vm_stats.free_count + vm_stats.purgeable_count + vm_stats.external_page_count);
         return(true);
     }
 }
@@ -326,6 +326,37 @@ NAMESPACE_STUPID_BASE_END
 #include <cstring>
 #include <fstream>
 
+struct mem_occupy_t
+{
+    char         name[32];
+    uint64_t     size;
+    char         unit[16];
+};
+
+static uint64_t memory_unit_bytes(const char * unit)
+{
+    if (nullptr != strchr(unit, 'k') || nullptr != strchr(unit, 'K'))
+    {
+        return(1024ULL);
+    }
+    else if (nullptr != strchr(unit, 'm') || nullptr != strchr(unit, 'M'))
+    {
+        return(1024ULL * 1024);
+    }
+    else if (nullptr != strchr(unit, 'g') || nullptr != strchr(unit, 'G'))
+    {
+        return(1024ULL * 1024 * 1024);
+    }
+    else if (nullptr != strchr(unit, 't') || nullptr != strchr(unit, 'T'))
+    {
+        return(1024ULL * 1024 * 1024 * 1024);
+    }
+    else
+    {
+        return(1ULL);
+    }
+}
+
 struct cpu_occupy_t
 {
     char         name[32];
@@ -339,24 +370,62 @@ NAMESPACE_STUPID_BASE_BEGIN
 
 bool get_system_memory_usage(uint64_t & total_size, uint64_t & avali_size)
 {
-    errno = 0;
-
-    long page_size = sysconf(_SC_PAGESIZE);
-    long total_pages = sysconf(_SC_PHYS_PAGES);
-    long avali_pages = sysconf(_SC_AVPHYS_PAGES);
-
-    if (0 != errno)
+    std::ifstream ifs("/proc/meminfo", std::ios::binary);
+    if (!ifs.is_open())
     {
-        errno = 0;
         total_size = 1;
         avali_size = 0;
         return(false);
     }
 
-    total_size = static_cast<uint64_t>(page_size) * static_cast<uint64_t>(total_pages);
-    avali_size = static_cast<uint64_t>(page_size) * static_cast<uint64_t>(avali_pages);
+    total_size = 0;
+    avali_size = 0;
 
-    return(true);
+    int got_count = 0;
+    while (!ifs.eof())
+    {
+        char buffer[4096] = { 0x00 };
+        ifs.getline(buffer, sizeof(buffer));
+        mem_occupy_t mem_occupy;
+        memset(&mem_occupy, 0x00, sizeof(mem_occupy));
+        sscanf(buffer, "%s %llu %s", mem_occupy.name, &mem_occupy.size, mem_occupy.unit);
+        if (0 == strncasecmp(mem_occupy.name, "MemTotal:", 9))
+        {
+            total_size = mem_occupy.size * memory_unit_bytes(mem_occupy.unit);
+        }
+        else if (0 == strncasecmp(mem_occupy.name, "MemFree:", 8))
+        {
+            avali_size += mem_occupy.size * memory_unit_bytes(mem_occupy.unit);
+        }
+        else if (0 == strncasecmp(mem_occupy.name, "Buffers:", 8))
+        {
+            avali_size += mem_occupy.size * memory_unit_bytes(mem_occupy.unit);
+        }
+        else if (0 == strncasecmp(mem_occupy.name, "Cached:", 7))
+        {
+            avali_size += mem_occupy.size * memory_unit_bytes(mem_occupy.unit);
+        }
+        else
+        {
+            continue;
+        }
+        if (4 == ++got_count)
+        {
+            break;
+        }
+    }
+    ifs.close();
+
+    if (0 == total_size)
+    {
+        total_size = 1;
+    }
+    if (total_size < avali_size)
+    {
+        total_size = avali_size;
+    }
+
+    return(4 == got_count);
 }
 
 bool get_system_disk_usage(const char * disk_path, uint64_t & total_size, uint64_t & avali_size)

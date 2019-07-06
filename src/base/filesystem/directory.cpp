@@ -435,12 +435,16 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
         return(false);
     }
 
+    bool trim_single_dot = true;
+
     const std::string & first_path_node = src_path_node_list.front();
     if (start_with_directory_separator)
     {
         // mode: 3, 4, 5, 6, 7, 8
         if ("?" == first_path_node)
         {
+            trim_single_dot = false;
+
             // mode: 5, 6, 7, 8
             src_path_node_list.pop_front();
             if (src_path_node_list.empty())
@@ -532,6 +536,13 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
             }
             src_path_node_list.pop_front();
         }
+#ifdef _MSC_VER
+        else if (trim_single_dot && path_node.size() >= 2 && '.' != path_node[path_node.size() - 2] && '.' == path_node[path_node.size() - 1])
+        {
+            dst_path_node_list.push_back(path_node.substr(0, path_node.size() - 1));
+            src_path_node_list.pop_front();
+        }
+#endif // _MSC_VER
         else
         {
             dst_path_node_list.push_back(path_node);

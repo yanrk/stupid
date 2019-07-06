@@ -242,7 +242,7 @@ bool TcpConnection::recv_buffer_fill_len(const char * data, size_t length)
 bool TcpConnection::recv_buffer_copy_len(char * buffer, size_t length)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    if (m_eof || m_error)
+    if (m_eof)
     {
         return(false);
     }
@@ -252,7 +252,7 @@ bool TcpConnection::recv_buffer_copy_len(char * buffer, size_t length)
 bool TcpConnection::recv_buffer_move_len(char * buffer, size_t length)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    if (m_eof || m_error)
+    if (m_eof)
     {
         return(false);
     }
@@ -262,7 +262,7 @@ bool TcpConnection::recv_buffer_move_len(char * buffer, size_t length)
 bool TcpConnection::recv_buffer_drop_len(size_t length)
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    if (m_eof || m_error)
+    if (m_eof)
     {
         return(false);
     }

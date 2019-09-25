@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="dll_debug|Win32">
       <Configuration>dll_debug</Configuration>
@@ -46,6 +46,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -53,6 +54,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -60,6 +62,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -67,6 +70,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -75,6 +79,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='lib_release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -83,6 +88,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -91,6 +97,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='dll_release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -99,6 +106,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
     <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -219,19 +227,19 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurld.lib;</AdditionalDependencies>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
@@ -242,19 +250,19 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../../gnu_libs/curl/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurld.lib;</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
   </ItemDefinitionGroup>
@@ -265,15 +273,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;libcurld_imp.lib;</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -286,15 +294,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../../gnu_libs/curl/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;libcurld_imp.lib;</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -309,7 +317,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -318,11 +326,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>libcurl.lib;</AdditionalDependencies>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
@@ -336,7 +344,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_LIB;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -345,11 +353,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../../gnu_libs/curl/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
       <AdditionalDependencies>libcurl.lib;</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
@@ -363,7 +371,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -372,8 +380,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)/;../../../gnu_libs/curl/lib/windows/$(configuration)/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;libcurl_imp.lib;</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -388,7 +396,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;EXPORT_STUPID_DLL;TOOL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../inc/;../../gnu/curl/inc/;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../inc/;../../../gnu_libs/curl/inc/;</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251;4996;</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
@@ -397,8 +405,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../gnu/curl/lib/windows/;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>stupid_base.lib;libcurl.lib;</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../lib/windows/$(configuration)_x64/;../../../gnu_libs/curl/lib/windows/$(configuration)_x64/;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>stupid_base.lib;libcurl_imp.lib;</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

@@ -1001,7 +1001,7 @@ void TcpXactor::append_business_event(BusinessEvent & business_event)
     BusinessEventList & business_event_list = m_business_event_list_vector[connection->get_unique() % business_thread_count];
     for (BusinessEventList::const_iterator iter = business_event_list.begin(); business_event_list.end() != iter; ++iter)
     {
-        if (iter->event == business_event.event)
+        if (iter->event == business_event.event && iter->connection == business_event.connection)
         {
             return;
         }

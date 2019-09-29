@@ -1198,7 +1198,13 @@ void TcpXactor::reactor_data_process(size_t thread_index)
                     }
                     else if (!connection->get_error())
                     {
-                        modify_connection_of_reactor(connection, false, true);
+                        if (modify_connection_of_reactor(connection, false, true))
+                        {
+                            if (0 != connection->send_buffer_size())
+                            {
+                                modify_connection_of_reactor(connection, true, true);
+                            }
+                        }
                     }
                 }
             }

@@ -9,6 +9,10 @@
  * Copyright(C): 2013 - 2020
  ********************************************************/
 
+#ifdef _MSC_VER
+    #include <sys/timeb.h>
+#endif // _MSC_VER
+
 #include <sstream>
 #include <iomanip>
 #include "base/string/string.h"
@@ -69,10 +73,10 @@ struct timeval stupid_gettimeofday()
     struct timeval tv_now;
 
 #ifdef _MSC_VER
-    SYSTEMTIME sys_now;
-    GetLocalTime(&sys_now);
-    tv_now.tv_sec = static_cast<long>(time(nullptr));
-    tv_now.tv_usec = sys_now.wMilliseconds * 1000L;
+    timeb time_now;
+    ftime(&time_now);
+    tv_now.tv_sec = static_cast<long>(time_now.time);
+    tv_now.tv_usec = static_cast<long>(time_now.millitm) * 1000L;
 #else
     gettimeofday(&tv_now, nullptr);
 #endif // _MSC_VER

@@ -324,7 +324,6 @@ void TcpXactor::close_connection(TcpConnection * connection)
         BusinessEvent business_event;
         business_event.connection = connection;
         business_event.event = close_notify;
-        connection->increase_reference();
         append_business_event(business_event);
     }
 }
@@ -608,11 +607,9 @@ bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity
     business_event.connection = connection;
 
     business_event.event = connect_notify;
-    connection->increase_reference();
     append_business_event(business_event);
     /*
     business_event.event = send_notify;
-    connection->increase_reference();
     append_business_event(business_event);
     */
     return(post_recv(&connection->m_async_recv));
@@ -672,11 +669,9 @@ bool TcpXactor::do_accept(iocp_event * post_event, size_t data_len)
         business_event.connection = connection;
 
         business_event.event = accept_notify;
-        connection->increase_reference();
         append_business_event(business_event);
         /*
         business_event.event = send_notify;
-        connection->increase_reference();
         append_business_event(business_event);
         */
         if (data_len > 0)
@@ -714,7 +709,6 @@ bool TcpXactor::do_recv(iocp_event * post_event, size_t data_len)
         BusinessEvent business_event;
         business_event.connection = connection;
         business_event.event = recv_notify;
-        connection->increase_reference();
         append_business_event(business_event);
     }
 
@@ -749,7 +743,6 @@ bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
             BusinessEvent business_event;
             business_event.connection = connection;
             business_event.event = send_notify;
-            connection->increase_reference();
             append_business_event(business_event);
             return(!connection->get_eof());
         }
@@ -1006,6 +999,7 @@ void TcpXactor::append_business_event(BusinessEvent & business_event)
             return;
         }
     }
+    connection->increase_reference();
     business_event_list.push_back(business_event);
 }
 

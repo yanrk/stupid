@@ -226,7 +226,6 @@ void TcpXactor::close_connection(TcpConnection * connection)
         BusinessEvent business_event;
         business_event.connection = connection;
         business_event.event = close_notify;
-        connection->increase_reference();
         append_business_event(business_event);
     }
 }
@@ -533,11 +532,9 @@ bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity
     business_event.connection = connection;
 
     business_event.event = connect_notify;
-    connection->increase_reference();
     append_business_event(business_event);
     /*
     business_event.event = send_notify;
-    connection->increase_reference();
     append_business_event(business_event);
     */
     return(true);
@@ -589,11 +586,9 @@ bool TcpXactor::do_accept(TcpConnection * listener_connection)
         business_event.connection = connection;
 
         business_event.event = accept_notify;
-        connection->increase_reference();
         append_business_event(business_event);
         /*
         business_event.event = send_notify;
-        connection->increase_reference();
         append_business_event(business_event);
         */
         accept_count += 1;
@@ -944,6 +939,7 @@ void TcpXactor::append_business_event(BusinessEvent & business_event)
             return;
         }
     }
+    connection->increase_reference();
     business_event_list.push_back(business_event);
 }
 
@@ -1169,7 +1165,6 @@ void TcpXactor::reactor_data_process(size_t thread_index)
                     BusinessEvent business_event;
                     business_event.connection = data_events.connection;
                     business_event.event = recv_notify;
-                    connection->increase_reference();
                     append_business_event(business_event);
                 }
             }
@@ -1189,7 +1184,6 @@ void TcpXactor::reactor_data_process(size_t thread_index)
                     BusinessEvent business_event;
                     business_event.connection = data_events.connection;
                     business_event.event = send_notify;
-                    connection->increase_reference();
                     append_business_event(business_event);
 
                     if (connection->get_eof())

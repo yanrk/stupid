@@ -59,8 +59,8 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
 
     for ( ; nullptr != addr_info; addr_info = addr_info->ai_next)
     {
-        socket_t listenfd = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
-        if (BAD_SOCKET == listenfd)
+        socket_t sock = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
+        if (BAD_SOCKET == sock)
         {
             DBG_LOG("socket failed: %d, try again", stupid_net_error());
             continue;
@@ -70,19 +70,19 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
         {
             const int reuse_addr_on = 1;
             const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-            if (setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
             {
                 RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
                 break;
             }
 
-            if (bind(listenfd, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
+            if (bind(sock, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
             {
                 RUN_LOG_ERR("bind failed: %d", stupid_net_error());
                 break;
             }
 
-            if (listen(listenfd, backlog) < 0)
+            if (listen(sock, backlog) < 0)
             {
                 RUN_LOG_ERR("listen failed: %d", stupid_net_error());
                 break;
@@ -93,11 +93,11 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
 
         if (ret)
         {
-            listener = listenfd;
+            listener = sock;
             break;
         }
 
-        tcp_close(listenfd);
+        tcp_close(sock);
     }
 
     freeaddrinfo(addr_dup);
@@ -111,6 +111,7 @@ bool tcp_listen(unsigned short port, socket_t & listener, int backlog)
     if (!transform_address("0.0.0.0", port, address))
     {
         RUN_LOG_ERR("transform_address failed");
+        listener = BAD_SOCKET;
         return(false);
     }
     return(tcp_listen(address, listener, backlog));
@@ -118,8 +119,10 @@ bool tcp_listen(unsigned short port, socket_t & listener, int backlog)
 
 bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
 {
-    listener = socket(AF_INET, SOCK_STREAM, 0);
-    if (BAD_SOCKET == listener)
+    listener = BAD_SOCKET;
+
+    socket_t sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
         return(false);
@@ -129,28 +132,30 @@ bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
     {
         const int reuse_addr_on = 1;
         const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-        if (setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
         {
             RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
             break;
         }
 
-        if (bind(listener, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
+        if (bind(sock, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
         {
             RUN_LOG_ERR("bind failed: %d", stupid_net_error());
             break;
         }
 
-        if (listen(listener, backlog) < 0)
+        if (listen(sock, backlog) < 0)
         {
             RUN_LOG_ERR("listen failed: %d", stupid_net_error());
             break;
         }
 
+        listener = sock;
+
         return(true);
     } while (false);
 
-    tcp_close(listener);
+    tcp_close(sock);
 
     return(false);
 }
@@ -196,8 +201,8 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
 
     for ( ; nullptr != addr_info; addr_info = addr_info->ai_next)
     {
-        socket_t connectfd = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
-        if (BAD_SOCKET == connectfd)
+        socket_t sock = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
+        if (BAD_SOCKET == sock)
         {
             DBG_LOG("socket failed: %d, try again", stupid_net_error());
             continue;
@@ -207,29 +212,29 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
         {
             const int reuse_addr_on = 1;
             const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-            if (setsockopt(connectfd, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+            if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
             {
                 RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-                tcp_close(connectfd);
+                tcp_close(sock);
                 continue;
             }
 
-            if (bind(connectfd, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
+            if (bind(sock, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
             {
                 RUN_LOG_ERR("bind failed: %d, try again", stupid_net_error());
-                tcp_close(connectfd);
+                tcp_close(sock);
                 continue;
             }
         }
 
-        if (connect(connectfd, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
+        if (connect(sock, addr_info->ai_addr, static_cast<int>(addr_info->ai_addrlen)) < 0)
         {
             RUN_LOG_ERR("connect failed: %d", stupid_net_error());
-            tcp_close(connectfd);
+            tcp_close(sock);
         }
         else
         {
-            connecter = connectfd;
+            connecter = sock;
             ret = true;
             break;
         }
@@ -246,6 +251,7 @@ bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, con
     if (!transform_address(ip, port, address))
     {
         RUN_LOG_ERR("transform_address failed");
+        connecter = BAD_SOCKET;
         return(false);
     }
     return(tcp_connect(address, connecter, bind_ip, bind_port));
@@ -253,8 +259,10 @@ bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, con
 
 bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
 {
-    connecter = socket(AF_INET, SOCK_STREAM, 0);
-    if (BAD_SOCKET == connecter)
+    connecter = BAD_SOCKET;
+
+    socket_t sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
         return(false);
@@ -270,45 +278,49 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
         if (!transform_address(bind_ip, bind_port, bind_address))
         {
             RUN_LOG_ERR("transform_address failed");
-            tcp_close(connecter);
+            tcp_close(sock);
             return(false);
         }
 
         const int reuse_addr_on = 1;
         const char * reuse_addr_ptr = reinterpret_cast<const char *>(&reuse_addr_on);
-        if (setsockopt(connecter, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
+        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reuse_addr_ptr, sizeof(reuse_addr_on)) < 0)
         {
             RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-            tcp_close(connecter);
+            tcp_close(sock);
             return(false);
         }
 
-        if (bind(connecter, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
+        if (bind(sock, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
         {
             RUN_LOG_ERR("bind failed: %d", stupid_net_error());
-            tcp_close(connecter);
+            tcp_close(sock);
             return(false);
         }
     }
 
-    if (connect(connecter, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
+    if (connect(sock, reinterpret_cast<sockaddr_t *>(const_cast<sockaddr_in_t *>(&address)), sizeof(address)) < 0)
     {
         RUN_LOG_ERR("connect failed: %d", stupid_net_error());
-        tcp_close(connecter);
+        tcp_close(sock);
         return(false);
     }
+
+    connecter = sock;
 
     return(true);
 }
 
 bool tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address, sockaddr_len_t * addr_len)
 {
+    accepter = BAD_SOCKET;
+
     sockaddr_in_t remote_address;
     memset(&remote_address, 0x00, sizeof(remote_address));
     sockaddr_len_t remote_addr_len = sizeof(remote_address);
 
-    accepter = accept(listener, reinterpret_cast<sockaddr_t *>(&remote_address), &remote_addr_len);
-    if (BAD_SOCKET == accepter)
+    socket_t sock = accept(listener, reinterpret_cast<sockaddr_t *>(&remote_address), &remote_addr_len);
+    if (BAD_SOCKET == sock)
     {
         if (!stupid_is_net_blocking_error())
         {
@@ -326,6 +338,8 @@ bool tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address,
     {
         memcpy(addr_len, &remote_addr_len, sizeof(remote_addr_len));
     }
+
+    accepter = sock;
 
     return(true);
 }

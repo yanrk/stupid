@@ -116,7 +116,7 @@ void stupid_piece_together(StringIterator first, StringIterator last, const std:
 }
 
 template <typename StringSequence>
-void stupid_split_piece(const std::string & values, const std::string & delimiter, bool trim_space, StringSequence & result)
+void stupid_split_piece(const std::string & values, const std::string & delimiter, bool trim_space, bool ignore_empty, StringSequence & result)
 {
     std::string filter(trim_space ? g_blank_character_set : "");
     StringSplitter splitter(values, filter, delimiter);
@@ -124,7 +124,7 @@ void stupid_split_piece(const std::string & values, const std::string & delimite
     {
         std::string element;
         splitter >> element;
-        if (!element.empty())
+        if (!ignore_empty || !element.empty())
         {
             result.push_back(element);
         }
@@ -154,7 +154,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 
     while ('\0' != *first)
     {
-        while (' ' == *first)
+        while (' ' == *first || '\t' == *first)
         {
             ++first;
         }
@@ -172,8 +172,22 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 
         last = first + 1;
 
-        while (delimiter != *last && '\0' != *last)
+        while ('\0' != *last)
         {
+            if (' ' == delimiter)
+            {
+                if (' ' == *last || '\t' == *last)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                if (delimiter == *last)
+                {
+                    break;
+                }
+            }
             ++last;
         }
 

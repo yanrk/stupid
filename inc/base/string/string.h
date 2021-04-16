@@ -172,6 +172,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 
         last = first + 1;
 
+        bool escape = false;
         while ('\0' != *last)
         {
             if (' ' == delimiter)
@@ -183,10 +184,18 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
             }
             else
             {
-                if (delimiter == *last)
+                if (delimiter == *last && !escape)
                 {
                     break;
                 }
+            }
+            if ('\"' == delimiter && '\\' == *last)
+            {
+                escape = !escape;
+            }
+            else
+            {
+                escape = false;
             }
             ++last;
         }
@@ -203,10 +212,9 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 
         std::string param(first, last);
         stupid_string_trim(param);
-        if (trim_delimiter)
+        if (trim_delimiter && param.size() >= 2 && param.front() == delimiter && param.back() == delimiter)
         {
-            const char trim_set[2] = { delimiter, 0x00 };
-            stupid_string_trim(param, trim_set);
+            std::string(param.begin() + 1, param.end() - 1).swap(param);
         }
         result.push_back(param);
 

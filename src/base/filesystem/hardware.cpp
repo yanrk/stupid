@@ -155,9 +155,41 @@ bool get_system_cpu_usage(std::vector<size_t> & cpu_usage)
 
 bool get_system_cpu_core_count(size_t & core_count)
 {
+#if _WIN32_WINNT >= 0x0601
+    core_count = 0;
+
+    ULONG highest_node_number = 0;
+    if (!GetNumaHighestNodeNumber(&highest_node_number))
+    {
+        return(false);
+    }
+
+    for (USHORT node_number = 0; node_number <= highest_node_number; ++node_number)
+    {
+        GROUP_AFFINITY processor_mask;
+        if (!GetNumaNodeProcessorMaskEx(node_number, &processor_mask))
+        {
+            continue;
+        }
+
+        std::size_t mask = processor_mask.Mask;
+        while (0 != mask)
+        {
+            mask &= mask - 1;
+            ++core_count;
+        }
+    }
+#else
     SYSTEM_INFO system_info = { 0x00 };
+
+#if _WIN32_WINNT >= _WIN32_WINNT_WINXP
+    GetNativeSystemInfo(&system_info);
+#else
     GetSystemInfo(&system_info);
+#endif // _WIN32_WINNT >= _WIN32_WINNT_WINXP
+
     core_count = static_cast<size_t>(system_info.dwNumberOfProcessors);
+#endif // _WIN32_WINNT >= 0x0601
     return(true);
 }
 

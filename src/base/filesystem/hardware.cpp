@@ -9,6 +9,9 @@
  * Copyright(C): 2013 - 2020
  ********************************************************/
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "base/charset/charset.h"
 #include "base/filesystem/hardware.h"
 
@@ -16,6 +19,8 @@
 
 #include <ctime>
 #include <atlstr.h>
+#include <winsock2.h>
+#include <iphlpapi.h>
 
 typedef DWORD (__stdcall * NtQuerySystemInformationFuncPtr)(DWORD, PVOID, DWORD, PDWORD);
 
@@ -40,6 +45,107 @@ typedef struct _SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION
 #pragma pack(pop)
 
 NAMESPACE_STUPID_BASE_BEGIN
+
+bool get_system_ifconfig(std::vector<ifconfig_t> & ifconfigs)
+{
+    ULONG addr_buffer_size = 0;
+    GetAdaptersAddresses(AF_INET, 0, nullptr, nullptr, &addr_buffer_size);
+    if (0 == addr_buffer_size)
+    {
+        return(false);
+    }
+
+    std::vector<char> addr_buffer(addr_buffer_size, 0x0);
+    IP_ADAPTER_ADDRESSES * addresses = reinterpret_cast<IP_ADAPTER_ADDRESSES *>(&addr_buffer[0]);
+    GetAdaptersAddresses(AF_INET, 0, nullptr, addresses, &addr_buffer_size);
+
+    ULONG info_buffer_size = 0;
+    GetAdaptersInfo(nullptr, &info_buffer_size);
+    if (0 == info_buffer_size)
+    {
+        return(false);
+    }
+
+    std::vector<char> info_buffer(info_buffer_size, 0x0);
+    IP_ADAPTER_INFO * informations = reinterpret_cast<IP_ADAPTER_INFO *>(&info_buffer[0]);
+    GetAdaptersInfo(informations, &info_buffer_size);
+
+    for (IP_ADAPTER_ADDRESSES * addr = addresses; nullptr != addr; addr = addr->Next)
+    {
+        for (IP_ADAPTER_INFO * info = informations; nullptr != info; info = info->Next)
+        {
+            if (0 == strcmp(addr->AdapterName, info->AdapterName))
+            {
+                ifconfig_t ifconfig = { 0x0 };
+
+                strncpy(ifconfig.ip, info->IpAddressList.IpAddress.String, sizeof(ifconfig.ip) - 1);
+                if (0 == strcmp("0.0.0.0", ifconfig.ip) || 0 == strcmp("127.0.0.1", ifconfig.ip))
+                {
+                    continue;
+                }
+
+                unsigned char * mac = reinterpret_cast<unsigned char *>(addr->PhysicalAddress);
+                snprintf(ifconfig.mac, sizeof(ifconfig.mac), "%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+                if (0 == strcmp("00:00:00:00:00:00", ifconfig.mac))
+                {
+                    continue;
+                }
+
+                strncpy(ifconfig.mask, info->IpAddressList.IpMask.String, sizeof(ifconfig.mask) - 1);
+
+                const char * ip = ifconfig.ip;
+                const char * mask = ifconfig.mask;
+                char * broadcast = ifconfig.broadcast;
+                while ('\0' != *ip && '\0' != *mask)
+                {
+                    if (0 == strncmp("255", mask, 3))
+                    {
+                        while ('\0' != *mask && '.' != *mask)
+                        {
+                            mask++;
+                        }
+
+                        mask++;
+
+                        while ('\0' != *ip && '.' != *ip)
+                        {
+                            *broadcast++ = *ip++;
+                        }
+
+                        *broadcast++ = *ip++;
+                    }
+                    else
+                    {
+                        strcpy(broadcast, "255");
+                        broadcast += 3;
+
+                        while ('\0' != *mask && '.' != *mask)
+                        {
+                            mask++;
+                        }
+
+                        mask++;
+
+                        while ('\0' != *ip && '.' != *ip)
+                        {
+                            ip++;
+                        }
+
+                        *broadcast++ = *ip++;
+                    }
+                }
+
+                strncpy(ifconfig.name, info->Description, sizeof(ifconfig.name) - 1);
+
+                ifconfigs.push_back(ifconfig);
+
+                break;
+            }
+        }
+    }
+
+    return(!ifconfigs.empty());
+}
 
 bool get_system_memory_usage(uint64_t & total_size, uint64_t & avali_size)
 {
@@ -205,6 +311,9 @@ NAMESPACE_STUPID_BASE_END
 
 #include <errno.h>
 #include <unistd.h>
+#include <ifaddrs.h>
+#include <net/if_dl.h>
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #include <sys/statvfs.h>
@@ -216,6 +325,72 @@ NAMESPACE_STUPID_BASE_END
 #include <mach/processor_info.h>
 
 NAMESPACE_STUPID_BASE_BEGIN
+
+bool get_system_ifconfig(std::vector<ifconfig_t> & ifconfigs)
+{
+    struct ifaddrs * ifas = nullptr;
+    if (0 != getifaddrs(&ifas))
+    {
+        return(false);
+    }
+
+    for (struct ifaddrs * ifap_inet = ifas; nullptr != ifap_inet; ifap_inet = ifap_inet->ifa_next)
+    {
+        if (AF_INET != ifap_inet->ifa_addr->sa_family)
+        {
+            continue;
+        }
+
+        ifconfig_t ifconfig = { 0x0 };
+
+        struct sockaddr_in * ip_addr = reinterpret_cast<struct sockaddr_in *>(ifap_inet->ifa_addr);
+        inet_ntop(AF_INET, &ip_addr->sin_addr, ifconfig.ip, sizeof(ifconfig.ip) - 1);
+        if (0 == strcmp("0.0.0.0", ifconfig.ip) || 0 == strcmp("127.0.0.1", ifconfig.ip))
+        {
+            continue;
+        }
+
+        strncpy(ifconfig.mac, "00:00:00:00:00:00", sizeof(ifconfig.mac) - 1);
+
+        for (struct ifaddrs * ifap_link = ifas; nullptr != ifap_link; ifap_link = ifap_link->ifa_next)
+        {
+            if (AF_LINK != ifap_link->ifa_addr->sa_family)
+            {
+                continue;
+            }
+
+            if (0 != strcmp(ifap_inet->ifa_name, ifap_link->ifa_name))
+            {
+                continue;
+            }
+
+            struct sockaddr_dl * dl_addr = reinterpret_cast<struct sockaddr_dl *>(ifap_link->ifa_addr);
+            unsigned char * mac = reinterpret_cast<unsigned char *>(LLADDR(dl_addr));
+            snprintf(ifconfig.mac, sizeof(ifconfig.mac), "%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+            break;
+        }
+
+        if (0 == strcmp("00:00:00:00:00:00", ifconfig.mac))
+        {
+            continue;
+        }
+
+        struct sockaddr_in * mask_addr = reinterpret_cast<struct sockaddr_in *>(ifap_inet->ifa_netmask);
+        inet_ntop(AF_INET, &mask_addr->sin_addr, ifconfig.mask, sizeof(ifconfig.mask) - 1);
+
+        struct sockaddr_in * broadcast_addr = reinterpret_cast<struct sockaddr_in *>(ifap_inet->ifa_broadaddr);
+        inet_ntop(AF_INET, &broadcast_addr->sin_addr, ifconfig.broadcast, sizeof(ifconfig.broadcast) - 1);
+
+        strncpy(ifconfig.name, ifap_inet->ifa_name, sizeof(ifconfig.name) - 1);
+
+        ifconfigs.push_back(ifconfig);
+    }
+
+    freeifaddrs(ifas);
+
+    return(!ifconfigs.empty());
+}
 
 bool get_system_memory_usage(uint64_t & total_size, uint64_t & avali_size)
 {
@@ -354,8 +529,12 @@ NAMESPACE_STUPID_BASE_END
 #include <unistd.h>
 #include <sys/statvfs.h>
 #include <sys/sysinfo.h>
-#include <cstdio>
-#include <cstring>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <linux/if.h>
+#include <arpa/inet.h>
 #include <fstream>
 
 struct mem_occupy_t
@@ -399,6 +578,77 @@ struct cpu_occupy_t
 };
 
 NAMESPACE_STUPID_BASE_BEGIN
+
+bool get_system_ifconfig(std::vector<ifconfig_t> & ifconfigs)
+{
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (sock < 0)
+    {
+        return(false);
+    }
+
+    char buffer[1024] = { 0x0 };
+    struct ifconf ifc = { 0x0 };
+    ifc.ifc_buf = buffer;
+    ifc.ifc_len = sizeof(buffer);
+    if (0 != ioctl(sock, SIOCGIFCONF, &ifc))
+    {
+        close(sock);
+        return(false);
+    }
+
+    for (std::size_t index = 0, count = ifc.ifc_len / sizeof(struct ifreq); index < count; ++index)
+    {
+        ifconfig_t ifconfig = { 0x0 };
+
+        struct ifreq ifr = { 0x0 };
+        strncpy(ifr.ifr_name, ifc.ifc_req[index].ifr_name, sizeof(ifr.ifr_name) - 1);
+
+        if (0 != ioctl(sock, SIOCGIFADDR, &ifr))
+        {
+            continue;
+        }
+
+        struct sockaddr_in * ip_addr = reinterpret_cast<struct sockaddr_in *>(&ifr.ifr_addr);
+        inet_ntop(AF_INET, &ip_addr->sin_addr, ifconfig.ip, sizeof(ifconfig.ip) - 1);
+        if (0 == strcmp("0.0.0.0", ifconfig.ip) || 0 == strcmp("127.0.0.1", ifconfig.ip))
+        {
+            continue;
+        }
+
+        if (0 != ioctl(sock, SIOCGIFHWADDR, &ifr))
+        {
+            continue;
+        }
+
+        unsigned char * mac = reinterpret_cast<unsigned char *>(ifr.ifr_hwaddr.sa_data);
+        snprintf(ifconfig.mac, sizeof(ifconfig.mac), "%02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+        if (0 == strcmp("00:00:00:00:00:00", ifconfig.mac))
+        {
+            continue;
+        }
+
+        if (0 == ioctl(sock, SIOCGIFNETMASK, &ifr))
+        {
+            struct sockaddr_in * mask_addr = reinterpret_cast<struct sockaddr_in *>(&ifr.ifr_netmask);
+            inet_ntop(AF_INET, &mask_addr->sin_addr, ifconfig.mask, sizeof(ifconfig.mask) - 1);
+        }
+
+        if (0 == ioctl(sock, SIOCGIFBRDADDR, &ifr))
+        {
+            struct sockaddr_in * broadcast_addr = reinterpret_cast<struct sockaddr_in *>(&ifr.ifr_broadaddr);
+            inet_ntop(AF_INET, &broadcast_addr->sin_addr, ifconfig.broadcast, sizeof(ifconfig.broadcast) - 1);
+        }
+
+        strncpy(ifconfig.name, ifr.ifr_name, sizeof(ifconfig.name) - 1);
+
+        ifconfigs.push_back(ifconfig);
+    }
+
+    close(sock);
+
+    return(!ifconfigs.empty());
+}
 
 bool get_system_memory_usage(uint64_t & total_size, uint64_t & avali_size)
 {

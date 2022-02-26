@@ -20,6 +20,16 @@
 
 NAMESPACE_STUPID_BASE_BEGIN
 
+struct ifconfig_t
+{
+    char ip[16];
+    char mask[16];
+    char broadcast[16];
+    char mac[18];
+    char name[132];
+};
+
+STUPID_CXX_API(bool) get_system_ifconfig(std::vector<ifconfig_t> & ifconfigs);
 STUPID_CXX_API(bool) get_system_memory_usage(uint64_t & total_size, uint64_t & avali_size);
 STUPID_CXX_API(bool) get_system_disk_usage(const char * disk_path, uint64_t & total_size, uint64_t & avali_size);
 STUPID_CXX_API(bool) get_system_cpu_usage(std::vector<size_t> & cpu_usage);

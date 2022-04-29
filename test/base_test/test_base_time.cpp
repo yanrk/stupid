@@ -24,7 +24,7 @@ void test_base_time(void)
     tm tm_now = stupid_localtime();
     struct timeval tv_now = stupid_gettimeofday();
     int millisecond = static_cast<int>(tv_now.tv_usec / 1000);
-    int time_zone = stupid_get_timezone();
+    int time_zone = stupid_get_timezone() / -3600;
     int day_of_week = stupid_get_day_of_week();
 
     printf

@@ -444,7 +444,7 @@ static bool file_time_to_utc_time(const FILETIME & file_time, time_t & utc_time)
         return(false);
     }
 
-    utc_time += 3600 * stupid_get_timezone();
+    utc_time -= goofer_get_timezone();
 
     return(true);
 }

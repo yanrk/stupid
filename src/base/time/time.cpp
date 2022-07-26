@@ -89,6 +89,7 @@ int goofer_get_timezone()
     long time_zone = 0;
 
 #ifdef _MSC_VER
+    _tzset();
     _get_timezone(&time_zone);
 #else
     time_zone = timezone;

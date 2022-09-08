@@ -15,6 +15,7 @@
 
 #include <cstdarg>
 #include <cstring>
+#include <cctype>
 #include <string>
 #include <list>
 #include <sstream>
@@ -137,7 +138,7 @@ STUPID_CXX_API(void) stupid_string_trim(std::string & str, const char * trim = g
 STUPID_CXX_API(void) stupid_string_simplify(std::string & str, const char * trim = g_blank_character_set, char simplify = ' ');
 
 template <typename StringSequence>
-bool stupid_split_command_line(const char * command_line, StringSequence & result, const char * delimiter_set = " \"", bool trim_delimiter = true)
+bool stupid_split_command_line(const char * command_line, StringSequence & result, const char * delimiter_set = "\"", bool trim_delimiter = true)
 {
     if (nullptr == command_line)
     {
@@ -146,7 +147,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 
     if (nullptr == delimiter_set || '\0' == delimiter_set[0])
     {
-        delimiter_set = " ";
+        delimiter_set = "\"";
     }
 
     const char * first = command_line;
@@ -154,7 +155,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 
     while ('\0' != *first)
     {
-        while (' ' == *first || '\t' == *first)
+        while (isspace(*first))
         {
             ++first;
         }
@@ -164,32 +165,34 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
             break;
         }
 
-        char delimiter = ' ';
-        if (nullptr != strchr(delimiter_set, *first))
-        {
-            delimiter = *first;
-        }
+        last = first;
 
-        last = first + 1;
-
+        char pasting = '\0';
         bool escape = false;
         while ('\0' != *last)
         {
-            if (' ' == delimiter)
+            if (!escape)
             {
-                if (' ' == *last || '\t' == *last)
+                if (nullptr != strchr(delimiter_set, *last))
                 {
-                    break;
+                    if ('\0' == pasting)
+                    {
+                        if (!isspace(*last))
+                        {
+                            pasting = *last;
+                        }
+                    }
+                    else
+                    {
+                        if (pasting == *last)
+                        {
+                            pasting = '\0';
+                        }
+                    }
                 }
             }
-            else
-            {
-                if (delimiter == *last && !escape)
-                {
-                    break;
-                }
-            }
-            if ('\"' == delimiter && '\\' == *last)
+
+            if ('\\' == *last)
             {
                 escape = !escape;
             }
@@ -197,26 +200,23 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
             {
                 escape = false;
             }
+
+            if ('\0' == pasting && isspace(*last))
+            {
+                break;
+            }
+
             ++last;
         }
 
-        if ('\0' == *last && ' ' != delimiter)
+        if (trim_delimiter && last - first >= 2 && *first == *(last - 1) && nullptr != strchr(delimiter_set, *first))
         {
-            return(false);
+            result.push_back(std::string(first + 1, last - 1));
         }
-
-        if ('\0' != *last)
+        else
         {
-            ++last;
+            result.push_back(std::string(first, last));
         }
-
-        std::string param(first, last);
-        stupid_string_trim(param);
-        if (trim_delimiter && param.size() >= 2 && param.front() == delimiter && param.back() == delimiter)
-        {
-            std::string(param.begin() + 1, param.end() - 1).swap(param);
-        }
-        result.push_back(param);
 
         first = last;
     }

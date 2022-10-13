@@ -84,7 +84,7 @@ struct timeval stupid_gettimeofday()
     return(tv_now);
 }
 
-int goofer_get_timezone()
+int stupid_get_timezone()
 {
     long time_zone = 0;
 

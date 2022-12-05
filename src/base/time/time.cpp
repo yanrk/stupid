@@ -92,6 +92,7 @@ int stupid_get_timezone()
     _tzset();
     _get_timezone(&time_zone);
 #else
+    tzset();
     time_zone = timezone;
 #endif // _MSC_VER
 

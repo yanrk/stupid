@@ -13,6 +13,7 @@
     #include <winsock2.h>
 #else
     #include <signal.h>
+    #include <sys/resource.h>
 #endif // _MSC_VER
 
 #include <cstdlib>
@@ -51,6 +52,44 @@ static sig_func * safe_signal(int signo, sig_func * func)
         return(old_act.sa_handler);
     }
 }
+
+static bool increase_socket_limit()
+{
+    struct rlimit old_limit;
+    if (0 != getrlimit(RLIMIT_NOFILE, &old_limit))
+    {
+        return(false);
+    }
+
+    struct rlimit new_limit;
+    new_limit.rlim_cur = new_limit.rlim_max = RLIM_INFINITY;
+    if (0 == setrlimit(RLIMIT_NOFILE, &new_limit))
+    {
+        return(true);
+    }
+
+    if (old_limit.rlim_max < 65535)
+    {
+        new_limit.rlim_cur = new_limit.rlim_max = 65535;
+        if (0 == setrlimit(RLIMIT_NOFILE, &new_limit))
+        {
+            return(true);
+        }
+    }
+
+    if (old_limit.rlim_cur == old_limit.rlim_max)
+    {
+        return(true);
+    }
+
+    new_limit.rlim_cur = new_limit.rlim_max = old_limit.rlim_max;
+    if (0 == setrlimit(RLIMIT_NOFILE, &new_limit))
+    {
+        return(true);
+    }
+
+    return(false);
+}
 #endif // _MSC_VER
 
 NAMESPACE_STUPID_NET_BEGIN
@@ -86,6 +125,7 @@ bool NetSwitch::init()
         RUN_LOG_CRI("safe_signal failed: %d", stupid_net_error());
         return(false);
     }
+    increase_socket_limit();
 #endif // _MSC_VER
 
     m_init = true;

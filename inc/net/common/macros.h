@@ -20,6 +20,7 @@
 #endif // _MSC_VER
 
 #ifdef _MSC_VER
+    #define SOCK_CLOEXEC                         (0)
     #define BAD_SOCKET                           (INVALID_SOCKET)
     #define stupid_close_socket(sock)            ::closesocket(sock)
     #define stupid_net_error()                   (::WSAGetLastError())

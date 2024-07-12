@@ -29,6 +29,7 @@ public:
     void * get_user_data();
 
 public:
+    virtual void get_host_address(std::string & ip, unsigned short & port) = 0;
     virtual void get_peer_address(std::string & ip, unsigned short & port) = 0;
 
 public:

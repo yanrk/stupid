@@ -59,7 +59,7 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
 
     for ( ; nullptr != addr_info; addr_info = addr_info->ai_next)
     {
-        socket_t sock = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
+        socket_t sock = socket(addr_info->ai_family, addr_info->ai_socktype | SOCK_CLOEXEC, addr_info->ai_protocol);
         if (BAD_SOCKET == sock)
         {
             DBG_LOG("socket failed: %d, try again", stupid_net_error());
@@ -121,7 +121,7 @@ bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
 {
     listener = BAD_SOCKET;
 
-    socket_t sock = socket(AF_INET, SOCK_STREAM, 0);
+    socket_t sock = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
     if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
@@ -201,7 +201,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
 
     for ( ; nullptr != addr_info; addr_info = addr_info->ai_next)
     {
-        socket_t sock = socket(addr_info->ai_family, addr_info->ai_socktype, addr_info->ai_protocol);
+        socket_t sock = socket(addr_info->ai_family, addr_info->ai_socktype | SOCK_CLOEXEC, addr_info->ai_protocol);
         if (BAD_SOCKET == sock)
         {
             DBG_LOG("socket failed: %d, try again", stupid_net_error());
@@ -261,7 +261,7 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
 {
     connecter = BAD_SOCKET;
 
-    socket_t sock = socket(AF_INET, SOCK_STREAM, 0);
+    socket_t sock = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
     if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
@@ -341,12 +341,28 @@ bool tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address,
 
     accepter = sock;
 
+#ifndef _MSC_VER
+    int flags = fcntl(sock, F_GETFD, 0);
+    if (flags < 0)
+    {
+        RUN_LOG_WAR("fcntl(get-%s-flags) failed: %d", "cloexec", stupid_net_error());
+        return(true);
+    }
+    flags |= FD_CLOEXEC;
+    int ret = fcntl(sock, F_SETFD, flags);
+    if (ret < 0)
+    {
+        RUN_LOG_WAR("fcntl(set-%s-flags) failed: %d", "cloexec", stupid_net_error());
+        return(true);
+    }
+#endif // _MSC_VER
+
     return(true);
 }
 
 bool tcp_socket(socket_t & sock)
 {
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    sock = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
     if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());

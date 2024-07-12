@@ -64,10 +64,30 @@ TcpConnection::~TcpConnection()
     tcp_close(m_sockfd);
 }
 
+void TcpConnection::get_host_address(std::string & ip, unsigned short & port)
+{
+    sockaddr_in_t address = { 0x0 };
+    sockaddr_len_t address_len = sizeof(address);
+    if (BAD_SOCKET == m_sockfd || 0 != getsockname(m_sockfd, reinterpret_cast<sockaddr_t *>(&address), &address_len))
+    {
+        return;
+    }
+
+    ip = inet_ntoa(address.sin_addr);
+    port = ntohs(address.sin_port);
+}
+
 void TcpConnection::get_peer_address(std::string & ip, unsigned short & port)
 {
-    ip = inet_ntoa(m_address.sin_addr);
-    port = ntohs(m_address.sin_port);
+    sockaddr_in_t address = { 0x0 };
+    sockaddr_len_t address_len = sizeof(address);
+    if (BAD_SOCKET == m_sockfd || 0 != getpeername(m_sockfd, reinterpret_cast<sockaddr_t *>(&address), &address_len))
+    {
+        memcpy(&address, &m_address, sizeof(address));
+    }
+
+    ip = inet_ntoa(address.sin_addr);
+    port = ntohs(address.sin_port);
 }
 
 void TcpConnection::set_socket(socket_t sockfd)

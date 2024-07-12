@@ -105,14 +105,20 @@ bool get_system_ifconfig(std::vector<ifconfig_t> & ifconfigs)
                             mask++;
                         }
 
-                        mask++;
+                        if ('.' == *mask)
+                        {
+                            mask++;
+                        }
 
                         while ('\0' != *ip && '.' != *ip)
                         {
                             *broadcast++ = *ip++;
                         }
 
-                        *broadcast++ = *ip++;
+                        if ('.' == *ip)
+                        {
+                            *broadcast++ = *ip++;
+                        }
                     }
                     else
                     {
@@ -124,14 +130,20 @@ bool get_system_ifconfig(std::vector<ifconfig_t> & ifconfigs)
                             mask++;
                         }
 
-                        mask++;
+                        if ('.' == *mask)
+                        {
+                            mask++;
+                        }
 
                         while ('\0' != *ip && '.' != *ip)
                         {
                             ip++;
                         }
 
-                        *broadcast++ = *ip++;
+                        if ('.' == *ip)
+                        {
+                            *broadcast++ = *ip++;
+                        }
                     }
                 }
 

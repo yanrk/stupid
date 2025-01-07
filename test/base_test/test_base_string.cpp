@@ -516,7 +516,7 @@ static void test_base_string_5(void)
         std::cout << "piece_together result: " << elements << std::endl;
 
         std::list<std::string> dst_element_set;
-        Stupid::Base::stupid_split_piece(elements, ",", true, dst_element_set);
+        Stupid::Base::stupid_split_piece(elements, ",", true, true, dst_element_set);
         std::cout << "split_piece result:" << std::endl;
         for (std::list<std::string>::const_iterator iter = dst_element_set.begin(); dst_element_set.end() != iter; ++iter)
         {

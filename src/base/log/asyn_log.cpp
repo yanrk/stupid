@@ -21,7 +21,7 @@ static thread_return_t STUPID_STDCALL write_file_run(thread_argument_t argument 
 {
     argument = nullptr; /* prevent warning */
     AsynLog::write_file();
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 Thread AsynLog::s_write_file_thread;
@@ -91,7 +91,7 @@ void AsynLog::save_record(STUPID_LOG_LEVEL log_level, const char * data, size_t 
 bool AsynLog::acquire_write_thread()
 {
     s_write_file_thread.set_thread_args(write_file_run, &s_asyn_log_obj_list, "write file thread of asyn log");
-    return(s_write_file_thread.acquire());
+    return s_write_file_thread.acquire();
 }
 
 void AsynLog::release_write_thread()
@@ -125,7 +125,7 @@ bool AsynLog::try_write_file()
 
     if (s_asyn_log_obj_list.empty())
     {
-        return(false);
+        return false;
     }
 
     bool has_data = false;
@@ -180,7 +180,7 @@ bool AsynLog::try_write_file()
         }
     }
 
-    return(has_data);
+    return has_data;
 }
 
 void AsynLog::write_file()

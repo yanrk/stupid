@@ -3,5 +3,5 @@
 int main(int, char *[])
 {
     test_tcp_xactor();
-    return(0);
+    return 0;
 }

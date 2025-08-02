@@ -49,7 +49,7 @@ bool Directory::open(const char * dirname)
 
     if (nullptr == dirname || '\0' == dirname[0])
     {
-        return(false);
+        return false;
     }
 
     m_dir_name = dirname;
@@ -63,27 +63,27 @@ bool Directory::open(const char * dirname)
     m_dir = FindFirstFileW(pattern.c_str(), &m_file);
     if (INVALID_HANDLE_VALUE == m_dir)
     {
-        return(false);
+        return false;
     }
     m_eof = false;
 #else
     m_dir = opendir(utf8_to_ansi(m_dir_name).c_str());
     if (nullptr == m_dir)
     {
-        return(false);
+        return false;
     }
     m_file = readdir(m_dir);
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 bool Directory::is_open() const
 {
 #ifdef _MSC_VER
-    return(INVALID_HANDLE_VALUE != m_dir);
+    return INVALID_HANDLE_VALUE != m_dir;
 #else
-    return(nullptr != m_dir);
+    return nullptr != m_dir;
 #endif // _MSC_VER
 }
 
@@ -91,7 +91,7 @@ bool Directory::read()
 {
     if (!is_open())
     {
-        return(false);
+        return false;
     }
 
 #ifdef _MSC_VER
@@ -119,7 +119,7 @@ bool Directory::read()
             m_current_sub_path_is_directory = false;
         }
 
-        return(true);
+        return true;
     }
 #else
     while (nullptr != m_file)
@@ -151,14 +151,14 @@ bool Directory::read()
             m_current_sub_path_short_name = ansi_to_utf8(d_name);
             m_current_sub_path_name = m_dir_name + m_current_sub_path_short_name + g_directory_separator;
             m_current_sub_path_is_directory = true;
-            return(true);
+            return true;
         }
         else if (DT_REG == (DT_REG & d_type))
         {
             m_current_sub_path_short_name = ansi_to_utf8(d_name);
             m_current_sub_path_name = m_dir_name + m_current_sub_path_short_name;
             m_current_sub_path_is_directory = false;
-            return(true);
+            return true;
         }
 #else
         stupid_stat_t stat_buf = { 0x00 };
@@ -173,14 +173,14 @@ bool Directory::read()
             m_current_sub_path_short_name = ansi_to_utf8(d_name);
             m_current_sub_path_name = m_dir_name + m_current_sub_path_short_name + g_directory_separator;
             m_current_sub_path_is_directory = true;
-            return(true);
+            return true;
         }
         else if (S_IFREG == (S_IFREG & stat_buf.st_mode))
         {
             m_current_sub_path_short_name = ansi_to_utf8(d_name);
             m_current_sub_path_name = m_dir_name + m_current_sub_path_short_name;
             m_current_sub_path_is_directory = false;
-            return(true);
+            return true;
         }
 #endif // 0
     }
@@ -190,7 +190,7 @@ bool Directory::read()
     m_current_sub_path_name.clear();
     m_current_sub_path_is_directory = false;
 
-    return(false);
+    return false;
 }
 
 void Directory::close()
@@ -215,17 +215,17 @@ void Directory::close()
 
 const std::string & Directory::sub_path_name() const
 {
-    return(m_current_sub_path_name);
+    return m_current_sub_path_name;
 }
 
 const std::string & Directory::sub_path_short_name() const
 {
-    return(m_current_sub_path_short_name);
+    return m_current_sub_path_short_name;
 }
 
 bool Directory::sub_path_is_directory() const
 {
-    return(m_current_sub_path_is_directory);
+    return m_current_sub_path_is_directory;
 }
 
 void stupid_create_directory_recursive(const std::string & dirname)
@@ -346,7 +346,7 @@ std::string stupid_pathname_format_strictly_to_windows(const std::string & pathn
 {
     std::string pathname_strictly;
     stupid_pathname_format_strictly_to_windows(pathname, pathname_strictly);
-    return(pathname_strictly);
+    return pathname_strictly;
 }
 
 void stupid_pathname_format_strictly_to_unix(const std::string & src_pathname, std::string & dst_pathname)
@@ -383,7 +383,7 @@ std::string stupid_pathname_format_strictly_to_unix(const std::string & pathname
 {
     std::string pathname_strictly;
     stupid_pathname_format_strictly_to_unix(pathname, pathname_strictly);
-    return(pathname_strictly);
+    return pathname_strictly;
 }
 
 void stupid_pathname_format_strictly(const std::string & src_pathname, std::string & dst_pathname)
@@ -399,7 +399,7 @@ std::string stupid_pathname_format_strictly(const std::string & pathname)
 {
     std::string pathname_strictly;
     stupid_pathname_format_strictly(pathname, pathname_strictly);
-    return(pathname_strictly);
+    return pathname_strictly;
 }
 
 bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, std::string & dst_pathname, bool support_long_path)
@@ -409,7 +409,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
     std::string::size_type start_pos = src_pathname.find_first_not_of(g_blank_character_set);
     if (std::string::npos == start_pos)
     {
-        return(false);
+        return false;
     }
     bool start_with_directory_separator = ('/' == src_pathname[start_pos] || '\\' == src_pathname[start_pos]);
 
@@ -432,7 +432,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
 
     if (src_path_node_list.empty())
     {
-        return(false);
+        return false;
     }
 
     bool trim_single_dot = true;
@@ -449,7 +449,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
             src_path_node_list.pop_front();
             if (src_path_node_list.empty())
             {
-                return(false);
+                return false;
             }
 
             const std::string & second_path_node = src_path_node_list.front();
@@ -465,7 +465,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
                 src_path_node_list.pop_front();
                 if (src_path_node_list.empty())
                 {
-                    return(false);
+                    return false;
                 }
 
                 const std::string & third_path_node = src_path_node_list.front();
@@ -474,7 +474,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
             }
             else
             {
-                return(false);
+                return false;
             }
         }
         else
@@ -506,7 +506,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
     }
     else
     {
-        return(false);
+        return false;
     }
 
 #else
@@ -515,7 +515,7 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
 
     if (!start_with_directory_separator)
     {
-        return(false);
+        return false;
     }
 
 #endif // _MSC_VER
@@ -573,14 +573,14 @@ bool stupid_absolute_pathname_format_strictly(const std::string & src_pathname, 
         }
     }
 
-    return(true);
+    return true;
 }
 
 std::string stupid_absolute_pathname_format_strictly(const std::string & pathname, bool support_long_path)
 {
     std::string pathname_strictly;
     stupid_absolute_pathname_format_strictly(pathname, pathname_strictly, support_long_path);
-    return(pathname_strictly);
+    return pathname_strictly;
 }
 
 bool stupid_get_current_work_directory(std::string & dirname)
@@ -590,26 +590,26 @@ bool stupid_get_current_work_directory(std::string & dirname)
     if (nullptr == _wgetcwd(temp, sizeof(temp) / sizeof(temp[0])))
     {
         dirname.clear();
-        return(false);
+        return false;
     }
     else
     {
         dirname = unicode_to_utf8(std::wstring(temp)) + g_directory_separator;
         stupid_directory_format(dirname);
-        return(true);
+        return true;
     }
 #else
     char temp[512] = { 0 };
     if (nullptr == getcwd(temp, sizeof(temp) / sizeof(temp[0])))
     {
         dirname.clear();
-        return(false);
+        return false;
     }
     else
     {
         dirname = ansi_to_utf8(std::string(temp)) + g_directory_separator;
         stupid_directory_format(dirname);
-        return(true);
+        return true;
     }
 #endif // _MSC_VER
 }
@@ -619,11 +619,11 @@ bool stupid_set_current_work_directory(const std::string & dirname)
 #ifdef _MSC_VER
     std::string platform_dirname(dirname);
     stupid_directory_format(platform_dirname);
-    return(0 == _wchdir(utf8_to_unicode(platform_dirname).c_str()));
+    return 0 == _wchdir(utf8_to_unicode(platform_dirname).c_str());
 #else
     std::string platform_dirname(dirname);
     stupid_directory_format(platform_dirname);
-    return(0 == chdir(utf8_to_ansi(platform_dirname).c_str()));
+    return 0 == chdir(utf8_to_ansi(platform_dirname).c_str());
 #endif // _MSC_VER
 }
 
@@ -632,7 +632,7 @@ bool stupid_extract_directory(const char * pathname, std::string & dirname, bool
     if (nullptr == pathname || '\0' == pathname[0])
     {
         dirname.clear();
-        return(false);
+        return false;
     }
 
     const char * pos_s = pathname;
@@ -655,14 +655,14 @@ bool stupid_extract_directory(const char * pathname, std::string & dirname, bool
         stupid_directory_format(dirname);
     }
 
-    return(true);
+    return true;
 }
 
 std::string stupid_extract_directory(const char * pathname, bool format)
 {
     std::string dirname;
     stupid_extract_directory(pathname, dirname, format);
-    return(dirname);
+    return dirname;
 }
 
 bool stupid_extract_file(const char * pathname, std::string & filename)
@@ -670,7 +670,7 @@ bool stupid_extract_file(const char * pathname, std::string & filename)
     if (nullptr == pathname || '\0' == pathname[0])
     {
         filename.clear();
-        return(false);
+        return false;
     }
 
     const char * pos_s = pathname;
@@ -687,14 +687,14 @@ bool stupid_extract_file(const char * pathname, std::string & filename)
         std::string(pos_e + 1).swap(filename);
     }
 
-    return(true);
+    return true;
 }
 
 std::string stupid_extract_file(const char * pathname)
 {
     std::string filename;
     stupid_extract_file(pathname, filename);
-    return(filename);
+    return filename;
 }
 
 NAMESPACE_STUPID_BASE_END

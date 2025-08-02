@@ -48,19 +48,19 @@ bool LogSwitch::init(const char * config_file)
         }
     }
 
-    return(init(log_config));
+    return init(log_config);
 }
 
 bool LogSwitch::init(const STUPID_LOG_CONFIG & log_config)
 {
     if (m_init)
     {
-        return(true);
+        return true;
     }
 
     m_init = stupid_log_init(log_config);
 
-    return(m_init);
+    return m_init;
 }
 
 void LogSwitch::exit()

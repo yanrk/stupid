@@ -119,9 +119,9 @@ bool Xml::get_element(const char * element_name, T & element_value)
     std::string str_element_value;
     if (!get_element(element_name, str_element_value))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_element_value, element_value));
+    return stupid_string_to_type(str_element_value, element_value);
 }
 
 template <typename T>
@@ -130,9 +130,9 @@ bool Xml::get_child_element(const char * child_element_name, T & child_element_v
     std::string str_child_element_value;
     if (!get_child_element(child_element_name, str_child_element_value))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_child_element_value, child_element_value));
+    return stupid_string_to_type(str_child_element_value, child_element_value);
 }
 
 template <typename T>
@@ -141,9 +141,9 @@ bool Xml::add_element(const char * element_name, T element_value)
     std::string str_element_value;
     if (!stupid_type_to_string(element_value, str_element_value))
     {
-        return(false);
+        return false;
     }
-    return(add_element(element_name, str_element_value));
+    return add_element(element_name, str_element_value);
 }
 
 template <typename T>
@@ -152,9 +152,9 @@ bool Xml::insert_element(const char * element_name, T element_value)
     std::string str_element_value;
     if (!stupid_type_to_string(element_value, str_element_value))
     {
-        return(false);
+        return false;
     }
-    return(insert_element(element_name, str_element_value));
+    return insert_element(element_name, str_element_value);
 }
 
 template <typename T>
@@ -163,9 +163,9 @@ bool Xml::add_child_element(const char * child_element_name, T child_element_val
     std::string str_child_element_value;
     if (!stupid_type_to_string(child_element_value, str_child_element_value))
     {
-        return(false);
+        return false;
     }
-    return(add_child_element(child_element_name, str_child_element_value));
+    return add_child_element(child_element_name, str_child_element_value);
 }
 
 template <typename T>
@@ -174,9 +174,9 @@ bool Xml::insert_child_element(const char * child_element_name, T child_element_
     std::string str_child_element_value;
     if (!stupid_type_to_string(child_element_value, str_child_element_value))
     {
-        return(false);
+        return false;
     }
-    return(insert_child_element(child_element_name, str_child_element_value));
+    return insert_child_element(child_element_name, str_child_element_value);
 }
 
 template <typename T>
@@ -185,9 +185,9 @@ bool Xml::set_element(const char * element_name, T element_value)
     std::string str_element_value;
     if (!stupid_type_to_string(element_value, str_element_value))
     {
-        return(false);
+        return false;
     }
-    return(set_element(element_name, str_element_value));
+    return set_element(element_name, str_element_value);
 }
 
 template <typename T>
@@ -196,9 +196,9 @@ bool Xml::set_child_element(const char * child_element_name, T child_element_val
     std::string str_child_element_value;
     if (!stupid_type_to_string(child_element_value, str_child_element_value))
     {
-        return(false);
+        return false;
     }
-    return(set_child_element(child_element_name, str_child_element_value));
+    return set_child_element(child_element_name, str_child_element_value);
 }
 
 template <typename T>
@@ -207,9 +207,9 @@ bool Xml::get_element_block(const char * element_name, const char * child_elemen
     std::list<std::string> str_child_element_value_list;
     if (!get_element_block(element_name, child_element_name, ignore_empty_value, str_child_element_value_list))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_child_element_value_list, child_element_value_list));
+    return stupid_string_to_type(str_child_element_value_list, child_element_value_list);
 }
 
 template <typename T>
@@ -218,9 +218,9 @@ bool Xml::add_element_block(const char * element_name, const char * child_elemen
     std::list<std::string> str_child_element_value_list;
     if (!stupid_type_to_string(child_element_value_list, str_child_element_value_list))
     {
-        return(false);
+        return false;
     }
-    return(add_element_block(element_name, child_element_name, ignore_empty_value, str_child_element_value_list));
+    return add_element_block(element_name, child_element_name, ignore_empty_value, str_child_element_value_list);
 }
 
 template <typename T>
@@ -229,9 +229,9 @@ bool Xml::insert_element_block(const char * element_name, const char * child_ele
     std::list<std::string> str_child_element_value_list;
     if (!stupid_type_to_string(child_element_value_list, str_child_element_value_list))
     {
-        return(false);
+        return false;
     }
-    return(insert_element_block(element_name, child_element_name, ignore_empty_value, str_child_element_value_list));
+    return insert_element_block(element_name, child_element_name, ignore_empty_value, str_child_element_value_list);
 }
 
 template <typename T>
@@ -240,9 +240,9 @@ bool Xml::get_attribute(const char * attribute_name, T & attribute_value)
     std::string str_attribute_value;
     if (!get_attribute(attribute_name, str_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_attribute_value, attribute_value));
+    return stupid_string_to_type(str_attribute_value, attribute_value);
 }
 
 template <typename T>
@@ -251,9 +251,9 @@ bool Xml::get_attribute(const char * element_name, const char * attribute_name, 
     std::string str_attribute_value;
     if (!get_attribute(element_name, attribute_name, str_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_attribute_value, attribute_value));
+    return stupid_string_to_type(str_attribute_value, attribute_value);
 }
 
 template <typename T>
@@ -262,9 +262,9 @@ bool Xml::get_child_attribute(const char * child_element_name, const char * chil
     std::string str_child_attribute_value;
     if (!get_child_attribute(child_element_name, child_attribute_name, str_child_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_child_attribute_value, child_attribute_value));
+    return stupid_string_to_type(str_child_attribute_value, child_attribute_value);
 }
 
 template <typename T>
@@ -273,9 +273,9 @@ bool Xml::add_attribute(const char * attribute_name, T attribute_value)
     std::string str_attribute_value;
     if (!stupid_type_to_string(attribute_value, str_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(add_attribute(attribute_name, str_attribute_value));
+    return add_attribute(attribute_name, str_attribute_value);
 }
 
 template <typename T>
@@ -284,9 +284,9 @@ bool Xml::add_child_attribute(const char * child_attribute_name, T child_attribu
     std::string str_child_attribute_value;
     if (!stupid_type_to_string(child_attribute_value, str_child_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(add_child_attribute(child_attribute_name, str_child_attribute_value));
+    return add_child_attribute(child_attribute_name, str_child_attribute_value);
 }
 
 template <typename T>
@@ -295,9 +295,9 @@ bool Xml::set_attribute(const char * element_name, const char * attribute_name, 
     std::string str_attribute_value;
     if (!stupid_type_to_string(attribute_value, str_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(set_attribute(element_name, attribute_name, str_attribute_value));
+    return set_attribute(element_name, attribute_name, str_attribute_value);
 }
 
 template <typename T>
@@ -306,9 +306,9 @@ bool Xml::set_child_attribute(const char * child_element_name, const char * chil
     std::string str_child_attribute_value;
     if (!stupid_type_to_string(child_attribute_value, str_child_attribute_value))
     {
-        return(false);
+        return false;
     }
-    return(set_child_attribute(child_element_name, child_attribute_name, str_child_attribute_value));
+    return set_child_attribute(child_element_name, child_attribute_name, str_child_attribute_value);
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -38,10 +38,10 @@ static bool transform_log_write_mode(const std::string & key_value, STUPID_LOG_W
     }
     else
     {
-        return(false);
+        return false;
     }
 
-    return(true);
+    return true;
 }
 
 static bool transform_log_level(const std::string & key_value, STUPID_LOG_LEVEL & log_level)
@@ -68,10 +68,10 @@ static bool transform_log_level(const std::string & key_value, STUPID_LOG_LEVEL 
     }
     else
     {
-        return(false);
+        return false;
     }
 
-    return(true);
+    return true;
 }
 
 bool stupid_log_load_config(const std::string & file, STUPID_LOG_CONFIG & log_config)
@@ -79,12 +79,12 @@ bool stupid_log_load_config(const std::string & file, STUPID_LOG_CONFIG & log_co
     Ini log_ini;
     if (!log_ini.load(file))
     {
-        return(false);
+        return false;
     }
 
     if (!log_ini.get_value("", "log_path", log_config.log_file_path))
     {
-        return(false);
+        return false;
     }
 
     for (int type = LOG_TYPE_MIN; type < LOG_TYPE_MAX; ++type)
@@ -94,41 +94,41 @@ bool stupid_log_load_config(const std::string & file, STUPID_LOG_CONFIG & log_co
 
         if (!log_ini.get_value(app_name, "write_mode", key_value))
         {
-            return(false);
+            return false;
         }
 
         if (!transform_log_write_mode(key_value, log_config.log_file[type].write_mode))
         {
-            return(false);
+            return false;
         }
 
         if (!log_ini.get_value(app_name, "min_level", key_value))
         {
-            return(false);
+            return false;
         }
 
         if (!transform_log_level(key_value, log_config.log_file[type].log_min_level))
         {
-            return(false);
+            return false;
         }
 
         if (!log_ini.get_value(app_name, "file_size", log_config.log_file[type].log_file_size))
         {
-            return(false);
+            return false;
         }
 
         if (!log_ini.get_value(app_name, "buffer_count", log_config.log_file[type].buffer_count))
         {
-            return(false);
+            return false;
         }
 
         if (!log_ini.get_value(app_name, "output_to_console", log_config.log_file[type].output_to_console))
         {
-            return(false);
+            return false;
         }
     }
 
-    return(true);
+    return true;
 }
 
 static LogBase * s_log[LOG_TYPE_MAX] = { nullptr };
@@ -194,14 +194,14 @@ bool stupid_log_init(const STUPID_LOG_CONFIG & log_config)
             default:
             {
                 assert(false);
-                return(false);
+                return false;
             }
         }
 
         if (nullptr == s_log[type])
         {
             assert(nullptr != s_log[type]);
-            return(false);
+            return false;
         }
     }
 
@@ -209,10 +209,10 @@ bool stupid_log_init(const STUPID_LOG_CONFIG & log_config)
 
     if (s_need_aysn_write_thread)
     {
-        return(AsynLog::acquire_write_thread());
+        return AsynLog::acquire_write_thread();
     }
 
-    return(true);
+    return true;
 }
 
 void stupid_log_exit()

@@ -33,44 +33,44 @@ void Block::reset()
 
 const char * Block::data() const
 {
-    return(m_data);
+    return m_data;
 }
 
 size_t Block::size() const
 {
-    return(m_size);
+    return m_size;
 }
 
 size_t Block::capacity() const
 {
-    return(m_capacity);
+    return m_capacity;
 }
 
 bool Block::append(const char * data, size_t length)
 {
     if (nullptr == data || m_capacity < length)
     {
-        return(false);
+        return false;
     }
 
     memcpy(m_data + m_size, data, length);
     m_size += length;
     m_capacity -= length;
 
-    return(true);
+    return true;
 }
 
 bool Block::offset(size_t length)
 {
     if (m_size < length)
     {
-        return(false);
+        return false;
     }
 
     m_data += length;
     m_size -= length;
 
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_NET_END

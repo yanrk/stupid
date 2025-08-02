@@ -185,7 +185,7 @@ bool UnixJoinProcess::acquire()
     Guard<ThreadLocker> thread_guard(m_locker);
     if (m_running || m_command_line_params.empty())
     {
-        return(false);
+        return false;
     }
     m_running = true;
 
@@ -195,7 +195,7 @@ bool UnixJoinProcess::acquire()
     if (m_pid < 0)
     {
         m_running = false;
-        return(false);
+        return false;
     }
     else if (0 == m_pid)
     {
@@ -217,7 +217,7 @@ bool UnixJoinProcess::acquire()
         exit(0); // should never be here
     }
 
-    return(true);
+    return true;
 }
 
 void UnixJoinProcess::release(bool process_tree, int exit_code)
@@ -243,7 +243,7 @@ bool UnixJoinProcess::wait_exit(int & exit_code)
 {
     if (!m_running || 0 == m_pid)
     {
-        return(false);
+        return false;
     }
 
     bool ret = false;
@@ -297,7 +297,7 @@ bool UnixJoinProcess::wait_exit(int & exit_code)
         ret = false;
     }
 
-    return(ret);
+    return ret;
 }
 
 void UnixJoinProcess::clear()
@@ -328,24 +328,24 @@ void UnixJoinProcess::set_process_args(const std::vector<std::string> & command_
 
 bool UnixJoinProcess::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 std::string UnixJoinProcess::process_name()
 {
-    return(m_name);
+    return m_name;
 }
 
 size_t UnixJoinProcess::process_id() const
 {
-    return(static_cast<size_t>(m_pid));
+    return static_cast<size_t>(m_pid);
 }
 
 bool stupid_create_detached_process(const std::string & command_line)
 {
     std::vector<std::string> command_line_params;
     stupid_split_command_line(command_line.c_str(), command_line_params);
-    return(stupid_create_detached_process(command_line_params));
+    return stupid_create_detached_process(command_line_params);
 }
 
 bool stupid_create_detached_process(const std::vector<std::string> & command_line_params)
@@ -353,7 +353,7 @@ bool stupid_create_detached_process(const std::vector<std::string> & command_lin
     pid_t pid = fork();
     if (pid < 0)
     {
-        return(false);
+        return false;
     }
     else if (0 == pid)
     {
@@ -392,7 +392,7 @@ bool stupid_create_detached_process(const std::vector<std::string> & command_lin
         waitpid(pid, &exit_status, 0);
     }
 
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_BASE_END

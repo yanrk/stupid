@@ -27,7 +27,7 @@ bool stupid_create_detached_thread(thread_func_ptr_t func, thread_argument_t arg
     error_code = pthread_attr_init(&thread_attr);
     if (0 != error_code)
     {
-        return(false);
+        return false;
     }
 
     do
@@ -47,7 +47,7 @@ bool stupid_create_detached_thread(thread_func_ptr_t func, thread_argument_t arg
 
     pthread_attr_destroy(&thread_attr);
 
-    return(0 == error_code);
+    return 0 == error_code;
 }
 
 UnixJoinThread::UnixJoinThread(thread_func_ptr_t func, void * argument, const char * name)
@@ -71,18 +71,18 @@ bool UnixJoinThread::acquire()
     Guard<ThreadLocker> thread_guard(m_locker);
     if (m_running || nullptr == m_func)
     {
-        return(false);
+        return false;
     }
     m_running = true;
 
     if (0 != pthread_create(&m_thread, nullptr, m_func, m_argu))
     {
         m_running = false;
-        return(false);
+        return false;
     }
     else
     {
-        return(true);
+        return true;
     }
 }
 
@@ -111,21 +111,21 @@ void UnixJoinThread::set_thread_args(thread_func_ptr_t func, void * argument, co
 
 bool UnixJoinThread::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 size_t UnixJoinThread::thread_id() const
 {
 #ifdef _MAC_OS
-    return(reinterpret_cast<size_t>(pthread_self()));
+    return reinterpret_cast<size_t>(pthread_self());
 #else
-    return(static_cast<size_t>(pthread_self()));
+    return static_cast<size_t>(pthread_self());
 #endif // _MAC_OS
 }
 
 std::string UnixJoinThread::thread_name()
 {
-    return(m_name);
+    return m_name;
 }
 
 NAMESPACE_STUPID_BASE_END

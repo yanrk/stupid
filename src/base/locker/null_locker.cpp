@@ -25,7 +25,7 @@ NullLocker::~NullLocker()
 
 bool NullLocker::acquire() const
 {
-    return(true);
+    return true;
 }
 
 void NullLocker::release() const
@@ -35,7 +35,7 @@ void NullLocker::release() const
 
 bool NullLocker::try_acquire() const
 {
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_BASE_END

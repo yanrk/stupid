@@ -34,7 +34,7 @@ static thread_return_t STUPID_STDCALL process_wait_exit_thread_run(thread_argume
     printf("process wait exit thread end\n");
     s_stdout_locker.release();
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 static thread_return_t STUPID_STDCALL process_release_thread_run(thread_argument_t argument)
@@ -55,7 +55,7 @@ static thread_return_t STUPID_STDCALL process_release_thread_run(thread_argument
     printf("process release thread end\n");
     s_stdout_locker.release();
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 void test_base_process(void)

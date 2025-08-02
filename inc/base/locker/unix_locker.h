@@ -80,7 +80,7 @@ UnixMutexLocker<b_thread_lock>::~UnixMutexLocker()
 template <bool b_thread_lock>
 bool UnixMutexLocker<b_thread_lock>::acquire() const
 {
-    return(0 == pthread_mutex_lock(&m_locker));
+    return 0 == pthread_mutex_lock(&m_locker);
 }
 
 template <bool b_thread_lock>
@@ -92,7 +92,7 @@ void UnixMutexLocker<b_thread_lock>::release() const
 template <bool b_thread_lock>
 bool UnixMutexLocker<b_thread_lock>::try_acquire() const
 {
-    return(0 == pthread_mutex_trylock(&m_locker));
+    return 0 == pthread_mutex_trylock(&m_locker);
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -59,10 +59,10 @@ bool BitMap<T>::reset()
 {
     if (nullptr == m_bit)
     {
-        return(false);
+        return false;
     }
     memset(m_bit, 0x00, m_siz);
-    return(true);
+    return true;
 }
 
 template <typename T>
@@ -70,11 +70,11 @@ bool BitMap<T>::set(T val)
 {
     if (nullptr == m_bit || val < m_min || val > m_max)
     {
-        return(false);
+        return false;
     }
     val -= m_min;
     m_bit[val >> 3] |= (0x01 << (val & 0x07));
-    return(true);
+    return true;
 }
 
 template <typename T>
@@ -82,11 +82,11 @@ bool BitMap<T>::clear(T val)
 {
     if (nullptr == m_bit || val < m_min || val > m_max)
     {
-        return(false);
+        return false;
     }
     val -= m_min;
     m_bit[val >> 3] &= ~(0x01 << (val & 0x07));
-    return(true);
+    return true;
 }
 
 template <typename T>
@@ -94,10 +94,10 @@ bool BitMap<T>::test(T val) const
 {
     if (nullptr == m_bit || val < m_min || val > m_max)
     {
-        return(false);
+        return false;
     }
     val -= m_min;
-    return(0 != (m_bit[val >> 3] & (0x01 << (val & 0x07))));
+    return 0 != (m_bit[val >> 3] & (0x01 << (val & 0x07)));
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -24,7 +24,7 @@ struct is_splitter
     }
     bool operator () (const char symb) const
     {
-        return(m_splitter_set.end() != std::find(m_splitter_set.begin(), m_splitter_set.end(), symb));
+        return m_splitter_set.end() != std::find(m_splitter_set.begin(), m_splitter_set.end(), symb);
     }
     const std::string & m_splitter_set;
 };
@@ -47,17 +47,17 @@ StringSplitter::StringSplitter(
 
 size_t StringSplitter::count_bound() const
 {
-    return(m_count_bound);
+    return m_count_bound;
 }
 
 bool StringSplitter::has_element() const
 {
-    return(!eof());
+    return !eof();
 }
 
 bool StringSplitter::eof() const
 {
-    return(m_is_eof);
+    return m_is_eof;
 }
 
 std::string StringSplitter::pop_element()
@@ -78,13 +78,13 @@ std::string StringSplitter::pop_element()
 
     stupid_string_trim(element, m_filter_set.c_str());
 
-    return(element);
+    return element;
 }
 
 StringSplitter & StringSplitter::operator >> (std::string & element)
 {
     pop_element().swap(element);
-    return(*this);
+    return *this;
 }
 
 void StringSplitter::rewind()

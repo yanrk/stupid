@@ -14,7 +14,7 @@ public:
 
     const std::string & get() const
     {
-        return(m_id);
+        return m_id;
     }
 
 private:

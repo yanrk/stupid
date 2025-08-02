@@ -26,7 +26,7 @@ struct CompTimerWithID
 
     bool operator () (ITimer * timer) const
     {
-        return(m_id == timer->m_id);
+        return m_id == timer->m_id;
     }
 
     size_t m_id;
@@ -42,7 +42,7 @@ struct CompTimerWithStartTime
 
     bool operator () (ITimer * timer) const
     {
-        return(m_start_time < timer->m_start_time);
+        return m_start_time < timer->m_start_time;
     }
 
     uint64_t   m_start_time;
@@ -54,7 +54,7 @@ static uint64_t diff_millisecond(struct timeval stime)
     struct timeval etime = stupid_gettimeofday();
     diff += (etime.tv_sec - stime.tv_sec) * 1000;
     diff += (etime.tv_usec - stime.tv_usec) / 1000;
-    return(diff);
+    return diff;
 }
 
 static thread_return_t STUPID_STDCALL multi_timer_run(thread_argument_t argument)
@@ -64,7 +64,7 @@ static thread_return_t STUPID_STDCALL multi_timer_run(thread_argument_t argument
     {
         multi_timer->thread_run();
     }
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 MultiTimer::MultiTimer()
@@ -90,12 +90,12 @@ bool MultiTimer::init()
 {
     if (m_running)
     {
-        return(true);
+        return true;
     }
 
     m_running = true;
 
-    return(m_thread.acquire());
+    return m_thread.acquire();
 }
 
 void MultiTimer::exit()
@@ -134,7 +134,7 @@ bool MultiTimer::start_timer(size_t id, bool once, size_t period)
 {
     if (!m_running)
     {
-        return(false);
+        return false;
     }
 
     ITimer * timer = nullptr;
@@ -142,7 +142,7 @@ bool MultiTimer::start_timer(size_t id, bool once, size_t period)
     std::list<ITimer *>::iterator iter = std::find_if(m_pending_timer.begin(), m_pending_timer.end(), CompTimerWithID(id));
     if (m_pending_timer.end() == iter)
     {
-        return(false);
+        return false;
     }
     timer = *iter;
     m_pending_timer.erase(iter);
@@ -154,14 +154,14 @@ bool MultiTimer::start_timer(size_t id, bool once, size_t period)
 
     add_running_timer(timer);
 
-    return(true);
+    return true;
 }
 
 bool MultiTimer::stop_timer(size_t id)
 {
     if (!m_running)
     {
-        return(false);
+        return false;
     }
 
     ITimer * timer = nullptr;
@@ -169,7 +169,7 @@ bool MultiTimer::stop_timer(size_t id)
     std::list<ITimer *>::iterator iter = std::find_if(m_running_timer.begin(), m_running_timer.end(), CompTimerWithID(id));
     if (m_running_timer.end() == iter)
     {
-        return(false);
+        return false;
     }
     timer = *iter;
     m_running_timer.erase(iter);
@@ -177,7 +177,7 @@ bool MultiTimer::stop_timer(size_t id)
 
     add_pending_timer(timer);
 
-    return(true);
+    return true;
 }
 
 void MultiTimer::destroy_timer(size_t id)
@@ -196,7 +196,7 @@ void MultiTimer::destroy_timer(size_t id)
 
 bool MultiTimer::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 void MultiTimer::thread_run()
@@ -254,7 +254,7 @@ size_t MultiTimer::acquire_timer_id()
     }
     id_guard.release();
 
-    return(id);
+    return id;
 }
 
 void MultiTimer::add_pending_timer(ITimer * timer)
@@ -277,7 +277,7 @@ ITimer * MultiTimer::del_pending_timer(size_t id)
     }
     pending_guard.release();
 
-    return(timer);
+    return timer;
 }
 
 void MultiTimer::add_running_timer(ITimer * timer)
@@ -306,7 +306,7 @@ ITimer * MultiTimer::del_running_timer(size_t id)
     }
     running_guard.release();
 
-    return(timer);
+    return timer;
 }
 
 NAMESPACE_STUPID_BASE_END

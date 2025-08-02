@@ -31,13 +31,13 @@ bool TestService::on_connect(Stupid::Net::TcpConnectionBase * connection, size_t
     if (m_requester)
     {
         RUN_LOG_DBG("connect client: %u", identity);
-        return(insert_connection(connection) && send_message(connection));
+        return insert_connection(connection) && send_message(connection);
     }
     else
     {
         RUN_LOG_CRI("on_connect handle exception");
         assert(false);
-        return(false);
+        return false;
     }
 }
 
@@ -48,29 +48,29 @@ bool TestService::on_accept(Stupid::Net::TcpConnectionBase * connection, unsigne
     if (!m_requester)
     {
         RUN_LOG_DBG("accept from port: %d", listener_port);
-        return(insert_connection(connection));
+        return insert_connection(connection);
     }
     else
     {
         RUN_LOG_CRI("on_accept handle exception");
         assert(false);
-        return(false);
+        return false;
     }
 }
 
 bool TestService::on_recv(Stupid::Net::TcpConnectionBase * connection)
 {
-    return(recv_message(connection));
+    return recv_message(connection);
 }
 
 bool TestService::on_send(Stupid::Net::TcpConnectionBase * connection)
 {
-    return(true);
+    return true;
 }
 
 bool TestService::on_close(Stupid::Net::TcpConnectionBase * connection)
 {
-    return(remove_connection(connection));
+    return remove_connection(connection);
 }
 
 bool TestService::insert_connection(Stupid::Net::TcpConnectionBase * connection)
@@ -79,13 +79,13 @@ bool TestService::insert_connection(Stupid::Net::TcpConnectionBase * connection)
     if (m_connections.end() == m_connections.find(connection))
     {
         m_connections[connection] = 0;
-        return(true);
+        return true;
     }
     else
     {
         RUN_LOG_CRI("insert repeated connection");
         assert(false);
-        return(false);
+        return false;
     }
 }
 
@@ -100,13 +100,13 @@ bool TestService::remove_connection(Stupid::Net::TcpConnectionBase * connection)
             RUN_LOG_CRI("connection %x not complete");
         }
         m_connections.erase(connection);
-        return(true);
+        return true;
     }
     else
     {
         RUN_LOG_CRI("remove unknown connection");
         assert(false);
-        return(false);
+        return false;
     }
 }
 
@@ -114,14 +114,14 @@ bool TestService::send_message(Stupid::Net::TcpConnectionBase * connection)
 {
     if (!m_test_data)
     {
-        return(true);
+        return true;
     }
 
     char * data = nullptr;
     size_t data_len = 0;
     if (!generic_message(connection, data, data_len))
     {
-        return(false);
+        return false;
     }
 
     RUN_LOG_TRK("connection %x send %06u bytes", connection, data_len);
@@ -130,12 +130,12 @@ bool TestService::send_message(Stupid::Net::TcpConnectionBase * connection)
     {
         RUN_LOG_CRI("send_buffer_fill_len error");
         assert(false);
-        return(false);
+        return false;
     }
 
     STUPID_DEL_ARR(data);
 
-    return(true);
+    return true;
 }
 
 bool TestService::recv_message(Stupid::Net::TcpConnectionBase * connection)
@@ -144,7 +144,7 @@ bool TestService::recv_message(Stupid::Net::TcpConnectionBase * connection)
 
     if (connection->recv_buffer_size() < 2)
     {
-        return(true);
+        return true;
     }
 
     char temp[2] = { 0x00 };
@@ -152,21 +152,21 @@ bool TestService::recv_message(Stupid::Net::TcpConnectionBase * connection)
     {
         RUN_LOG_CRI("recv_buffer_copy_len error");
         assert(false);
-        return(false);
+        return false;
     }
 
     size_t data_len = static_cast<unsigned char>(temp[0]) * 256U + static_cast<unsigned char>(temp[1]);
     if (connection->recv_buffer_size() < data_len)
     {
         connection->recv_buffer_water_mark(data_len);
-        return(true);
+        return true;
     }
 
     char * data = nullptr;
     STUPID_NEW_ARR(data, char, data_len);
     if (nullptr == data)
     {
-        return(false);
+        return false;
     }
 
     if (!connection->recv_buffer_move_len(data, data_len))
@@ -174,14 +174,14 @@ bool TestService::recv_message(Stupid::Net::TcpConnectionBase * connection)
         RUN_LOG_CRI("recv_buffer_move_len error");
         STUPID_DEL_ARR(data);
         assert(false);
-        return(false);
+        return false;
     }
 
     if (!check_message(connection, data, data_len))
     {
         STUPID_DEL_ARR(data);
         assert(false);
-        return(false);
+        return false;
     }
 
     STUPID_DEL_ARR(data);
@@ -190,7 +190,7 @@ bool TestService::recv_message(Stupid::Net::TcpConnectionBase * connection)
 
     connection->recv_buffer_water_mark(2);
 
-    return(send_message(connection));
+    return send_message(connection);
 }
 
 bool TestService::generic_message(Stupid::Net::TcpConnectionBase * connection, char *& data, size_t & data_len)
@@ -203,7 +203,7 @@ bool TestService::generic_message(Stupid::Net::TcpConnectionBase * connection, c
         if (count >= m_max_msg_cnt)
         {
             DBG_LOG("connection %x send all", connection);
-            return(false);
+            return false;
         }
     }
 
@@ -215,7 +215,7 @@ bool TestService::generic_message(Stupid::Net::TcpConnectionBase * connection, c
     if (nullptr == memory_buf)
     {
         RUN_LOG_ERR("new memory buffer (%u) failed on connection %x", memory_len, connection);
-        return(false);
+        return false;
     }
 
     data = memory_buf;
@@ -237,7 +237,7 @@ bool TestService::generic_message(Stupid::Net::TcpConnectionBase * connection, c
         m_connections[connection] = count;
     }
 
-    return(true);
+    return true;
 }
 
 bool TestService::check_message(Stupid::Net::TcpConnectionBase * connection, const char * data, size_t data_len)
@@ -250,7 +250,7 @@ bool TestService::check_message(Stupid::Net::TcpConnectionBase * connection, con
         if (count >= m_max_msg_cnt)
         {
             RUN_LOG_CRI("connection %x send all", connection);
-            return(false);
+            return false;
         }
     }
 
@@ -260,7 +260,7 @@ bool TestService::check_message(Stupid::Net::TcpConnectionBase * connection, con
     if (need_len != data_len)
     {
         RUN_LOG_ERR("connection %x message length error: need_len %u, recv_len %u", connection, need_len, data_len);
-        return(false);
+        return false;
     }
 
     data += 2;
@@ -284,5 +284,5 @@ bool TestService::check_message(Stupid::Net::TcpConnectionBase * connection, con
         m_connections[connection] = count;
     }
 
-    return(true);
+    return true;
 }

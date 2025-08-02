@@ -21,7 +21,7 @@ static thread_return_t STUPID_STDCALL thread_run(thread_argument_t argument)
     TEST_THREAD * test = reinterpret_cast<TEST_THREAD *>(argument);
     if (nullptr == test || nullptr == test->thread)
     {
-        return(THREAD_DEFAULT_RET);
+        return THREAD_DEFAULT_RET;
     }
 
     void * thread_specific_value = nullptr;
@@ -56,7 +56,7 @@ static thread_return_t STUPID_STDCALL thread_run(thread_argument_t argument)
         printf("[%s] end\n", test->thread->thread_name().c_str());
     }
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 void test_base_thread_local_storage(void)

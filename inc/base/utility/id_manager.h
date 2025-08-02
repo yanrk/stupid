@@ -73,17 +73,17 @@ bool IDManager<IDType, LockerType>::acquire(IDType & id)
     {
         id = m_unused_id.back();
         m_unused_id.pop_back();
-        return(true);
+        return true;
     }
 
     if (m_next_id >= m_max_id)
     {
-        return(false);
+        return false;
     }
 
     id = m_next_id++;
 
-    return(true);
+    return true;
 }
 
 template <typename IDType, typename LockerType>
@@ -93,12 +93,12 @@ bool IDManager<IDType, LockerType>::release(IDType id)
 
     if (id < m_min_id || id >= m_next_id)
     {
-        return(false);
+        return false;
     }
 
     if (m_unused_id.end() != std::find(m_unused_id.begin(), m_unused_id.end(), id))
     {
-        return(false);
+        return false;
     }
 
     if (id + 1 == m_next_id)
@@ -125,7 +125,7 @@ bool IDManager<IDType, LockerType>::release(IDType id)
     }
     m_unused_id.erase(m_unused_id.begin(), iter);
 
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_BASE_END

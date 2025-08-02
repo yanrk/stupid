@@ -23,20 +23,20 @@ NAMESPACE_STUPID_BASE_BEGIN
 size_t get_pid()
 {
 #ifdef _MSC_VER
-    return(static_cast<size_t>(GetCurrentProcessId()));
+    return static_cast<size_t>(GetCurrentProcessId());
 #else
-    return(static_cast<size_t>(getpid()));
+    return static_cast<size_t>(getpid());
 #endif // _MSC_VER
 }
 
 size_t get_tid()
 {
 #ifdef _MSC_VER
-    return(static_cast<size_t>(GetCurrentThreadId()));
+    return static_cast<size_t>(GetCurrentThreadId());
 #elif defined(_MAC_OS)
-    return(reinterpret_cast<size_t>(pthread_self()));
+    return reinterpret_cast<size_t>(pthread_self());
 #else
-    return(static_cast<size_t>(pthread_self()));
+    return static_cast<size_t>(pthread_self());
 #endif // _MSC_VER
 }
 

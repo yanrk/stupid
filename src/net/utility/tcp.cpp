@@ -33,7 +33,7 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
     if (nullptr == host || nullptr == service)
     {
         DBG_LOG("tcp_listen failed: nullptr");
-        return(false);
+        return false;
     }
 
     if (0 == strcmp(host, "127.0.0.1"))
@@ -51,7 +51,7 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
     if (0 != getaddrinfo(host, service, &addr_temp, &addr_info))
     {
         RUN_LOG_ERR("getaddrinfo failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     bool ret = false;
@@ -102,7 +102,7 @@ bool tcp_listen(const char * host, const char * service, socket_t & listener, in
 
     freeaddrinfo(addr_dup);
 
-    return(ret);
+    return ret;
 }
 
 bool tcp_listen(unsigned short port, socket_t & listener, int backlog)
@@ -112,9 +112,9 @@ bool tcp_listen(unsigned short port, socket_t & listener, int backlog)
     {
         RUN_LOG_ERR("transform_address failed");
         listener = BAD_SOCKET;
-        return(false);
+        return false;
     }
-    return(tcp_listen(address, listener, backlog));
+    return tcp_listen(address, listener, backlog);
 }
 
 bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
@@ -125,7 +125,7 @@ bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
     if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     do
@@ -152,12 +152,12 @@ bool tcp_listen(const sockaddr_in_t & address, socket_t & listener, int backlog)
 
         listener = sock;
 
-        return(true);
+        return true;
     } while (false);
 
     tcp_close(sock);
 
-    return(false);
+    return false;
 }
 
 bool tcp_connect(const char * host, const char * service, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
@@ -167,7 +167,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
     if (nullptr == host || nullptr == service)
     {
         DBG_LOG("tcp_connect failed: nullptr");
-        return(false);
+        return false;
     }
 
     sockaddr_in_t bind_address;
@@ -180,7 +180,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
         if (!transform_address(bind_ip, bind_port, bind_address))
         {
             RUN_LOG_ERR("transform_address failed");
-            return(false);
+            return false;
         }
     }
 
@@ -193,7 +193,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
     if (0 != getaddrinfo(host, service, &addr_temp, &addr_info))
     {
         RUN_LOG_ERR("getaddrinfo failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     bool ret = false;
@@ -242,7 +242,7 @@ bool tcp_connect(const char * host, const char * service, socket_t & connecter, 
 
     freeaddrinfo(addr_dup);
 
-    return(ret);
+    return ret;
 }
 
 bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
@@ -252,9 +252,9 @@ bool tcp_connect(const char * ip, unsigned short port, socket_t & connecter, con
     {
         RUN_LOG_ERR("transform_address failed");
         connecter = BAD_SOCKET;
-        return(false);
+        return false;
     }
-    return(tcp_connect(address, connecter, bind_ip, bind_port));
+    return tcp_connect(address, connecter, bind_ip, bind_port);
 }
 
 bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char * bind_ip, unsigned short bind_port)
@@ -265,7 +265,7 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
     if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     if (0 != bind_port)
@@ -279,7 +279,7 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
         {
             RUN_LOG_ERR("transform_address failed");
             tcp_close(sock);
-            return(false);
+            return false;
         }
 
         const int reuse_addr_on = 1;
@@ -288,14 +288,14 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
         {
             RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
             tcp_close(sock);
-            return(false);
+            return false;
         }
 
         if (bind(sock, reinterpret_cast<sockaddr_t *>(&bind_address), sizeof(bind_address)) < 0)
         {
             RUN_LOG_ERR("bind failed: %d", stupid_net_error());
             tcp_close(sock);
-            return(false);
+            return false;
         }
     }
 
@@ -303,12 +303,12 @@ bool tcp_connect(const sockaddr_in_t & address, socket_t & connecter, const char
     {
         RUN_LOG_ERR("connect failed: %d", stupid_net_error());
         tcp_close(sock);
-        return(false);
+        return false;
     }
 
     connecter = sock;
 
-    return(true);
+    return true;
 }
 
 bool tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address, sockaddr_len_t * addr_len)
@@ -326,7 +326,7 @@ bool tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address,
         {
             RUN_LOG_ERR("tcp_accept failed: %d", stupid_net_error());
         }
-        return(false);
+        return false;
     }
 
     if (nullptr != address)
@@ -346,18 +346,18 @@ bool tcp_accept(socket_t listener, socket_t & accepter, sockaddr_in_t * address,
     if (flags < 0)
     {
         RUN_LOG_WAR("fcntl(get-%s-flags) failed: %d", "cloexec", stupid_net_error());
-        return(true);
+        return true;
     }
     flags |= FD_CLOEXEC;
     int ret = fcntl(sock, F_SETFD, flags);
     if (ret < 0)
     {
         RUN_LOG_WAR("fcntl(set-%s-flags) failed: %d", "cloexec", stupid_net_error());
-        return(true);
+        return true;
     }
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 bool tcp_socket(socket_t & sock)
@@ -366,9 +366,9 @@ bool tcp_socket(socket_t & sock)
     if (BAD_SOCKET == sock)
     {
         RUN_LOG_ERR("socket failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_close(socket_t & sock)
@@ -381,11 +381,11 @@ bool tcp_close(socket_t & sock)
             {
                 RUN_LOG_ERR("close failed: %d", stupid_net_error());
             }
-            return(false);
+            return false;
         }
         sock = BAD_SOCKET;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_set_block_switch(socket_t sock, bool blocking)
@@ -396,15 +396,15 @@ bool tcp_set_block_switch(socket_t sock, bool blocking)
     if (ret < 0)
     {
         RUN_LOG_ERR("ioctlsocket(%s) failed: %d", (blocking ? "blocking" : "non-blocking"), stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 #else
     int flags = fcntl(sock, F_GETFL, 0);
     if (flags < 0)
     {
         RUN_LOG_ERR("fcntl(get-%s-flags) failed: %d", (blocking ? "blocking" : "non-blocking"), stupid_net_error());
-        return(false);
+        return false;
     }
     if (blocking)
     {
@@ -418,9 +418,9 @@ bool tcp_set_block_switch(socket_t sock, bool blocking)
     if (ret < 0)
     {
         RUN_LOG_ERR("fcntl(set-%s-flags) failed: %d", (blocking ? "blocking" : "non-blocking"), stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 #endif // _MSC_VER
 }
 
@@ -431,9 +431,9 @@ bool tcp_set_reuse_switch(socket_t sock, bool reuse_address)
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(reuse-addr) failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_set_linger_switch(socket_t sock, bool forced_to_close, size_t wait_seconds)
@@ -449,9 +449,9 @@ bool tcp_set_linger_switch(socket_t sock, bool forced_to_close, size_t wait_seco
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(linger) failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_set_send_timeout(socket_t sock, size_t send_timeout_ms)
@@ -465,9 +465,9 @@ bool tcp_set_send_timeout(socket_t sock, size_t send_timeout_ms)
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(send-timeout) failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms)
@@ -481,9 +481,9 @@ bool tcp_set_recv_timeout(socket_t sock, size_t recv_timeout_ms)
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(recv-timeout) failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
@@ -493,9 +493,9 @@ bool tcp_set_send_buffer_size(socket_t sock, size_t send_buffsiz)
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(send-buf) failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_set_recv_buffer_size(socket_t sock, size_t recv_buffsiz)
@@ -505,9 +505,9 @@ bool tcp_set_recv_buffer_size(socket_t sock, size_t recv_buffsiz)
     if (ret < 0)
     {
         RUN_LOG_ERR("setsockopt(recv-buf) failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 bool tcp_send_complete(socket_t sock, const char * data, size_t data_len)
@@ -515,7 +515,7 @@ bool tcp_send_complete(socket_t sock, const char * data, size_t data_len)
     if (nullptr == data)
     {
         DBG_LOG("tcp_send_complete failed: nullptr");
-        return(false);
+        return false;
     }
 
     while (data_len > 0)
@@ -530,7 +530,7 @@ bool tcp_send_complete(socket_t sock, const char * data, size_t data_len)
             else
             {
                 RUN_LOG_TRK("tcp_send_complete failed: %d", stupid_net_error()); /* DBG_LOG */
-                return(false);
+                return false;
             }
         }
         else
@@ -539,7 +539,7 @@ bool tcp_send_complete(socket_t sock, const char * data, size_t data_len)
             data_len -= send_len;
         }
     }
-    return(true);
+    return true;
 }
 
 bool tcp_recv_complete(socket_t sock, char * buff, size_t need_len)
@@ -547,7 +547,7 @@ bool tcp_recv_complete(socket_t sock, char * buff, size_t need_len)
     if (nullptr == buff)
     {
         DBG_LOG("tcp_recv_complete failed: nullptr");
-        return(false);
+        return false;
     }
 
     while (need_len > 0)
@@ -562,13 +562,13 @@ bool tcp_recv_complete(socket_t sock, char * buff, size_t need_len)
             else
             {
                 RUN_LOG_TRK("tcp_recv_complete failed: %d", stupid_net_error()); /* DBG_LOG */
-                return(false);
+                return false;
             }
         }
         else if (0 == recv_len)
         {
             RUN_LOG_TRK("tcp_recv_complete failed: remote close"); /* DBG_LOG */
-            return(false);
+            return false;
         }
         else
         {
@@ -576,7 +576,7 @@ bool tcp_recv_complete(socket_t sock, char * buff, size_t need_len)
             need_len -= recv_len;
         }
     }
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_NET_END

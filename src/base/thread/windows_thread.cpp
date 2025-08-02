@@ -25,12 +25,12 @@ bool stupid_create_detached_thread(thread_func_ptr_t func, thread_argument_t arg
     HANDLE thread_handle = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, func, argu, 0, nullptr));
     if (nullptr == thread_handle)
     {
-        return(false);
+        return false;
     }
     else
     {
         CloseHandle(thread_handle);
-        return(true);
+        return true;
     }
 }
 
@@ -55,7 +55,7 @@ bool WindowsJoinThread::acquire()
     Guard<ThreadLocker> thread_guard(m_locker);
     if (m_running || nullptr == m_func)
     {
-        return(false);
+        return false;
     }
     m_running = true;
 
@@ -63,11 +63,11 @@ bool WindowsJoinThread::acquire()
     if (nullptr == m_thread)
     {
         m_running = false;
-        return(false);
+        return false;
     }
     else
     {
-        return(true);
+        return true;
     }
 }
 
@@ -97,17 +97,17 @@ void WindowsJoinThread::set_thread_args(thread_func_ptr_t func, void * argument,
 
 bool WindowsJoinThread::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 size_t WindowsJoinThread::thread_id() const
 {
-    return(static_cast<size_t>(GetCurrentThreadId()));
+    return static_cast<size_t>(GetCurrentThreadId());
 }
 
 std::string WindowsJoinThread::thread_name()
 {
-    return(m_name);
+    return m_name;
 }
 
 NAMESPACE_STUPID_BASE_END

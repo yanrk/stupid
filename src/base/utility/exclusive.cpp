@@ -30,7 +30,7 @@ static bool exclusive_init(const char * exclusive_unique_name, size_t & unique_i
     if (nullptr == exclusive_unique_name)
     {
         RUN_LOG_ERR("exclusive_unique_name is nullptr");
-        return(false);
+        return false;
     }
 
 #ifdef _MSC_VER
@@ -58,12 +58,12 @@ static bool exclusive_init(const char * exclusive_unique_name, size_t & unique_i
         {
             ::CloseHandle(mutex);
         }
-        return(false);
+        return false;
     }
     else if (nullptr == mutex)
     {
         RUN_LOG_ERR("create mutex %s failed: %d", exclusive_file.c_str(), stupid_system_error());
-        return(false);
+        return false;
     }
 
     unique_id = reinterpret_cast<size_t>(mutex);
@@ -96,7 +96,7 @@ static bool exclusive_init(const char * exclusive_unique_name, size_t & unique_i
     if (fd < 0)
     {
         RUN_LOG_ERR("open %s failed: %d", exclusive_file.c_str(), stupid_system_error());
-        return(false);
+        return false;
     }
 
     struct flock locker;
@@ -115,7 +115,7 @@ static bool exclusive_init(const char * exclusive_unique_name, size_t & unique_i
             RUN_LOG_ERR("lock %s failed: %d", exclusive_file.c_str(), stupid_system_error());
         }
         ::close(fd);
-        return(false);
+        return false;
     }
 
     std::string pid;
@@ -138,7 +138,7 @@ static bool exclusive_init(const char * exclusive_unique_name, size_t & unique_i
     unique_id = static_cast<size_t>(fd);
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 static void exclusive_exit(size_t & unique_id)
@@ -184,7 +184,7 @@ static bool exclusive_is_exist(const char * exclusive_unique_name, bool global_e
         ::CloseHandle(mutex);
     }
 
-    return(is_exist);
+    return is_exist;
 #else
     std::string exclusive_file;
     {
@@ -211,7 +211,7 @@ static bool exclusive_is_exist(const char * exclusive_unique_name, bool global_e
     int fd = ::open(exclusive_file.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0)
     {
-        return(false);
+        return false;
     }
 
     bool is_exist = false;
@@ -227,7 +227,7 @@ static bool exclusive_is_exist(const char * exclusive_unique_name, bool global_e
 
     ::close(fd);
 
-    return(is_exist);
+    return is_exist;
 #endif // _MSC_VER
 }
 
@@ -255,12 +255,12 @@ bool MutexApplication::exclusive(const char * exclusive_unique_name, bool global
     {
         m_exclusive = exclusive_init(exclusive_unique_name, m_unique_id, global_exclusive);
     }
-    return(m_exclusive);
+    return m_exclusive;
 }
 
 bool mutex_application_is_exist(const char * exclusive_unique_name, bool global_exclusive)
 {
-    return(exclusive_is_exist(exclusive_unique_name, global_exclusive));
+    return exclusive_is_exist(exclusive_unique_name, global_exclusive);
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -69,7 +69,7 @@ void CounterImpl::decrease()
 
 size_t CounterImpl::references() const
 {
-    return(m_count);
+    return m_count;
 }
 
 Counter::Counter(size_t count)
@@ -109,18 +109,18 @@ void Counter::decrease()
 
 bool Counter::valid() const
 {
-    return(nullptr != m_counter);
+    return nullptr != m_counter;
 }
 
 size_t Counter::references() const
 {
     if (nullptr != m_counter)
     {
-        return(m_counter->references());
+        return m_counter->references();
     }
     else
     {
-        return(~static_cast<size_t>(0));
+        return ~static_cast<size_t>(0);
     }
 }
 

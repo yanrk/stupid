@@ -31,7 +31,7 @@ bool stupid_string_to_type(const std::string & str, T & val)
     std::istringstream iss(str);
     iss.setf(std::ios::boolalpha);
     iss >> val;
-    return(!iss.fail());
+    return !iss.fail();
 }
 
 template <typename T>
@@ -45,7 +45,7 @@ bool stupid_type_to_string(T val, std::string & str)
     oss.setf(std::ios::boolalpha);
     oss << val;
     str = oss.str();
-    return(true);
+    return true;
 }
 
 template <typename T>
@@ -67,7 +67,7 @@ bool stupid_string_to_type(const std::list<std::string> & str_list, std::list<T>
             ret = false;
         }
     }
-    return(ret);
+    return ret;
 }
 
 template <typename T>
@@ -86,7 +86,7 @@ bool stupid_type_to_string(const std::list<T> & val_list, std::list<std::string>
             ret = false;
         }
     }
-    return(ret);
+    return ret;
 }
 
 template <typename IteratorAll, typename IteratorPart>
@@ -96,11 +96,11 @@ bool stupid_includes(IteratorAll first1, IteratorAll last1, IteratorPart first2,
     {
         if (last1 == std::find(first1, last1, *first2))
         {
-            return(false);
+            return false;
         }
         ++first2;
     }
-    return(true);
+    return true;
 }
 
 template <typename StringIterator>
@@ -142,7 +142,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
 {
     if (nullptr == command_line)
     {
-        return(false);
+        return false;
     }
 
     if (nullptr == delimiter_set || '\0' == delimiter_set[0])
@@ -221,7 +221,7 @@ bool stupid_split_command_line(const char * command_line, StringSequence & resul
         first = last;
     }
 
-    return(true);
+    return true;
 }
 
 STUPID_CXX_API(size_t) stupid_vsnprintf(char * buffer, size_t bufsiz, const char * fmt, va_list args);

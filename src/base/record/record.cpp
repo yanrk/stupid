@@ -44,7 +44,7 @@ bool Record::init(const std::string & record_root_directory)
 {
     if (m_is_running)
     {
-        return(true);
+        return true;
     }
 
     m_success_dirname = record_root_directory + "/success_record/";
@@ -65,16 +65,16 @@ bool Record::init(const std::string & record_root_directory)
 
     if (!m_success_file.open(m_success_filename.c_str(), true, false))
     {
-        return(false);
+        return false;
     }
     if (!m_failure_file.open(m_failure_filename.c_str(), true, false))
     {
-        return(false);
+        return false;
     }
 
     m_is_running = true;
 
-    return(true);
+    return true;
 }
 
 void Record::exit()
@@ -89,7 +89,7 @@ void Record::exit()
 
 bool Record::running() const
 {
-    return(m_is_running);
+    return m_is_running;
 }
 
 void Record::write(const char * data, size_t size, bool success_record)

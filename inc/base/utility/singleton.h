@@ -25,7 +25,7 @@ public:
     {
         static T obj;
         creator.do_nothing();
-        return(obj);
+        return obj;
     }
 
 private:

@@ -82,7 +82,7 @@ static thread_return_t STUPID_STDCALL server_thread_run_1(thread_argument_t)
     printf("server thread end\n");
     s_stdout_locker.release();
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 static thread_return_t STUPID_STDCALL client_thread_run_1(thread_argument_t)
@@ -143,7 +143,7 @@ static thread_return_t STUPID_STDCALL client_thread_run_1(thread_argument_t)
     printf("client thread end\n");
     s_stdout_locker.release();
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 static thread_return_t STUPID_STDCALL server_thread_run_2(thread_argument_t)
@@ -208,7 +208,7 @@ static thread_return_t STUPID_STDCALL server_thread_run_2(thread_argument_t)
     printf("server thread end\n");
     s_stdout_locker.release();
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 static thread_return_t STUPID_STDCALL client_thread_run_2(thread_argument_t)
@@ -267,7 +267,7 @@ static thread_return_t STUPID_STDCALL client_thread_run_2(thread_argument_t)
     printf("client thread end\n");
     s_stdout_locker.release();
 
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 static void test_net_tcp_1(void)

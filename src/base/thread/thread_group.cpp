@@ -29,7 +29,7 @@ ThreadGroup::~ThreadGroup()
 size_t ThreadGroup::size()
 {
     Guard<ThreadLocker> thread_guard(m_thread_locker);
-    return(m_thread_list.size());
+    return m_thread_list.size();
 }
 
 bool ThreadGroup::acquire_thread(thread_func_ptr_t func, void * param, const char * name)
@@ -49,7 +49,7 @@ bool ThreadGroup::acquire_thread(thread_func_ptr_t func, void * param, const cha
             STUPID_DEL(thread);
         }
     }
-    return(nullptr != thread);
+    return nullptr != thread;
 }
 
 void ThreadGroup::release_threads()

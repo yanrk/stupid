@@ -53,24 +53,24 @@ FuncPtr Library::get(const char * function_name)
     if (nullptr == m_library)
     {
         m_what = "library is uninitialized";
-        return(nullptr);
+        return nullptr;
     }
 
     if (nullptr == function_name)
     {
         m_what = "function name is nullptr";
-        return(nullptr);
+        return nullptr;
     }
 
     void * func_ptr = stupid_library_symbol(m_library, function_name);
     if (nullptr == func_ptr)
     {
         m_what = stupid_library_error();
-        return(nullptr);
+        return nullptr;
     }
 
     m_what.clear();
-    return(reinterpret_cast<FuncPtr>(func_ptr));
+    return reinterpret_cast<FuncPtr>(func_ptr);
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -3,5 +3,5 @@
 int main(int argc, char * argv[])
 {
     test_net_tcp();
-    return(0);
+    return 0;
 }

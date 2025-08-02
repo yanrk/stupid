@@ -17,7 +17,7 @@ struct legit_bcd_encode_element
 {
     bool operator() (char ele) const
     {
-        return(ele >= '0' && ele <= '9');
+        return ele >= '0' && ele <= '9';
     }
 };
 
@@ -27,7 +27,7 @@ struct legit_bcd_decode_element
     {
         unsigned char hig = (ele & 0xF0);
         unsigned char low = (ele & 0x0F);
-        return(hig <= 0x90 && low <= 0x09);
+        return hig <= 0x90 && low <= 0x09;
     }
 };
 
@@ -39,17 +39,17 @@ bool bcd_encode(const char * src, size_t src_len, unsigned char * dst, size_t ds
 
     if (nullptr == src || nullptr == dst || BCD_ENCODE_SIZE(src_len) > dst_siz)
     {
-        return(false);
+        return false;
     }
 
     if (0 == src_len)
     {
-        return(true);
+        return true;
     }
 
     if (src + src_len != std::find_if_not(src, src + src_len, legit_bcd_encode_element()))
     {
-        return(false);
+        return false;
     }
 
     if (1 == src_len % 2)
@@ -70,7 +70,7 @@ bool bcd_encode(const char * src, size_t src_len, unsigned char * dst, size_t ds
         dst_len += 1;
     }
 
-    return(true);
+    return true;
 }
 
 bool bcd_encode(const char * src, unsigned char * dst, size_t dst_siz, size_t & dst_len)
@@ -78,9 +78,9 @@ bool bcd_encode(const char * src, unsigned char * dst, size_t dst_siz, size_t & 
     if (nullptr == src)
     {
         dst_len = 0;
-        return(false);
+        return false;
     }
-    return(bcd_encode(src, strlen(src), dst, dst_siz, dst_len));
+    return bcd_encode(src, strlen(src), dst, dst_siz, dst_len);
 }
 
 bool bcd_decode(const unsigned char * src, size_t src_len, char * dst, size_t dst_siz, size_t & dst_len)
@@ -89,23 +89,23 @@ bool bcd_decode(const unsigned char * src, size_t src_len, char * dst, size_t ds
 
     if (nullptr == src || nullptr == dst)
     {
-        return(false);
+        return false;
     }
 
     if ((BCD_DECODE_SIZE(src_len) - 1 > dst_siz) || (src[0] >= 0x10 && BCD_DECODE_SIZE(src_len) > dst_siz))
     {
-        return(false);
+        return false;
     }
 
     if (0 == src_len)
     {
         dst[0] = '\0';
-        return(true);
+        return true;
     }
 
     if (src + src_len != std::find_if_not(src, src + src_len, legit_bcd_decode_element()))
     {
-        return(false);
+        return false;
     }
 
     if (src[0] < 0x10)
@@ -129,13 +129,13 @@ bool bcd_decode(const unsigned char * src, size_t src_len, char * dst, size_t ds
 
     dst[0] = '\0';
 
-    return(true);
+    return true;
 }
 
 bool bcd_decode(const unsigned char * src, size_t src_len, char * dst, size_t dst_siz)
 {
     size_t dst_len = 0;
-    return(bcd_decode(src, src_len, dst, dst_siz, dst_len));
+    return bcd_decode(src, src_len, dst, dst_siz, dst_len);
 }
 
 NAMESPACE_STUPID_BASE_END

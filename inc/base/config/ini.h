@@ -93,9 +93,9 @@ bool Ini::get_value(const std::string & app_name, const std::string & key_name, 
     std::string str_value;
     if (!get_value(app_name, key_name, str_value))
     {
-        return(false);
+        return false;
     }
-    return(stupid_string_to_type(str_value, key_value));
+    return stupid_string_to_type(str_value, key_value);
 }
 
 template <typename T>
@@ -104,9 +104,9 @@ bool Ini::set_value(const std::string & app_name, const std::string & key_name, 
     std::string str_value;
     if (!stupid_type_to_string(key_value, str_value))
     {
-        return(false);
+        return false;
     }
-    return(set_value(app_name, key_name, str_value));
+    return set_value(app_name, key_name, str_value);
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -37,12 +37,12 @@ bool TcpManager::set_service(TcpServiceBase * service)
 {
     if (nullptr == service || m_running)
     {
-        return(false);
+        return false;
     }
     else
     {
         m_service = service;
-        return(true);
+        return true;
     }
 }
 
@@ -51,32 +51,32 @@ bool TcpManager::init(size_t event_thread_count, size_t handle_thread_count, uns
     if (m_running)
     {
         RUN_LOG_CRI("tcp manager has started");
-        return(false);
+        return false;
     }
 
     if (nullptr == m_xactor)
     {
         RUN_LOG_CRI("new tcp xactor failed: %d", stupid_system_error());
-        return(false);
+        return false;
     }
 
     if (nullptr == m_service)
     {
         RUN_LOG_CRI("service is not configured");
-        return(false);
+        return false;
     }
 
     if (!m_xactor->init(this, event_thread_count, handle_thread_count, service_port, service_port_count))
     {
         RUN_LOG_CRI("init tcp xactor failed");
-        return(false);
+        return false;
     }
 
     m_running = true;
 
     RUN_LOG_DBG("init tcp manager success");
 
-    return(true);
+    return true;
 }
 
 void TcpManager::exit()
@@ -97,34 +97,34 @@ bool TcpManager::create_connection(const sockaddr_in_t & server_address, size_t 
 {
     if (!m_running)
     {
-        return(false);
+        return false;
     }
-    return(m_xactor->create_connection(server_address, identity, bind_ip, bind_port));
+    return m_xactor->create_connection(server_address, identity, bind_ip, bind_port);
 }
 
 bool TcpManager::handle_connect(TcpConnectionBase * connection, size_t identity)
 {
-    return(m_service->on_connect(connection, identity));
+    return m_service->on_connect(connection, identity);
 }
 
 bool TcpManager::handle_accept(TcpConnectionBase * connection, unsigned short listener_port)
 {
-    return(m_service->on_accept(connection, listener_port));
+    return m_service->on_accept(connection, listener_port);
 }
 
 bool TcpManager::handle_recv(TcpConnectionBase * connection)
 {
-    return(m_service->on_recv(connection));
+    return m_service->on_recv(connection);
 }
 
 bool TcpManager::handle_send(TcpConnectionBase * connection)
 {
-    return(m_service->on_send(connection));
+    return m_service->on_send(connection);
 }
 
 bool TcpManager::handle_close(TcpConnectionBase * connection)
 {
-    return(m_service->on_close(connection));
+    return m_service->on_close(connection);
 }
 
 NAMESPACE_STUPID_NET_END

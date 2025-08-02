@@ -52,7 +52,7 @@ Exception::Exception(const char * file, int line, const char * func, const char 
 
 const std::string & Exception::what() const
 {
-    return(m_message);
+    return m_message;
 }
 
 NAMESPACE_STUPID_BASE_END

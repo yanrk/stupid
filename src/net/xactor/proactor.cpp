@@ -44,7 +44,7 @@ thread_return_t STUPID_STDCALL connection_thread_process(thread_argument_t param
         thread_param->tcp_xactor.proactor_connection_process(thread_param->thread_index);
         STUPID_DEL(thread_param);
     }
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 thread_return_t STUPID_STDCALL business_thread_process(thread_argument_t param)
@@ -55,7 +55,7 @@ thread_return_t STUPID_STDCALL business_thread_process(thread_argument_t param)
         thread_param->tcp_xactor.proactor_business_process(thread_param->thread_index);
         STUPID_DEL(thread_param);
     }
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 static LPFN_ACCEPTEX               AcceptExFunc = nullptr;
@@ -67,7 +67,7 @@ static bool get_extern_function_pointer(socket_t sockfd, GUID & guid, LPVOID out
     LPVOID input_buf = &guid;
     DWORD  input_siz = sizeof(guid);
     DWORD  output_len = 0;
-    return(SOCKET_ERROR != WSAIoctl(sockfd, control_code, input_buf, input_siz, output_buf, output_siz, &output_len, nullptr, nullptr));
+    return SOCKET_ERROR != WSAIoctl(sockfd, control_code, input_buf, input_siz, output_buf, output_siz, &output_len, nullptr, nullptr);
 }
 
 static bool get_extern_wsa_functions(socket_t sockfd)
@@ -78,7 +78,7 @@ static bool get_extern_wsa_functions(socket_t sockfd)
         if (!get_extern_function_pointer(sockfd, acceptex_guid, &AcceptExFunc, sizeof(AcceptExFunc)))
         {
             RUN_LOG_CRI("get AcceptExFunc failed: %d", stupid_net_error());
-            return(false);
+            return false;
         }
     }
 
@@ -88,11 +88,11 @@ static bool get_extern_wsa_functions(socket_t sockfd)
         if (!get_extern_function_pointer(sockfd, sockaddrs_guid, &GetAcceptExSockAddrsFunc, sizeof(GetAcceptExSockAddrsFunc)))
         {
             RUN_LOG_CRI("get GetAcceptExSockAddrsFunc failed: %d", stupid_net_error());
-            return(false);
+            return false;
         }
     }
 
-    return(nullptr != AcceptExFunc && nullptr != GetAcceptExSockAddrsFunc);
+    return nullptr != AcceptExFunc && nullptr != GetAcceptExSockAddrsFunc;
 }
 
 static bool tcp_async_listen(unsigned short port, socket_t & listener, int backlog)
@@ -101,14 +101,14 @@ static bool tcp_async_listen(unsigned short port, socket_t & listener, int backl
     if (!transform_address("0.0.0.0", port, server_address))
     {
         RUN_LOG_ERR("transform_address failed");
-        return(false);
+        return false;
     }
 
     listener = WSASocket(AF_INET, SOCK_STREAM, 0, nullptr, 0, WSA_FLAG_OVERLAPPED);
     if (BAD_SOCKET == listener)
     {
         RUN_LOG_ERR("WSASocket failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     do
@@ -133,12 +133,12 @@ static bool tcp_async_listen(unsigned short port, socket_t & listener, int backl
             break;
         }
 
-        return(true);
+        return true;
     } while (false);
 
     tcp_close(listener);
 
-    return(false);
+    return false;
 }
 
 enum iocp_event_enum
@@ -189,7 +189,7 @@ bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t han
     if (nullptr == manager)
     {
         RUN_LOG_CRI("tcp manager is nullptr");
-        return(false);
+        return false;
     }
 
     exit();
@@ -206,7 +206,7 @@ bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t han
 
     if (!create_iocp())
     {
-        return(false);
+        return false;
     }
     else
     {
@@ -215,7 +215,7 @@ bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t han
 
     if (!create_listener(service_port, service_port_count))
     {
-        return(false);
+        return false;
     }
     else if (0 != service_port)
     {
@@ -224,7 +224,7 @@ bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t han
 
     if (!acquire_proactor_threads(handle_thread_count))
     {
-        return(false);
+        return false;
     }
     else
     {
@@ -233,7 +233,7 @@ bool TcpXactor::init(TcpManager * manager, size_t event_thread_count, size_t han
 
     RUN_LOG_DBG("init tcp proactor success");
 
-    return(true);
+    return true;
 }
 
 void TcpXactor::exit()
@@ -261,7 +261,7 @@ void TcpXactor::exit()
 
 bool TcpXactor::create_connection(const sockaddr_in_t & server_address, size_t identity, const char * bind_ip, unsigned short bind_port)
 {
-    return(do_connect(server_address, identity, bind_ip, bind_port));
+    return do_connect(server_address, identity, bind_ip, bind_port);
 }
 
 void TcpXactor::connection_send(TcpConnection * connection)
@@ -330,7 +330,7 @@ void TcpXactor::close_connection(TcpConnection * connection)
 
 bool TcpXactor::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 void TcpXactor::calc_event_thread_count(size_t & event_thread_count)
@@ -344,7 +344,7 @@ bool TcpXactor::create_listener(unsigned short * service_port, size_t service_po
 {
     if (nullptr == service_port || 0 == service_port_count)
     {
-        return(true);
+        return true;
     }
 
     for (size_t service_port_index = 0; service_port_index < service_port_count; ++service_port_index)
@@ -359,14 +359,14 @@ bool TcpXactor::create_listener(unsigned short * service_port, size_t service_po
         if (nullptr == connection)
         {
             RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
-            return(false);
+            return false;
         }
 
         socket_t listener = BAD_SOCKET;
         if (!tcp_async_listen(port, listener, SOMAXCONN))
         {
             release_connection(connection);
-            return(false);
+            return false;
         }
 
         tcp_set_block_switch(listener, false);
@@ -376,7 +376,7 @@ bool TcpXactor::create_listener(unsigned short * service_port, size_t service_po
         if (!get_extern_wsa_functions(listener))
         {
             release_connection(connection);
-            return(false);
+            return false;
         }
 
         insert_connection(connection);
@@ -384,7 +384,7 @@ bool TcpXactor::create_listener(unsigned short * service_port, size_t service_po
         if (!append_connection_to_iocp(connection))
         {
             remove_connection(connection);
-            return(false);
+            return false;
         }
 
         m_listeners.push_back(connection);
@@ -395,7 +395,7 @@ bool TcpXactor::create_listener(unsigned short * service_port, size_t service_po
             if (nullptr == connection)
             {
                 RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
-                return(false);
+                return false;
             }
 
             connection->set_listener(listener);
@@ -405,14 +405,14 @@ bool TcpXactor::create_listener(unsigned short * service_port, size_t service_po
             {
                 RUN_LOG_ERR("post_accept failed");
                 release_connection(connection);
-                return(false);
+                return false;
             }
 
             insert_connection(connection);
         }
     }
 
-    return(true);
+    return true;
 }
 
 void TcpXactor::destroy_listener()
@@ -432,9 +432,9 @@ bool TcpXactor::create_iocp()
     if (nullptr == m_iocp)
     {
         RUN_LOG_CRI("create iocp failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
-    return(true);
+    return true;
 }
 
 void TcpXactor::destroy_iocp()
@@ -451,13 +451,13 @@ bool TcpXactor::append_connection_to_iocp(TcpConnection * connection)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     if (m_binded_connection_set.end() != m_binded_connection_set.find(connection))
     {
-        return(false);
+        return false;
     }
 
     if (nullptr == CreateIoCompletionPort(reinterpret_cast<HANDLE>(connection->get_socket()), m_iocp, reinterpret_cast<ULONG_PTR>(connection), 0))
     {
         RUN_LOG_CRI("append connection to iocp failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     size_t unique_value = 0;
@@ -468,7 +468,7 @@ bool TcpXactor::append_connection_to_iocp(TcpConnection * connection)
 
     m_binded_connection_set.insert(connection);
 
-    return(true);
+    return true;
 }
 
 bool TcpXactor::delete_connection_from_iocp(TcpConnection * connection)
@@ -476,7 +476,7 @@ bool TcpXactor::delete_connection_from_iocp(TcpConnection * connection)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> binded_connection_set_guard(m_binded_connection_set_locker);
     if (m_binded_connection_set.end() == m_binded_connection_set.find(connection))
     {
-        return(false);
+        return false;
     }
 
     m_unique_creator.release(connection->get_unique());
@@ -485,7 +485,7 @@ bool TcpXactor::delete_connection_from_iocp(TcpConnection * connection)
 
     connection->decrease_reference();
 
-    return(true);
+    return true;
 }
 
 bool TcpXactor::post_accept(iocp_event * post_event)
@@ -494,7 +494,7 @@ bool TcpXactor::post_accept(iocp_event * post_event)
     if (INVALID_SOCKET == accepter)
     {
         RUN_LOG_ERR("WSASocket failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     socket_t sockfd = post_event->connection->get_socket();
@@ -513,11 +513,11 @@ bool TcpXactor::post_accept(iocp_event * post_event)
         if (WSA_IO_PENDING != stupid_net_error())
         {
             RUN_LOG_ERR("AcceptEx failed: %d", stupid_net_error());
-            return(false);
+            return false;
         }
     }
 
-    return(true);
+    return true;
 }
 
 bool TcpXactor::post_recv(iocp_event * post_event)
@@ -532,11 +532,11 @@ bool TcpXactor::post_recv(iocp_event * post_event)
         if (WSA_IO_PENDING != stupid_net_error())
         {
             RUN_LOG_ERR("WSARecv failed: %d", stupid_net_error());
-            return(false);
+            return false;
         }
     }
 
-    return(true);
+    return true;
 }
 
 bool TcpXactor::post_send(iocp_event * post_event)
@@ -551,11 +551,11 @@ bool TcpXactor::post_send(iocp_event * post_event)
         if (WSA_IO_PENDING != stupid_net_error())
         {
             RUN_LOG_ERR("WSASend failed: %d", stupid_net_error());
-            return(false);
+            return false;
         }
     }
 
-    return(true);
+    return true;
 }
 
 void TcpXactor::post_exit()
@@ -574,7 +574,7 @@ bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity
     socket_t connecter = BAD_SOCKET;
     if (!tcp_connect(server_address, connecter, bind_ip, bind_port))
     {
-        return(false);
+        return false;
     }
 
     tcp_set_block_switch(connecter, false);
@@ -584,7 +584,7 @@ bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity
     {
         RUN_LOG_ERR("acquire connection failed: %d", stupid_system_error());
         tcp_close(connecter);
-        return(false);
+        return false;
     }
 
     connection->set_socket(connecter);
@@ -600,7 +600,7 @@ bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity
     if (!append_connection_to_iocp(connection))
     {
         remove_connection(connection);
-        return(false);
+        return false;
     }
 
     BusinessEvent business_event;
@@ -612,7 +612,7 @@ bool TcpXactor::do_connect(const sockaddr_in_t & server_address, size_t identity
     business_event.event = send_notify;
     append_business_event(business_event);
     */
-    return(post_recv(&connection->m_async_recv));
+    return post_recv(&connection->m_async_recv);
 }
 
 bool TcpXactor::do_accept(iocp_event * post_event, size_t data_len)
@@ -691,7 +691,7 @@ bool TcpXactor::do_accept(iocp_event * post_event, size_t data_len)
         }
     } while (false);
 
-    return(post_accept(post_event));
+    return post_accept(post_event);
 }
 
 bool TcpXactor::do_recv(iocp_event * post_event, size_t data_len)
@@ -701,7 +701,7 @@ bool TcpXactor::do_recv(iocp_event * post_event, size_t data_len)
     if (!connection->recv_buffer_fill_len(post_event->buffer, data_len))
     {
         RUN_LOG_TRK("do_recv failed: recv_buffer_fill_len error"); /* RUN_LOG_ERR */
-        return(false);
+        return false;
     }
 
     if (connection->recv_buffer_size() >= connection->recv_buffer_water_mark())
@@ -712,7 +712,7 @@ bool TcpXactor::do_recv(iocp_event * post_event, size_t data_len)
         append_business_event(business_event);
     }
 
-    return(post_recv(post_event));
+    return post_recv(post_event);
 }
 
 bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
@@ -722,7 +722,7 @@ bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
     if (!connection->send_buffer_drop_len(data_len))
     {
         RUN_LOG_TRK("do_send failed: send_buffer_drop_len error"); /* RUN_LOG_ERR */
-        return(false);
+        return false;
     }
 
     if (data_len == post_event->data.len)
@@ -735,7 +735,7 @@ bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
             if (!connection->send_buffer_copy_len(post_event->buffer, send_len))
             {
                 RUN_LOG_TRK("do_send failed: send_buffer_copy_len error"); /* RUN_LOG_ERR */
-                return(false);
+                return false;
             }
         }
         else
@@ -744,7 +744,7 @@ bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
             business_event.connection = connection;
             business_event.event = send_notify;
             append_business_event(business_event);
-            return(!connection->get_eof());
+            return !connection->get_eof();
         }
     }
     else if (data_len < post_event->data.len)
@@ -755,10 +755,10 @@ bool TcpXactor::do_send(iocp_event * post_event, size_t data_len)
     else
     {
         RUN_LOG_TRK("do_send failed"); /* RUN_LOG_ERR */
-        return(false);
+        return false;
     }
 
-    return(post_send(post_event));
+    return post_send(post_event);
 }
 
 void TcpXactor::do_close(TcpConnection * connection)
@@ -768,27 +768,27 @@ void TcpXactor::do_close(TcpConnection * connection)
 
 bool TcpXactor::handle_connect(TcpConnection * connection, size_t identity)
 {
-    return(m_manager->handle_connect(connection, identity));
+    return m_manager->handle_connect(connection, identity);
 }
 
 bool TcpXactor::handle_accept(TcpConnection * connection, unsigned short listener_port)
 {
-    return(m_manager->handle_accept(connection, listener_port));
+    return m_manager->handle_accept(connection, listener_port);
 }
 
 bool TcpXactor::handle_recv(TcpConnection * connection)
 {
-    return(m_manager->handle_recv(connection));
+    return m_manager->handle_recv(connection);
 }
 
 bool TcpXactor::handle_send(TcpConnection * connection)
 {
-    return(m_manager->handle_send(connection));
+    return m_manager->handle_send(connection);
 }
 
 bool TcpXactor::handle_close(TcpConnection * connection)
 {
-    return(m_manager->handle_close(connection));
+    return m_manager->handle_close(connection);
 }
 
 void TcpXactor::handle_error(iocp_event * post_event)
@@ -817,7 +817,7 @@ bool TcpXactor::acquire_proactor_threads(size_t handle_thread_count)
     if (nullptr == m_thread)
     {
         RUN_LOG_CRI("new proactor thread array failed");
-        return(false);
+        return false;
     }
 
     m_business_event_list_vector.resize(business_thread_count);
@@ -842,7 +842,7 @@ bool TcpXactor::acquire_proactor_threads(size_t handle_thread_count)
         if (nullptr == proactor_thread_param)
         {
             RUN_LOG_CRI("new proactor thread param failed");
-            return(false);
+            return false;
         }
 
         Stupid::Base::Thread & proactor_thread = m_thread[m_thread_count];
@@ -851,11 +851,11 @@ bool TcpXactor::acquire_proactor_threads(size_t handle_thread_count)
         {
             RUN_LOG_CRI("create proactor thread failed: %d", stupid_system_error());
             STUPID_DEL(proactor_thread_param);
-            return(false);
+            return false;
         }
     }
 
-    return(true);
+    return true;
 }
 
 void TcpXactor::release_proactor_threads()
@@ -876,7 +876,7 @@ TcpConnection * TcpXactor::acquire_connection()
 {
     TcpConnection * connection = nullptr;
     STUPID_NEW(connection, TcpConnection(*this, m_block_pool));
-    return(connection);
+    return connection;
 }
 
 void TcpXactor::release_connection(TcpConnection *& connection)

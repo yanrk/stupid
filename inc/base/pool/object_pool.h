@@ -95,7 +95,7 @@ ObjectType * ObjectPool<ObjectType, LockerType>::acquire()
         obj = m_objs.front();
         m_objs.pop_front();
     }
-    return(obj);
+    return obj;
 }
 
 template <typename ObjectType, typename LockerType>
@@ -113,7 +113,7 @@ template <typename ObjectType, typename LockerType>
 size_t ObjectPool<ObjectType, LockerType>::size()
 {
     Guard<LockerType> pool_guard(m_locker);
-    return(m_objs.size());
+    return m_objs.size();
 }
 
 template <typename ObjectType, typename LockerType>

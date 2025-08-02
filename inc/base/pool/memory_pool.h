@@ -135,7 +135,7 @@ MemoryNode * MemoryPool<LockerType>::acquire(size_t length)
         {
             MemoryNode * memory_node = memory_node_list.front();
             memory_node_list.pop_front();
-            return(memory_node);
+            return memory_node;
         }
     }
 
@@ -147,7 +147,7 @@ MemoryNode * MemoryPool<LockerType>::acquire(size_t length)
         new (buffer) MemoryNode(index, adjust_size);
         memory_node = reinterpret_cast<MemoryNode *>(buffer);
     }
-    return(memory_node);
+    return memory_node;
 }
 
 template <typename LockerType>

@@ -31,25 +31,25 @@ static bool check_ip_sub_element(const std::string & element)
 {
     if (element.empty() || element.size() > 3)
     {
-        return(false);
+        return false;
     }
     else if ('0' == element[0] && element.size() > 1)
     {
-        return(false);
+        return false;
     }
     else if (element.end() != std::find_if_not(element.begin(), element.end(), isdigit))
     {
-        return(false);
+        return false;
     }
     else
     {
         if (atoi(element.c_str()) > 255)
         {
-            return(false);
+            return false;
         }
         else
         {
-            return(true);
+            return true;
         }
     }
 }
@@ -60,25 +60,25 @@ bool check_ip_format(const char * ip)
 {
     if (nullptr == ip)
     {
-        return(false);
+        return false;
     }
 
     Stupid::Base::StringSplitter splitter(ip, "", ".");
 
     if (4 != splitter.count_bound())
     {
-        return(false);
+        return false;
     }
 
     while (splitter.has_element())
     {
         if (!check_ip_sub_element(splitter.pop_element()))
         {
-            return(false);
+            return false;
         }
     }
 
-    return(true);
+    return true;
 }
 
 bool transform_address(const char * ip, unsigned short port, sockaddr_in_t & address)
@@ -86,13 +86,13 @@ bool transform_address(const char * ip, unsigned short port, sockaddr_in_t & add
     if (!check_ip_format(ip))
     {
         DBG_LOG("transform_address failed: ip is invalid");
-        return(false);
+        return false;
     }
 
     if (!check_port_value(port))
     {
         DBG_LOG("transform_address failed: port is invalid");
-        return(false);
+        return false;
     }
 
     memset(&address, 0x00, sizeof(address));
@@ -104,7 +104,7 @@ bool transform_address(const char * ip, unsigned short port, sockaddr_in_t & add
     inet_aton(ip, &address.sin_addr);
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 bool resolve_address(const char * host, const char * service, bool is_listen, bool is_tcp, std::list<sockaddr_in_t> & address_list)
@@ -112,7 +112,7 @@ bool resolve_address(const char * host, const char * service, bool is_listen, bo
     if (nullptr == host)
     {
         DBG_LOG("resolve_address failed: host is nullptr");
-        return(false);
+        return false;
     }
 
     struct addrinfo addr_temp;
@@ -125,7 +125,7 @@ bool resolve_address(const char * host, const char * service, bool is_listen, bo
     if (0 != getaddrinfo(host, service, &addr_temp, &addr_info))
     {
         RUN_LOG_ERR("getaddrinfo failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 
     struct addrinfo * addr_dup = addr_info;
@@ -144,7 +144,7 @@ bool resolve_address(const char * host, const char * service, bool is_listen, bo
 
     freeaddrinfo(addr_info);
 
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_NET_END

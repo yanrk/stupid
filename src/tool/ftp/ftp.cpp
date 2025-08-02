@@ -73,7 +73,7 @@ static bool ftp_remote_path_is_directory(
     if (nullptr == curl)
     {
         RUN_LOG_ERR("curl_easy_init failed");
-        return(false);
+        return false;
     }
 
     std::string remote_path = ftp_info.m_ftp_url + "/" + ftp_info.m_peer_root_path + "/";
@@ -84,7 +84,7 @@ static bool ftp_remote_path_is_directory(
     CURLcode curl_code = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
-    return(CURLE_OK == curl_code);
+    return CURLE_OK == curl_code;
 }
 
 struct FtpRecvInfo
@@ -104,7 +104,7 @@ static long ftp_recv_chunk_begin_callback(
     if (CURLFILETYPE_DIRECTORY == remote_info->filetype)
     {
         ftp_recv_info->remot_sub_dir_list.push_back(ftp_recv_info->remot_dir_name + "/" + remote_info->filename);
-        return(CURL_CHUNK_BGN_FUNC_SKIP);
+        return CURL_CHUNK_BGN_FUNC_SKIP;
     }
     else
     {
@@ -117,12 +117,12 @@ static long ftp_recv_chunk_begin_callback(
         ftp_recv_info->local_current_ofs.open(file_name.c_str(), std::ios::binary | std::ios::trunc);
         if (ftp_recv_info->local_current_ofs.is_open())
         {
-            return(CURL_CHUNK_BGN_FUNC_OK);
+            return CURL_CHUNK_BGN_FUNC_OK;
         }
         else
         {
             RUN_LOG_ERR("create %s failed", file_name.c_str());
-            return(CURL_CHUNK_BGN_FUNC_FAIL);
+            return CURL_CHUNK_BGN_FUNC_FAIL;
         }
     }
 }
@@ -135,7 +135,7 @@ static long ftp_recv_chunk_end_callback(
     {
         ftp_recv_info->local_current_ofs.close();
     }
-    return(CURL_CHUNK_END_FUNC_OK);
+    return CURL_CHUNK_END_FUNC_OK;
 }
 
 static size_t ftp_recv_data_callback(
@@ -146,7 +146,7 @@ static size_t ftp_recv_data_callback(
     const char * data = reinterpret_cast<char *>(ptr);
     struct FtpRecvInfo * ftp_recv_info = reinterpret_cast<struct FtpRecvInfo *>(user_data);
     ftp_recv_info->local_current_ofs.write(data, recv_len);
-    return(recv_len);
+    return recv_len;
 }
 
 static bool ftp_download_remote_directory(
@@ -157,14 +157,14 @@ static bool ftp_download_remote_directory(
     if (remot_dir_list.empty())
     {
         DBG_LOG("remote directory list is empty");
-        return(false);
+        return false;
     }
 
     CURL * curl = curl_easy_init();
     if (nullptr == curl)
     {
         RUN_LOG_ERR("curl_easy_init failed");
-        return(false);
+        return false;
     }
 
     std::string remot_dir_name = remot_dir_list.front();
@@ -201,7 +201,7 @@ static bool ftp_download_remote_directory(
 
     remot_dir_list.splice(remot_dir_list.end(), ftp_recv_info.remot_sub_dir_list);
 
-    return(ret);
+    return ret;
 }
 
 static bool ftp_download_remote_file(
@@ -217,14 +217,14 @@ static bool ftp_download_remote_file(
     if (!ftp_recv_info.local_current_ofs.is_open())
     {
         RUN_LOG_ERR("create %s failed", file_name.c_str());
-        return(false);
+        return false;
     }
 
     CURL * curl = curl_easy_init();
     if (nullptr == curl)
     {
         RUN_LOG_ERR("curl_easy_init failed");
-        return(false);
+        return false;
     }
 
     std::string download_url(ftp_info.m_ftp_url + "/" + ftp_info.m_peer_root_path);
@@ -246,7 +246,7 @@ static bool ftp_download_remote_file(
     }
     curl_easy_cleanup(curl);
 
-    return(ret);
+    return ret;
 }
 
 bool FtpHelper::download(const FtpInfo & ftp_info)
@@ -260,11 +260,11 @@ bool FtpHelper::download(const FtpInfo & ftp_info)
         {
             ftp_download_remote_directory(ftp_info, remot_dir_list);
         }
-        return(true);
+        return true;
     }
     else
     {
-        return(ftp_download_remote_file(ftp_info));
+        return ftp_download_remote_file(ftp_info);
     }
 }
 

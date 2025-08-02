@@ -97,7 +97,7 @@ void TcpConnection::set_socket(socket_t sockfd)
 
 socket_t TcpConnection::get_socket()
 {
-    return(m_sockfd);
+    return m_sockfd;
 }
 
 void TcpConnection::set_listener(socket_t listener)
@@ -107,7 +107,7 @@ void TcpConnection::set_listener(socket_t listener)
 
 socket_t TcpConnection::get_listener()
 {
-    return(m_listener);
+    return m_listener;
 }
 
 void TcpConnection::set_listener_port(unsigned short listener_port)
@@ -117,7 +117,7 @@ void TcpConnection::set_listener_port(unsigned short listener_port)
 
 unsigned short TcpConnection::get_listener_port()
 {
-    return(m_listener_port);
+    return m_listener_port;
 }
 
 void TcpConnection::set_unique(size_t unique)
@@ -127,7 +127,7 @@ void TcpConnection::set_unique(size_t unique)
 
 size_t TcpConnection::get_unique()
 {
-    return(m_unique);
+    return m_unique;
 }
 
 void TcpConnection::set_connected(bool connected)
@@ -137,7 +137,7 @@ void TcpConnection::set_connected(bool connected)
 
 bool TcpConnection::get_connected()
 {
-    return(m_connected);
+    return m_connected;
 }
 
 void TcpConnection::set_requester(bool requester)
@@ -147,7 +147,7 @@ void TcpConnection::set_requester(bool requester)
 
 bool TcpConnection::get_requester()
 {
-    return(m_requester);
+    return m_requester;
 }
 
 void TcpConnection::set_identity(size_t identity)
@@ -157,7 +157,7 @@ void TcpConnection::set_identity(size_t identity)
 
 size_t TcpConnection::get_identity()
 {
-    return(m_identity);
+    return m_identity;
 }
 
 void TcpConnection::set_eof()
@@ -169,7 +169,7 @@ void TcpConnection::set_eof()
 bool TcpConnection::get_eof()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    return(m_eof);
+    return m_eof;
 }
 
 void TcpConnection::set_error()
@@ -181,7 +181,7 @@ void TcpConnection::set_error()
 bool TcpConnection::get_error()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    return(m_error);
+    return m_error;
 }
 
 void TcpConnection::close()
@@ -210,7 +210,7 @@ void TcpConnection::set_address(const sockaddr_in_t & address)
 
 sockaddr_in_t TcpConnection::get_address()
 {
-    return(m_address);
+    return m_address;
 }
 
 void TcpConnection::increase_reference()
@@ -228,7 +228,7 @@ void TcpConnection::decrease_reference()
 bool TcpConnection::has_reference()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    return(0 != m_references);
+    return 0 != m_references;
 }
 
 void TcpConnection::recv_buffer_water_mark(size_t length)
@@ -240,13 +240,13 @@ void TcpConnection::recv_buffer_water_mark(size_t length)
 size_t TcpConnection::recv_buffer_water_mark()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    return(m_recv_water_mark);
+    return m_recv_water_mark;
 }
 
 size_t TcpConnection::recv_buffer_size()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    return(m_recv_buffer.size());
+    return m_recv_buffer.size();
 }
 
 bool TcpConnection::recv_buffer_fill_len(const char * data, size_t length)
@@ -254,9 +254,9 @@ bool TcpConnection::recv_buffer_fill_len(const char * data, size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_eof || m_error)
     {
-        return(false);
+        return false;
     }
-    return(m_recv_buffer.fill_len(data, length));
+    return m_recv_buffer.fill_len(data, length);
 }
 
 bool TcpConnection::recv_buffer_copy_len(char * buffer, size_t length)
@@ -264,9 +264,9 @@ bool TcpConnection::recv_buffer_copy_len(char * buffer, size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_eof)
     {
-        return(false);
+        return false;
     }
-    return(m_recv_buffer.copy_len(buffer, length));
+    return m_recv_buffer.copy_len(buffer, length);
 }
 
 bool TcpConnection::recv_buffer_move_len(char * buffer, size_t length)
@@ -274,9 +274,9 @@ bool TcpConnection::recv_buffer_move_len(char * buffer, size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_eof)
     {
-        return(false);
+        return false;
     }
-    return(m_recv_buffer.move_len(buffer, length));
+    return m_recv_buffer.move_len(buffer, length);
 }
 
 bool TcpConnection::recv_buffer_drop_len(size_t length)
@@ -284,15 +284,15 @@ bool TcpConnection::recv_buffer_drop_len(size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_eof)
     {
-        return(false);
+        return false;
     }
-    return(m_recv_buffer.drop_len(length));
+    return m_recv_buffer.drop_len(length);
 }
 
 size_t TcpConnection::send_buffer_size()
 {
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
-    return(m_send_buffer.size());
+    return m_send_buffer.size();
 }
 
 bool TcpConnection::send_buffer_fill_len(const char * data, size_t length)
@@ -304,12 +304,12 @@ bool TcpConnection::send_buffer_fill_len(const char * data, size_t length)
         Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
         if (m_eof || m_error)
         {
-            return(false);
+            return false;
         }
         old_send_buffer_size = m_send_buffer.size();
         if (!m_send_buffer.fill_len(data, length))
         {
-            return(false);
+            return false;
         }
         new_send_buffer_size = m_send_buffer.size();
     }
@@ -319,7 +319,7 @@ bool TcpConnection::send_buffer_fill_len(const char * data, size_t length)
         m_xactor.connection_send(this);
     }
 
-    return(true);
+    return true;
 }
 
 bool TcpConnection::send_buffer_copy_len(char * buffer, size_t length)
@@ -327,9 +327,9 @@ bool TcpConnection::send_buffer_copy_len(char * buffer, size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_error)
     {
-        return(false);
+        return false;
     }
-    return(m_send_buffer.copy_len(buffer, length));
+    return m_send_buffer.copy_len(buffer, length);
 }
 
 bool TcpConnection::send_buffer_move_len(char * buffer, size_t length)
@@ -337,9 +337,9 @@ bool TcpConnection::send_buffer_move_len(char * buffer, size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_error)
     {
-        return(false);
+        return false;
     }
-    return(m_send_buffer.move_len(buffer, length));
+    return m_send_buffer.move_len(buffer, length);
 }
 
 bool TcpConnection::send_buffer_drop_len(size_t length)
@@ -347,9 +347,9 @@ bool TcpConnection::send_buffer_drop_len(size_t length)
     Stupid::Base::Guard<Stupid::Base::ThreadLocker> guard(m_locker);
     if (m_error)
     {
-        return(false);
+        return false;
     }
-    return(m_send_buffer.drop_len(length));
+    return m_send_buffer.drop_len(length);
 }
 
 NAMESPACE_STUPID_NET_END

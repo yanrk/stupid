@@ -61,22 +61,22 @@ bool ByteStream::seek(size_t offset)
     if (offset <= m_length)
     {
         m_offset = offset;
-        return(true);
+        return true;
     }
     else
     {
-        return(false);
+        return false;
     }
 }
 
 size_t ByteStream::tell()
 {
-    return(m_offset);
+    return m_offset;
 }
 
 size_t ByteStream::left()
 {
-    return(m_length - m_offset);
+    return m_length - m_offset;
 }
 
 void ByteStream::reset(size_t len)
@@ -121,7 +121,7 @@ OBStream & OBStream::write(const void * obj, size_t size)
     write_bytes(m_offset, obj, size);
     m_offset += size;
 
-    return(*this);
+    return *this;
 }
 
 void OBStream::check_write(size_t size)
@@ -212,62 +212,62 @@ OBStream & OBStream::operator << (bool value)
 {
     uint64_t real_value = (value ? 1 : 0);
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (int8_t value)
 {
     uint64_t real_value = value & 0x00000000000000ff;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (uint8_t value)
 {
     uint64_t real_value = value & 0x00000000000000ff;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (int16_t value)
 {
     uint64_t real_value = value & 0x000000000000ffff;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (uint16_t value)
 {
     uint64_t real_value = value & 0x000000000000ffff;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (int32_t value)
 {
     uint64_t real_value = value & 0x00000000ffffffff;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (uint32_t value)
 {
     uint64_t real_value = value & 0x00000000ffffffff;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (int64_t value)
 {
     uint64_t real_value = value;
     write_integer(real_value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (uint64_t value)
 {
     write_integer(value);
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (float value)
@@ -283,7 +283,7 @@ OBStream & OBStream::operator << (float value)
 
     write(&value, sizeof(float));
 
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (double value)
@@ -299,7 +299,7 @@ OBStream & OBStream::operator << (double value)
 
     write(&value, sizeof(double));
 
-    return(*this);
+    return *this;
 }
 
 OBStream & OBStream::operator << (const std::string & value)
@@ -307,7 +307,7 @@ OBStream & OBStream::operator << (const std::string & value)
     uint32_t size = static_cast<uint32_t>(value.size());
     operator << (size);
     write(value.c_str(), size);
-    return(*this);
+    return *this;
 }
 
 
@@ -347,7 +347,7 @@ IBStream & IBStream::read(void * obj, size_t size)
     read_bytes(m_offset, obj, size);
     m_offset += size;
 
-    return(*this);
+    return *this;
 }
 
 void IBStream::check_read(size_t size)
@@ -369,7 +369,7 @@ uint64_t IBStream::do_read_integer(unsigned char high, size_t left_count)
         value |= m_byte[m_offset++];
     }
 
-    return(value);
+    return value;
 }
 
 uint64_t IBStream::read_integer()
@@ -389,45 +389,45 @@ uint64_t IBStream::read_integer()
 
     if (value <= BOUND_OF_1_BYTES)
     {
-        return(value);
+        return value;
     }
 
     if (value <= BOUND_OF_2_BYTES)
     {
-        return(do_read_integer(value & ~0x80, 1));
+        return do_read_integer(value & ~0x80, 1);
     }
 
     if (value <= BOUND_OF_3_BYTES)
     {
-        return(do_read_integer(value & ~0xc0, 2));
+        return do_read_integer(value & ~0xc0, 2);
     }
 
     if (value <= BOUND_OF_4_BYTES)
     {
-        return(do_read_integer(value & ~0xe0, 3));
+        return do_read_integer(value & ~0xe0, 3);
     }
 
     if (value <= BOUND_OF_5_BYTES)
     {
-        return(do_read_integer(value & ~0xf0, 4));
+        return do_read_integer(value & ~0xf0, 4);
     }
 
     if (value <= BOUND_OF_6_BYTES)
     {
-        return(do_read_integer(value & ~0xf8, 5));
+        return do_read_integer(value & ~0xf8, 5);
     }
 
     if (value <= BOUND_OF_7_BYTES)
     {
-        return(do_read_integer(value & ~0xfc, 6));
+        return do_read_integer(value & ~0xfc, 6);
     }
 
     if (value <= BOUND_OF_8_BYTES)
     {
-        return(do_read_integer(value & ~0xfe, 7));
+        return do_read_integer(value & ~0xfe, 7);
     }
 
-    return(do_read_integer(0, 8));
+    return do_read_integer(0, 8);
 }
 
 IBStream & IBStream::operator >> (bool & value)
@@ -438,7 +438,7 @@ IBStream & IBStream::operator >> (bool & value)
     assert(MAX_VALUE >= real_value);
     value = (1 == real_value ? true : false);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (int8_t & value)
@@ -449,7 +449,7 @@ IBStream & IBStream::operator >> (int8_t & value)
     assert(MAX_VALUE >= real_value);
     value = static_cast<int8_t>(real_value);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (uint8_t & value)
@@ -460,7 +460,7 @@ IBStream & IBStream::operator >> (uint8_t & value)
     assert(MAX_VALUE >= real_value);
     value = static_cast<uint8_t>(real_value);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (int16_t & value)
@@ -471,7 +471,7 @@ IBStream & IBStream::operator >> (int16_t & value)
     assert(MAX_VALUE >= real_value);
     value = static_cast<int16_t>(real_value);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (uint16_t & value)
@@ -482,7 +482,7 @@ IBStream & IBStream::operator >> (uint16_t & value)
     assert(MAX_VALUE >= real_value);
     value = static_cast<uint16_t>(real_value);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (int32_t & value)
@@ -493,7 +493,7 @@ IBStream & IBStream::operator >> (int32_t & value)
     assert(MAX_VALUE >= real_value);
     value = static_cast<int32_t>(real_value);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (uint32_t & value)
@@ -504,20 +504,20 @@ IBStream & IBStream::operator >> (uint32_t & value)
     assert(MAX_VALUE >= real_value);
     value = static_cast<uint32_t>(real_value);
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (int64_t & value)
 {
     uint64_t real_value = read_integer();
     value = static_cast<int64_t>(real_value);
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (uint64_t & value)
 {
     value = read_integer();
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (float & value)
@@ -533,7 +533,7 @@ IBStream & IBStream::operator >> (float & value)
 
     read(&value, sizeof(float));
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (double & value)
@@ -549,7 +549,7 @@ IBStream & IBStream::operator >> (double & value)
 
     read(&value, sizeof(double));
 
-    return(*this);
+    return *this;
 }
 
 IBStream & IBStream::operator >> (std::string & value)
@@ -558,7 +558,7 @@ IBStream & IBStream::operator >> (std::string & value)
     operator >> (size);
     value.resize(size);
     read(&value[0], size);
-    return(*this);
+    return *this;
 }
 
 NAMESPACE_STUPID_BASE_END

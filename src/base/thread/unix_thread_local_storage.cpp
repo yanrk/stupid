@@ -34,7 +34,7 @@ void UnixThreadLocalStorage::set_value(void * thread_specific_value)
 
 void * UnixThreadLocalStorage::get_value()
 {
-    return(pthread_getspecific(m_thread_key));
+    return pthread_getspecific(m_thread_key);
 }
 
 NAMESPACE_STUPID_BASE_END

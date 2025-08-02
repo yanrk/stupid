@@ -35,7 +35,7 @@ Block * Buffer::acquire_block()
     {
         block->reset();
     }
-    return(block);
+    return block;
 }
 
 void Buffer::release_block(Block *& block)
@@ -47,12 +47,12 @@ bool Buffer::fill_len(const char * data, size_t length)
 {
     if (nullptr == data)
     {
-        return(false);
+        return false;
     }
 
     if (0 == length)
     {
-        return(true);
+        return true;
     }
 
     Block * block = nullptr;
@@ -68,7 +68,7 @@ bool Buffer::fill_len(const char * data, size_t length)
             block = acquire_block();
             if (nullptr == block)
             {
-                return(false);
+                return false;
             }
             m_blocks.push_back(block);
         }
@@ -79,19 +79,19 @@ bool Buffer::fill_len(const char * data, size_t length)
         m_length += data_len;
     }
 
-    return(true);
+    return true;
 }
 
 size_t Buffer::size() const
 {
-    return(m_length);
+    return m_length;
 }
 
 bool Buffer::copy_len(char * buffer, size_t length)
 {
     if (nullptr == buffer || m_length < length)
     {
-        return(false);
+        return false;
     }
 
     typedef std::list<Block *>::iterator iterator;
@@ -104,24 +104,24 @@ bool Buffer::copy_len(char * buffer, size_t length)
         length -= data_len;
     }
 
-    return(true);
+    return true;
 }
 
 bool Buffer::move_len(char * buffer, size_t length)
 {
-    return(copy_len(buffer, length) && drop_len(length));
+    return copy_len(buffer, length) && drop_len(length);
 }
 
 bool Buffer::drop_len(size_t length)
 {
     if (m_length < length)
     {
-        return(false);
+        return false;
     }
 
     if (0 == length)
     {
-        return(true);
+        return true;
     }
 
     m_length -= length;
@@ -142,7 +142,7 @@ bool Buffer::drop_len(size_t length)
         }
     }
 
-    return(true);
+    return true;
 }
 
 NAMESPACE_STUPID_NET_END

@@ -48,7 +48,7 @@ static std::string construct_mail_receivers(const std::list<std::string> & recei
         receivers += iter_f->c_str();
     }
 
-    return(receivers);
+    return receivers;
 }
 
 static void construct_mail_data(const MailInfo & mail_info, std::string & mail_data)
@@ -150,21 +150,21 @@ static size_t mail_send_callback(void * ptr, size_t size, size_t nmemb, void * u
     if (nullptr == buff)
     {
         RUN_LOG_ERR("mail_send_callback failed: buff is null");
-        return(0);
+        return 0;
     }
 
     size_t buff_size = size * nmemb;
     if (0 == buff_size)
     {
         RUN_LOG_ERR("mail_send_callback failed: buff size is 0");
-        return(0);
+        return 0;
     }
 
     MailSendInfo * mail_send_info = reinterpret_cast<MailSendInfo *>(user_data);
     if (nullptr == mail_send_info)
     {
         RUN_LOG_ERR("mail_send_callback failed: mail send info is null");
-        return(0);
+        return 0;
     }
 
     size_t send_len = mail_send_info->data.size() - mail_send_info->sent_len;
@@ -179,7 +179,7 @@ static size_t mail_send_callback(void * ptr, size_t size, size_t nmemb, void * u
         mail_send_info->sent_len += send_len;
     }
 
-    return(send_len);
+    return send_len;
 }
 
 bool MailHelper::send_mail(const MailInfo & mail_info)
@@ -254,7 +254,7 @@ bool MailHelper::send_mail(const MailInfo & mail_info)
         curl_easy_cleanup(curl);
     }
 
-    return(ret);
+    return ret;
 }
 
 NAMESPACE_STUPID_TOOL_END

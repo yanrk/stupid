@@ -21,7 +21,7 @@ static thread_return_t STUPID_STDCALL single_timer_run(thread_argument_t argumen
     {
         SingleTimer::run(timer);
     }
-    return(THREAD_DEFAULT_RET);
+    return THREAD_DEFAULT_RET;
 }
 
 ISingleTimerSink::~ISingleTimerSink()
@@ -51,7 +51,7 @@ bool SingleTimer::init(ISingleTimerSink * sink, size_t period)
 
     if (nullptr == sink)
     {
-        return(false);
+        return false;
     }
 
     m_sink = sink;
@@ -65,7 +65,7 @@ bool SingleTimer::init(ISingleTimerSink * sink, size_t period)
         m_running = false;
     }
 
-    return(m_running);
+    return m_running;
 }
 
 void SingleTimer::exit()
@@ -79,7 +79,7 @@ void SingleTimer::exit()
 
 bool SingleTimer::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 void SingleTimer::run(SingleTimer * timer)

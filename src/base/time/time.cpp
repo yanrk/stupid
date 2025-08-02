@@ -22,7 +22,7 @@ NAMESPACE_STUPID_BASE_BEGIN
 
 uint64_t stupid_time()
 {
-    return(static_cast<uint64_t>(time(nullptr)));
+    return static_cast<uint64_t>(time(nullptr));
 }
 
 struct tm stupid_make_localtime(uint64_t time_second)
@@ -36,7 +36,7 @@ struct tm stupid_make_localtime(uint64_t time_second)
     localtime_r(&time_value, &tm_value);
 #endif // _MSC_VER
 
-    return(tm_value);
+    return tm_value;
 }
 
 struct tm stupid_make_gmtime(uint64_t time_second)
@@ -50,22 +50,22 @@ struct tm stupid_make_gmtime(uint64_t time_second)
     gmtime_r(&time_value, &tm_value);
 #endif // _MSC_VER
 
-    return(tm_value);
+    return tm_value;
 }
 
 uint64_t stupid_make_time(struct tm tm_value)
 {
-    return(static_cast<uint64_t>(mktime(&tm_value)));
+    return static_cast<uint64_t>(mktime(&tm_value));
 }
 
 struct tm stupid_localtime()
 {
-    return(stupid_make_localtime(stupid_time()));
+    return stupid_make_localtime(stupid_time());
 }
 
 struct tm stupid_gmtime()
 {
-    return(stupid_make_gmtime(stupid_time()));
+    return stupid_make_gmtime(stupid_time());
 }
 
 struct timeval stupid_gettimeofday()
@@ -81,7 +81,7 @@ struct timeval stupid_gettimeofday()
     gettimeofday(&tv_now, nullptr);
 #endif // _MSC_VER
 
-    return(tv_now);
+    return tv_now;
 }
 
 int stupid_get_timezone()
@@ -96,17 +96,17 @@ int stupid_get_timezone()
     time_zone = timezone;
 #endif // _MSC_VER
 
-    return (static_cast<int>(time_zone));
+    return static_cast<int>(time_zone);
 }
 
 int stupid_get_day_of_week(const struct tm & tm_value)
 {
-    return(tm_value.tm_wday);
+    return tm_value.tm_wday;
 }
 
 int stupid_get_day_of_week()
 {
-    return(stupid_get_day_of_week(stupid_localtime()));
+    return stupid_get_day_of_week(stupid_localtime());
 }
 
 std::string stupid_get_week(const struct tm & tm_value, bool week_abbreviation)
@@ -116,12 +116,12 @@ std::string stupid_get_week(const struct tm & tm_value, bool week_abbreviation)
         { "Sun",    "Mon",    "Tue",     "Wed",       "Thu",      "Fri",    "Sat"      }, 
         { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" }  
     };
-    return(std::string(week[week_abbreviation ? 0 : 1][stupid_get_day_of_week(tm_value)]));
+    return std::string(week[week_abbreviation ? 0 : 1][stupid_get_day_of_week(tm_value)]);
 }
 
 std::string stupid_get_week(bool week_abbreviation)
 {
-    return(stupid_get_week(stupid_localtime(), week_abbreviation));
+    return stupid_get_week(stupid_localtime(), week_abbreviation);
 }
 
 std::string stupid_get_date(const struct tm & tm_value, const char * date_delimiter)
@@ -138,12 +138,12 @@ std::string stupid_get_date(const struct tm & tm_value, const char * date_delimi
         << std::setw(2) << (tm_value.tm_mon + 1)
         << date_delimiter
         << std::setw(2) << (tm_value.tm_mday);
-    return(oss.str());
+    return oss.str();
 }
 
 std::string stupid_get_date(const char * date_delimiter)
 {
-    return(stupid_get_date(stupid_localtime(), date_delimiter));
+    return stupid_get_date(stupid_localtime(), date_delimiter);
 }
 
 std::string stupid_get_time(const struct tm & tm_value, const char * time_delimiter)
@@ -160,12 +160,12 @@ std::string stupid_get_time(const struct tm & tm_value, const char * time_delimi
         << std::setw(2) << (tm_value.tm_min)
         << time_delimiter
         << std::setw(2) << (tm_value.tm_sec);
-    return(oss.str());
+    return oss.str();
 }
 
 std::string stupid_get_time(const char * time_delimiter)
 {
-    return(stupid_get_time(stupid_localtime(), time_delimiter));
+    return stupid_get_time(stupid_localtime(), time_delimiter);
 }
 
 std::string stupid_datetime()
@@ -182,7 +182,7 @@ std::string stupid_datetime()
     char str_time[32] = { 0x00 };
     strftime(str_time, sizeof(str_time), "%Y-%m-%d %H:%M:%S", &tm_now);
 
-    return(str_time);
+    return str_time;
 }
 
 std::string stupid_get_datetime(const struct tm & tm_value, const char * date_delimiter, const char * time_delimiter, const char * date_time_delimiter)
@@ -191,12 +191,12 @@ std::string stupid_get_datetime(const struct tm & tm_value, const char * date_de
     {
         date_time_delimiter = " ";
     }
-    return(stupid_get_date(tm_value, date_delimiter) + date_time_delimiter + stupid_get_time(tm_value, time_delimiter));
+    return stupid_get_date(tm_value, date_delimiter) + date_time_delimiter + stupid_get_time(tm_value, time_delimiter);
 }
 
 std::string stupid_get_datetime(const char * date_delimiter, const char * time_delimiter, const char * date_time_delimiter)
 {
-    return(stupid_get_datetime(stupid_localtime(), date_delimiter, time_delimiter, date_time_delimiter));
+    return stupid_get_datetime(stupid_localtime(), date_delimiter, time_delimiter, date_time_delimiter);
 }
 
 std::string stupid_get_comprehensive_datetime(
@@ -218,7 +218,7 @@ std::string stupid_get_comprehensive_datetime(
         time_ms, stupid_get_timezone() / -3600
     );
 
-    return(stupid_get_datetime(tm_now, date_delimiter, time_delimiter, date_time_delimiter) + buff + stupid_get_week(tm_now));
+    return stupid_get_datetime(tm_now, date_delimiter, time_delimiter, date_time_delimiter) + buff + stupid_get_week(tm_now);
 }
 
 void stupid_ms_sleep(size_t milliseconds)

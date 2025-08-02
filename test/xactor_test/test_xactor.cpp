@@ -29,37 +29,37 @@ static bool get_config()
     if (!ini.load(ini_file))
     {
         printf("load %s failed\n", ini_file);
-        return(false);
+        return false;
     }
 
     if (!ini.get_value("", "requester", s_requester))
     {
         printf("get value %s failed\n", "requester");
-        return(false);
+        return false;
     }
 
     if (!ini.get_value("", "test_data", s_test_data))
     {
         printf("get value %s failed\n", "test_data");
-        return(false);
+        return false;
     }
 
     if (!ini.get_value("", "send_times", s_send_times))
     {
         printf("get value %s failed\n", "send_times");
-        return(false);
+        return false;
     }
 
     if (!ini.get_value("", "thread_count", s_thread_count))
     {
         printf("get value %s failed\n", "thread_count");
-        return(false);
+        return false;
     }
 
     if (!ini.get_value("", "host_port", s_host_port))
     {
         printf("get value %s failed\n", "host_port");
-        return(false);
+        return false;
     }
 
     if (s_requester)
@@ -67,25 +67,25 @@ static bool get_config()
         if (!ini.get_value("", "host_name", s_host_name))
         {
             printf("get value %s failed\n", "host_name");
-            return(false);
+            return false;
         }
 
         if (!ini.get_value("", "connection_count", s_connection_count))
         {
             printf("get value %s failed\n", "connection_count");
-            return(false);
+            return false;
         }
 
         if (!Stupid::Net::transform_address(s_host_name.c_str(), s_host_port, s_address))
         {
             printf("transform(%s : %d) to address failed\n", s_host_name.c_str(), s_host_port);
-            return(false);
+            return false;
         }
     }
 
     ini.clear();
 
-    return(true);
+    return true;
 }
 
 void test_tcp_xactor(void)

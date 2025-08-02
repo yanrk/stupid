@@ -32,7 +32,7 @@ WindowsThreadLocker::~WindowsThreadLocker()
 bool WindowsThreadLocker::acquire() const
 {
     EnterCriticalSection(&m_locker);
-    return(true);
+    return true;
 }
 
 void WindowsThreadLocker::release() const
@@ -42,7 +42,7 @@ void WindowsThreadLocker::release() const
 
 bool WindowsThreadLocker::try_acquire() const
 {
-    return(false);
+    return false;
 }
 
 
@@ -60,7 +60,7 @@ WindowsProcessLocker::~WindowsProcessLocker()
 
 bool WindowsProcessLocker::acquire() const
 {
-    return(WAIT_OBJECT_0 == WaitForSingleObject(m_locker, INFINITE));
+    return WAIT_OBJECT_0 == WaitForSingleObject(m_locker, INFINITE);
 }
 
 void WindowsProcessLocker::release() const
@@ -70,7 +70,7 @@ void WindowsProcessLocker::release() const
 
 bool WindowsProcessLocker::try_acquire() const
 {
-    return(WAIT_OBJECT_0 == WaitForSingleObject(m_locker, 0));
+    return WAIT_OBJECT_0 == WaitForSingleObject(m_locker, 0);
 }
 
 NAMESPACE_STUPID_BASE_END

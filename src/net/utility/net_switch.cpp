@@ -45,11 +45,11 @@ static sig_func * safe_signal(int signo, sig_func * func)
     struct sigaction old_act;
     if (sigaction(signo, &new_act, &old_act) < 0)
     {
-        return(SIG_ERR);
+        return SIG_ERR;
     }
     else
     {
-        return(old_act.sa_handler);
+        return old_act.sa_handler;
     }
 }
 
@@ -58,14 +58,14 @@ static bool increase_socket_limit()
     struct rlimit old_limit;
     if (0 != getrlimit(RLIMIT_NOFILE, &old_limit))
     {
-        return(false);
+        return false;
     }
 
     struct rlimit new_limit;
     new_limit.rlim_cur = new_limit.rlim_max = RLIM_INFINITY;
     if (0 == setrlimit(RLIMIT_NOFILE, &new_limit))
     {
-        return(true);
+        return true;
     }
 
     if (old_limit.rlim_max < 65535)
@@ -73,22 +73,22 @@ static bool increase_socket_limit()
         new_limit.rlim_cur = new_limit.rlim_max = 65535;
         if (0 == setrlimit(RLIMIT_NOFILE, &new_limit))
         {
-            return(true);
+            return true;
         }
     }
 
     if (old_limit.rlim_cur == old_limit.rlim_max)
     {
-        return(true);
+        return true;
     }
 
     new_limit.rlim_cur = new_limit.rlim_max = old_limit.rlim_max;
     if (0 == setrlimit(RLIMIT_NOFILE, &new_limit))
     {
-        return(true);
+        return true;
     }
 
-    return(false);
+    return false;
 }
 #endif // _MSC_VER
 
@@ -109,7 +109,7 @@ bool NetSwitch::init()
 {
     if (m_init)
     {
-        return(true);
+        return true;
     }
 
 #ifdef _MSC_VER
@@ -117,19 +117,19 @@ bool NetSwitch::init()
     if (0 != WSAStartup(MAKEWORD(2, 2), &wsa_data))
     {
         RUN_LOG_CRI("WSAStartup failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
 #else
     if (SIG_ERR == safe_signal(SIGPIPE, SIG_IGN))
     {
         RUN_LOG_CRI("safe_signal failed: %d", stupid_net_error());
-        return(false);
+        return false;
     }
     increase_socket_limit();
 #endif // _MSC_VER
 
     m_init = true;
-    return(true);
+    return true;
 }
 
 void NetSwitch::exit()

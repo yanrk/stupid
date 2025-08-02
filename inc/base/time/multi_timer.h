@@ -180,7 +180,7 @@ size_t MultiTimer::create_timer_mem(T & t, F f, const P & p)
     size_t id = acquire_timer_id();
     if (BAD_TIMER_ID == id)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     typedef OneParamMemberFuncTimer<T, F, P> FuncTimer;
@@ -189,14 +189,14 @@ size_t MultiTimer::create_timer_mem(T & t, F f, const P & p)
     STUPID_NEW(timer, FuncTimer(t, f, p));
     if (nullptr == timer)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     timer->m_id = id;
 
     add_pending_timer(timer);
 
-    return(id);
+    return id;
 }
 
 template <typename T, typename F>
@@ -205,7 +205,7 @@ size_t MultiTimer::create_timer_mem(T & t, F f)
     size_t id = acquire_timer_id();
     if (BAD_TIMER_ID == id)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     typedef NoneParamMemberFuncTimer<T, F> FuncTimer;
@@ -214,14 +214,14 @@ size_t MultiTimer::create_timer_mem(T & t, F f)
     STUPID_NEW(timer, FuncTimer(t, f));
     if (nullptr == timer)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     timer->m_id = id;
 
     add_pending_timer(timer);
 
-    return(id);
+    return id;
 }
 
 template <typename F, typename P>
@@ -230,7 +230,7 @@ size_t MultiTimer::create_timer_ptr(F f, P p)
     size_t id = acquire_timer_id();
     if (BAD_TIMER_ID == id)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     typedef OneParamGlobalFuncTimer<F, P> FuncTimer;
@@ -239,14 +239,14 @@ size_t MultiTimer::create_timer_ptr(F f, P p)
     STUPID_NEW(timer, FuncTimer(f, p));
     if (nullptr == timer)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     timer->m_id = id;
 
     add_pending_timer(timer);
 
-    return(id);
+    return id;
 }
 
 template <typename F>
@@ -255,7 +255,7 @@ size_t MultiTimer::create_timer_ptr(F f)
     size_t id = acquire_timer_id();
     if (BAD_TIMER_ID == id)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     typedef NoneParamGlobalFuncTimer<F> FuncTimer;
@@ -264,14 +264,14 @@ size_t MultiTimer::create_timer_ptr(F f)
     STUPID_NEW(timer, FuncTimer(f));
     if (nullptr == timer)
     {
-        return(BAD_TIMER_ID);
+        return BAD_TIMER_ID;
     }
 
     timer->m_id = id;
 
     add_pending_timer(timer);
 
-    return(id);
+    return id;
 }
 
 NAMESPACE_STUPID_BASE_END

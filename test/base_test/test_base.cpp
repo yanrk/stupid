@@ -32,5 +32,5 @@ int main(int argc, char * argv[])
     test_base_file();
     test_base_hardware();
     test_base_process();
-    return(0);
+    return 0;
 }

@@ -175,7 +175,7 @@ bool WindowsJoinProcess::acquire()
     Guard<ThreadLocker> thread_guard(m_locker);
     if (m_running || m_command_line_params.empty())
     {
-        return(false);
+        return false;
     }
     m_running = true;
 
@@ -190,14 +190,14 @@ bool WindowsJoinProcess::acquire()
     if (!CreateProcessA(nullptr, reinterpret_cast<LPSTR>(const_cast<char *>(command_line.c_str())), nullptr, nullptr, false, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
     {
         m_running = false;
-        return(false);
+        return false;
     }
     CloseHandle(pi.hThread);
 
     m_pid = pi.dwProcessId;
     m_handle = pi.hProcess;
 
-    return(true);
+    return true;
 }
 
 void WindowsJoinProcess::release(bool process_tree, int exit_code)
@@ -223,7 +223,7 @@ bool WindowsJoinProcess::wait_exit(int & exit_code)
 {
     if (!m_running || nullptr == m_handle)
     {
-        return(false);
+        return false;
     }
 
     bool ret = false;
@@ -268,7 +268,7 @@ bool WindowsJoinProcess::wait_exit(int & exit_code)
         ret = false;
     }
 
-    return(ret);
+    return ret;
 }
 
 void WindowsJoinProcess::clear()
@@ -304,17 +304,17 @@ void WindowsJoinProcess::set_process_args(const std::vector<std::string> & comma
 
 bool WindowsJoinProcess::running()
 {
-    return(m_running);
+    return m_running;
 }
 
 std::string WindowsJoinProcess::process_name()
 {
-    return(m_name);
+    return m_name;
 }
 
 size_t WindowsJoinProcess::process_id() const
 {
-    return(static_cast<size_t>(m_pid));
+    return static_cast<size_t>(m_pid);
 }
 
 bool stupid_create_detached_process(const std::string & command_line)
@@ -324,19 +324,19 @@ bool stupid_create_detached_process(const std::string & command_line)
 
     if (!CreateProcessA(nullptr, reinterpret_cast<LPSTR>(const_cast<char *>(command_line.c_str())), nullptr, nullptr, false, CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
     {
-        return(false);
+        return false;
     }
     CloseHandle(pi.hThread);
     CloseHandle(pi.hProcess);
 
-    return(true);
+    return true;
 }
 
 bool stupid_create_detached_process(const std::vector<std::string> & command_line_params)
 {
     std::string command_line;
     command_params_to_command_line(command_line_params, command_line);
-    return(stupid_create_detached_process(command_line));
+    return stupid_create_detached_process(command_line);
 }
 
 NAMESPACE_STUPID_BASE_END

@@ -21,7 +21,7 @@ NAMESPACE_STUPID_NET_BEGIN
 template <typename Integer>
 bool check_port_value(Integer port)
 {
-    return(0 < port && 65536 > port);
+    return 0 < port && 65536 > port;
 }
 
 STUPID_CXX_API(bool) check_ip_format(const char * ip);

@@ -49,7 +49,7 @@ static bool host_is_little_endian()
     } un;
     un.us = 0x0001;
 
-    return(0x01 == un.uc[0]);
+    return 0x01 == un.uc[0];
 }
 
 static bool is_little_endian(ENDIAN::TYPE endian_type)
@@ -58,15 +58,15 @@ static bool is_little_endian(ENDIAN::TYPE endian_type)
     {
         case ENDIAN::LITTLE:
         {
-            return(true);
+            return true;
         }
         case ENDIAN::BIG:
         {
-            return(false);
+            return false;
         }
         default:
         {
-            return(host_is_little_endian());
+            return host_is_little_endian();
         }
     }
 }
@@ -77,7 +77,7 @@ static bool unicode_to_ansi(const wchar_t * unicode_str, std::string & ansi_str)
 
     if (nullptr == unicode_str || L'\0' == unicode_str[0])
     {
-        return(true);
+        return true;
     }
 
 #ifdef _MSC_VER
@@ -93,7 +93,7 @@ static bool unicode_to_ansi(const wchar_t * unicode_str, std::string & ansi_str)
     std::size_t bytes_count = std::wcsrtombs(nullptr, &unicode_str, 0, &mbstate);
     if (static_cast<std::size_t>(-1) == bytes_count)
     {
-        return(false);
+        return false;
     }
     else if (0 != bytes_count)
     {
@@ -102,7 +102,7 @@ static bool unicode_to_ansi(const wchar_t * unicode_str, std::string & ansi_str)
     }
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 static bool ansi_to_unicode(const char * ansi_str, std::wstring & unicode_str)
@@ -111,7 +111,7 @@ static bool ansi_to_unicode(const char * ansi_str, std::wstring & unicode_str)
 
     if (nullptr == ansi_str || '\0' == ansi_str[0])
     {
-        return(true);
+        return true;
     }
 
 #ifdef _MSC_VER
@@ -127,7 +127,7 @@ static bool ansi_to_unicode(const char * ansi_str, std::wstring & unicode_str)
     std::size_t chars_count = std::mbsrtowcs(nullptr, &ansi_str, 0, &mbstate);
     if (static_cast<std::size_t>(-1) == chars_count)
     {
-        return(false);
+        return false;
     }
     else if (0 != chars_count)
     {
@@ -136,7 +136,7 @@ static bool ansi_to_unicode(const char * ansi_str, std::wstring & unicode_str)
     }
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 static bool ansi_to_utfx(const char * ansi_str, std::string & utf_str)
@@ -145,7 +145,7 @@ static bool ansi_to_utfx(const char * ansi_str, std::string & utf_str)
 
     if (nullptr == ansi_str || '\0' == ansi_str[0])
     {
-        return(true);
+        return true;
     }
 
 #ifdef _MSC_VER
@@ -161,7 +161,7 @@ static bool ansi_to_utfx(const char * ansi_str, std::string & utf_str)
     std::size_t chars_count = std::mbsrtowcs(nullptr, &ansi_str, 0, &mbstate);
     if (static_cast<std::size_t>(-1) == chars_count)
     {
-        return(false);
+        return false;
     }
     else if (0 != chars_count)
     {
@@ -170,7 +170,7 @@ static bool ansi_to_utfx(const char * ansi_str, std::string & utf_str)
     }
 #endif // _MSC_VER
 
-    return(true);
+    return true;
 }
 
 static unsigned long get_utf8char(const unsigned char *& bytes, const unsigned char * end)
@@ -209,7 +209,7 @@ static unsigned long get_utf8char(const unsigned char *& bytes, const unsigned c
             bytes = end;
         }
     }
-    return(utf8_value);
+    return utf8_value;
 }
 
 static unsigned long get_utf16char(const unsigned char *& bytes, const unsigned char * end, bool src_is_little_endian)
@@ -253,7 +253,7 @@ static unsigned long get_utf16char(const unsigned char *& bytes, const unsigned 
             bytes = end;
         }
     }
-    return(utf16_value);
+    return utf16_value;
 }
 
 static unsigned long get_utf32char(const unsigned char *& bytes, const unsigned char * end, bool src_is_little_endian)
@@ -275,7 +275,7 @@ static unsigned long get_utf32char(const unsigned char *& bytes, const unsigned 
     {
         bytes = end;
     }
-    return(utf32_value);
+    return utf32_value;
 }
 
 static void put_utf8char(unsigned long utf8_value, std::string & utf8_str)
@@ -362,7 +362,7 @@ static void put_utf32char(unsigned long utf32_value, bool dst_is_little_endian, 
 
 static const std::string & utf8_to_utf8(const std::string & utf8_str)
 {
-    return(utf8_str);
+    return utf8_str;
 }
 
 static std::string utf8_to_utf16(const std::string & utf8_str, bool dst_is_little_endian)
@@ -389,7 +389,7 @@ static std::string utf8_to_utf16(const std::string & utf8_str, bool dst_is_littl
         put_utf16char(get_utf8char(bytes, end), dst_is_little_endian, utf16_str);
     }
 
-    return(utf16_str);
+    return utf16_str;
 }
 
 static std::string utf8_to_utf32(const std::string & utf8_str, bool dst_is_little_endian)
@@ -416,7 +416,7 @@ static std::string utf8_to_utf32(const std::string & utf8_str, bool dst_is_littl
         put_utf32char(get_utf8char(bytes, end), dst_is_little_endian, utf32_str);
     }
 
-    return(utf32_str);
+    return utf32_str;
 }
 
 static std::string utf16_to_utf8(const std::string & utf16_str, bool src_is_little_endian)
@@ -454,7 +454,7 @@ static std::string utf16_to_utf8(const std::string & utf16_str, bool src_is_litt
         put_utf8char(get_utf16char(bytes, end, src_is_little_endian), utf8_str);
     }
 
-    return(utf8_str);
+    return utf8_str;
 }
 
 static std::string utf16_to_utf16(const std::string & src_utf16_str, bool src_is_little_endian, bool dst_is_little_endian)
@@ -488,7 +488,7 @@ static std::string utf16_to_utf16(const std::string & src_utf16_str, bool src_is
         put_utf16char(get_utf16char(bytes, end, src_is_little_endian), dst_is_little_endian, dst_utf16_str);
     }
 
-    return(dst_utf16_str);
+    return dst_utf16_str;
 }
 
 static std::string utf16_to_utf32(const std::string & utf16_str, bool src_is_little_endian, bool dst_is_little_endian)
@@ -522,7 +522,7 @@ static std::string utf16_to_utf32(const std::string & utf16_str, bool src_is_lit
         put_utf32char(get_utf16char(bytes, end, src_is_little_endian), dst_is_little_endian, utf32_str);
     }
 
-    return(utf32_str);
+    return utf32_str;
 }
 
 static std::string utf32_to_utf8(const std::string & utf32_str, bool src_is_little_endian)
@@ -560,7 +560,7 @@ static std::string utf32_to_utf8(const std::string & utf32_str, bool src_is_litt
         put_utf8char(get_utf32char(bytes, end, src_is_little_endian), utf8_str);
     }
 
-    return(utf8_str);
+    return utf8_str;
 }
 
 static std::string utf32_to_utf16(const std::string & utf32_str, bool src_is_little_endian, bool dst_is_little_endian)
@@ -594,7 +594,7 @@ static std::string utf32_to_utf16(const std::string & utf32_str, bool src_is_lit
         put_utf16char(get_utf32char(bytes, end, src_is_little_endian), dst_is_little_endian, utf16_str);
     }
 
-    return(utf16_str);
+    return utf16_str;
 }
 
 static std::string utf32_to_utf32(const std::string & src_utf32_str, bool src_is_little_endian, bool dst_is_little_endian)
@@ -628,7 +628,7 @@ static std::string utf32_to_utf32(const std::string & src_utf32_str, bool src_is
         put_utf32char(get_utf32char(bytes, end, src_is_little_endian), dst_is_little_endian, dst_utf32_str);
     }
 
-    return(dst_utf32_str);
+    return dst_utf32_str;
 }
 
 class CharacterSetImpl
@@ -665,7 +665,7 @@ public:
 private:
     virtual CharacterSetImpl * clone() const
     {
-        return(new CharacterSetString(*this));
+        return new CharacterSetString(*this);
     }
 
     virtual std::string str() const
@@ -730,11 +730,11 @@ private:
 
             std::string ansi_str;
             unicode_to_ansi(reinterpret_cast<const wchar_t *>(utfx_str.c_str()), ansi_str);
-            return(ansi_str);
+            return ansi_str;
         }
         else
         {
-            return(m_data);
+            return m_data;
         }
     }
 
@@ -752,15 +752,15 @@ private:
                     {
                         case UTFX::UTF8:
                         {
-                            return(utf8_to_utf8(m_data));
+                            return utf8_to_utf8(m_data);
                         }
                         case UTFX::UTF16:
                         {
-                            return(utf8_to_utf16(m_data, dst_is_little_endian));
+                            return utf8_to_utf16(m_data, dst_is_little_endian);
                         }
                         case UTFX::UTF32:
                         {
-                            return(utf8_to_utf32(m_data, dst_is_little_endian));
+                            return utf8_to_utf32(m_data, dst_is_little_endian);
                         }
                         default:
                         {
@@ -775,15 +775,15 @@ private:
                     {
                         case UTFX::UTF8:
                         {
-                            return(utf16_to_utf8(m_data, m_src_is_little_endian));
+                            return utf16_to_utf8(m_data, m_src_is_little_endian);
                         }
                         case UTFX::UTF16:
                         {
-                            return(utf16_to_utf16(m_data, m_src_is_little_endian, dst_is_little_endian));
+                            return utf16_to_utf16(m_data, m_src_is_little_endian, dst_is_little_endian);
                         }
                         case UTFX::UTF32:
                         {
-                            return(utf16_to_utf32(m_data, m_src_is_little_endian, dst_is_little_endian));
+                            return utf16_to_utf32(m_data, m_src_is_little_endian, dst_is_little_endian);
                         }
                         default:
                         {
@@ -798,15 +798,15 @@ private:
                     {
                         case UTFX::UTF8:
                         {
-                            return(utf32_to_utf8(m_data, m_src_is_little_endian));
+                            return utf32_to_utf8(m_data, m_src_is_little_endian);
                         }
                         case UTFX::UTF16:
                         {
-                            return(utf32_to_utf16(m_data, m_src_is_little_endian, dst_is_little_endian));
+                            return utf32_to_utf16(m_data, m_src_is_little_endian, dst_is_little_endian);
                         }
                         case UTFX::UTF32:
                         {
-                            return(utf32_to_utf32(m_data, m_src_is_little_endian, dst_is_little_endian));
+                            return utf32_to_utf32(m_data, m_src_is_little_endian, dst_is_little_endian);
                         }
                         default:
                         {
@@ -832,15 +832,15 @@ private:
                 {
                     case UTFX::UTF8:
                     {
-                        return(utf16_to_utf8(utfx_str, m_host_is_little_endian));
+                        return utf16_to_utf8(utfx_str, m_host_is_little_endian);
                     }
                     case UTFX::UTF16:
                     {
-                        return(utf16_to_utf16(utfx_str, m_host_is_little_endian, dst_is_little_endian));
+                        return utf16_to_utf16(utfx_str, m_host_is_little_endian, dst_is_little_endian);
                     }
                     case UTFX::UTF32:
                     {
-                        return(utf16_to_utf32(utfx_str, m_host_is_little_endian, dst_is_little_endian));
+                        return utf16_to_utf32(utfx_str, m_host_is_little_endian, dst_is_little_endian);
                     }
                     default:
                     {
@@ -852,15 +852,15 @@ private:
                 {
                     case UTFX::UTF8:
                     {
-                        return(utf32_to_utf8(utfx_str, m_host_is_little_endian));
+                        return utf32_to_utf8(utfx_str, m_host_is_little_endian);
                     }
                     case UTFX::UTF16:
                     {
-                        return(utf32_to_utf16(utfx_str, m_host_is_little_endian, dst_is_little_endian));
+                        return utf32_to_utf16(utfx_str, m_host_is_little_endian, dst_is_little_endian);
                     }
                     case UTFX::UTF32:
                     {
-                        return(utf32_to_utf32(utfx_str, m_host_is_little_endian, dst_is_little_endian));
+                        return utf32_to_utf32(utfx_str, m_host_is_little_endian, dst_is_little_endian);
                     }
                     default:
                     {
@@ -871,7 +871,7 @@ private:
 
             }
         }
-        return(std::string());
+        return std::string();
     }
 
     virtual std::wstring wstr() const
@@ -928,13 +928,13 @@ private:
             }
 #endif // _MSC_VER
 
-            return(std::wstring(reinterpret_cast<const wchar_t *>(utfx_str.c_str()), utfx_str.size() / sizeof(wchar_t)));
+            return std::wstring(reinterpret_cast<const wchar_t *>(utfx_str.c_str()), utfx_str.size() / sizeof(wchar_t));
         }
         else
         {
             std::wstring unicode_str;
             ansi_to_unicode(m_data.c_str(), unicode_str);
-            return(unicode_str);
+            return unicode_str;
         }
     }
 
@@ -958,14 +958,14 @@ public:
 
     virtual CharacterSetImpl * clone() const
     {
-        return(new CharacterSetWString(*this));
+        return new CharacterSetWString(*this);
     }
 
     virtual std::string str() const
     {
         std::string ansi_str;
         unicode_to_ansi(m_data.c_str(), ansi_str);
-        return(ansi_str);
+        return ansi_str;
     }
 
     virtual std::string utfx(UTFX::TYPE utfx_type, ENDIAN::TYPE endian_type) const
@@ -977,15 +977,15 @@ public:
         {
             case UTFX::UTF8:
             {
-                return(utf16_to_utf8(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian));
+                return utf16_to_utf8(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian);
             }
             case UTFX::UTF16:
             {
-                return(utf16_to_utf16(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian));
+                return utf16_to_utf16(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian);
             }
             case UTFX::UTF32:
             {
-                return(utf16_to_utf32(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian));
+                return utf16_to_utf32(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian);
             }
             default:
             {
@@ -997,15 +997,15 @@ public:
         {
             case UTFX::UTF8:
             {
-                return(utf32_to_utf8(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian));
+                return utf32_to_utf8(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian);
             }
             case UTFX::UTF16:
             {
-                return(utf32_to_utf16(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian));
+                return utf32_to_utf16(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian);
             }
             case UTFX::UTF32:
             {
-                return(utf32_to_utf32(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian));
+                return utf32_to_utf32(std::string(reinterpret_cast<const char *>(m_data.c_str()), sizeof(wchar_t) * m_data.size()), m_host_is_little_endian, dst_is_little_endian);
             }
             default:
             {
@@ -1014,12 +1014,12 @@ public:
         }
 #endif // _MSC_VER
 
-        return(std::string());
+        return std::string();
     }
 
     virtual std::wstring wstr() const
     {
-        return(m_data);
+        return m_data;
     }
 
 private:
@@ -1037,7 +1037,7 @@ CharacterSet & CharacterSet::operator = (const CharacterSet & rhs)
 {
     CharacterSet tmp(rhs);
     std::swap(m_impl, tmp.m_impl);
-    return(*this);
+    return *this;
 }
 
 CharacterSet::CharacterSet(const std::string & ansi_str)
@@ -1065,84 +1065,84 @@ CharacterSet::~CharacterSet()
 
 CharacterSet::operator std::string() const
 {
-    return(str());
+    return str();
 }
 
 CharacterSet::operator std::wstring() const
 {
-    return(wstr());
+    return wstr();
 }
 
 std::string CharacterSet::str() const
 {
     if (nullptr == m_impl)
     {
-        return(std::string());
+        return std::string();
     }
-    return(m_impl->str());
+    return m_impl->str();
 }
 
 std::wstring CharacterSet::wstr() const
 {
     if (nullptr == m_impl)
     {
-        return(std::wstring());
+        return std::wstring();
     }
-    return(m_impl->wstr());
+    return m_impl->wstr();
 }
 
 std::string CharacterSet::utfx(UTFX::TYPE utfx_type, ENDIAN::TYPE endian_type) const
 {
     if (nullptr == m_impl)
     {
-        return(std::string());
+        return std::string();
     }
-    return(m_impl->utfx(utfx_type, endian_type));
+    return m_impl->utfx(utfx_type, endian_type);
 }
 
 std::string CharacterSet::utf8(ENDIAN::TYPE endian_type)
 {
-    return(utfx(UTFX::UTF8, endian_type));
+    return utfx(UTFX::UTF8, endian_type);
 }
 
 std::string CharacterSet::utf16(ENDIAN::TYPE endian_type)
 {
-    return(utfx(UTFX::UTF16, endian_type));
+    return utfx(UTFX::UTF16, endian_type);
 }
 
 std::string CharacterSet::utf32(ENDIAN::TYPE endian_type)
 {
-    return(utfx(UTFX::UTF32, endian_type));
+    return utfx(UTFX::UTF32, endian_type);
 }
 
 std::string ansi_to_utf8(const std::string & str_ansi)
 {
-    return(CharacterSet(str_ansi).utf8());
+    return CharacterSet(str_ansi).utf8();
 }
 
 std::wstring ansi_to_unicode(const std::string & str_ansi)
 {
-    return(CharacterSet(str_ansi).wstr());
+    return CharacterSet(str_ansi).wstr();
 }
 
 std::string utf8_to_ansi(const std::string & str_utf8)
 {
-    return(CharacterSet(str_utf8, UTFX::UTF8).str());
+    return CharacterSet(str_utf8, UTFX::UTF8).str();
 }
 
 std::wstring utf8_to_unicode(const std::string & str_utf8)
 {
-    return(CharacterSet(str_utf8, UTFX::UTF8).wstr());
+    return CharacterSet(str_utf8, UTFX::UTF8).wstr();
 }
 
 std::string unicode_to_ansi(const std::wstring & str_unicode)
 {
-    return(CharacterSet(str_unicode).str());
+    return CharacterSet(str_unicode).str();
 }
 
 std::string unicode_to_utf8(const std::wstring & str_unicode)
 {
-    return(CharacterSet(str_unicode).utf8());
+    return CharacterSet(str_unicode).utf8();
 }
 
 NAMESPACE_STUPID_BASE_END
